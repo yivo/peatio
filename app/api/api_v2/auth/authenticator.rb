@@ -8,10 +8,16 @@ module APIv2
       end
 
       def authenticate!
-        check_token!
-        check_tonce!
-        check_signature!
-        token
+        if @request.headers['Authorization'].present?
+          token = @request.headers['Authorization'].to_s.squish.split(' ').last
+          raise Auth0::NoTokenError if token.blank?
+          payload, = Auth0::JWT.verify!(token)
+        else
+          check_token!
+          check_tonce!
+          check_signature!
+          self.token
+        end
       end
 
       def token
