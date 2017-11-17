@@ -12,7 +12,7 @@ module Auth0
           verify_expiration: true
 
         ::JWT.decode(token, nil, true, options) { |header| jwks_hash[header.fetch('kid')] }
-      rescue ::JWT::DecodeError => e
+      rescue ::JWT::DecodeError, ::JWT::ExpiredSignature => e
         raise Auth0::BadTokenError, e.inspect
       end
 
