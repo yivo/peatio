@@ -12,6 +12,7 @@ module APIv2
           token = @request.headers['Authorization'].to_s.squish.split(' ').last
           raise Auth0::NoTokenError if token.blank?
           payload, = Auth0::JWT.verify!(token)
+          Auth0::PeatioAPITokenAdapter.new(token, payload)
         else
           check_token!
           check_tonce!
@@ -81,7 +82,6 @@ module APIv2
       def route_scopes
         endpoint.options[:route_options][:scopes]
       end
-
     end
   end
 end
