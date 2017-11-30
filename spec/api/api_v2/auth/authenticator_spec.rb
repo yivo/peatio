@@ -36,8 +36,8 @@ describe APIv2::Auth::Authenticator do
   it { expect(subject.token).to eq token }
 
   it { expect(subject.canonical_verb).to eq 'GET' }
-  it { expect(subject.canonical_uri).to eq '/' }
-  it { expect(subject.canonical_query).to eq "access_key=#{token.access_key}&foo=bar&hello=world&tonce=#{tonce}" }
+  it { expect(subject.canonical_path).to eq '/' }
+  it { expect(subject.canonical_params).to eq "access_key=#{token.access_key}&foo=bar&hello=world&tonce=#{tonce}" }
 
   it 'should not be authentic without access key' do
     params[:access_key] = ''

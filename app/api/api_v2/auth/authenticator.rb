@@ -87,7 +87,7 @@ module APIv2
       end
 
       def canonical_params
-        denied = %w[ route_info format ].to_set
+        denied = %w[ route_info format signature ].to_set
         URI.unescape \
           @params.reject { |k| denied.include?(k) }
                  .keys
