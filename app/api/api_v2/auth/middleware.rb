@@ -1,7 +1,6 @@
 module APIv2
   module Auth
     class Middleware < ::Grape::Middleware::Base
-
       def before
         if provided?
           auth = Authenticator.new(request, params)
@@ -10,7 +9,9 @@ module APIv2
       end
 
       def provided?
-        params[:access_key] && params[:tonce] && params[:signature]
+        env['HTTP_AUTHORIZATION'].present? ||
+          # Just check for falsy values as it was previously (checking with #present breaks some tests).
+          %i[ access_key tonce signature ].all? { |k| params[k] }
       end
 
       def request
@@ -20,7 +21,6 @@ module APIv2
       def params
         @params ||= request.params
       end
-
     end
   end
 end

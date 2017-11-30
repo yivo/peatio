@@ -1,8 +1,9 @@
+require 'securerandom'
+
 module APIv2
   module Auth
     module Utils
-      class <<self
-
+      class << self
         def cache
           # Simply use rack-attack cache wrapper
           @cache ||= Rack::Attack::Cache.new
@@ -17,9 +18,8 @@ module APIv2
         alias :generate_secret_key :urlsafe_string_40
 
         def hmac_signature(secret_key, payload)
-          OpenSSL::HMAC.hexdigest 'SHA256', secret_key, payload
+          OpenSSL::HMAC.hexdigest('SHA256', secret_key, payload)
         end
-
       end
     end
   end

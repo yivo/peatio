@@ -1,7 +1,6 @@
 module APIv2
   module Constraints
-    class <<self
-
+    class << self
       def included(base)
         apply_rules!
         base.use Rack::Attack
@@ -16,7 +15,6 @@ module APIv2
           req.env['api_v2.token'] && req.env['api_v2.token'].access_key
         end
       end
-
     end
   end
 end

@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module APIv2
   class WebSocketProtocol
 
@@ -22,8 +24,8 @@ module APIv2
       case key.downcase
       when 'auth'
         access_key = data['access_key']
-        token = APIToken.where(access_key: access_key).includes(:member).first
-        result = verify_answer data['answer'], token
+        token      = APIToken.joins(:member).where(access_key: access_key).first
+        result     = token && verify_answer(data['answer'], token)
 
         if result
           subscribe_orders
@@ -48,8 +50,7 @@ module APIv2
     end
 
     def verify_answer(answer, token)
-      str = "#{token.access_key}#{@challenge}"
-      answer == OpenSSL::HMAC.hexdigest('SHA256', token.secret_key, str)
+      answer == APIv2::Auth::Utils.hmac_signature(token.secret_key, "#{token.access_key}#{@challenge}")
     end
 
     def subscribe_orders
@@ -109,6 +110,5 @@ module APIv2
         :bid
       end
     end
-
   end
 end

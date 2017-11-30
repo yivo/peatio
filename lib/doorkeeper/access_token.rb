@@ -18,26 +18,26 @@ module Doorkeeper
     end
 
     def revoke(clock = DateTime)
-      super
-
-      self.api_token = APIToken.from_oauth_token(self)
-      api_token.try(:destroy)
+      transaction do
+        super
+        self.api_token = APIToken.from_oauth_token(self)
+        api_token.try(:destroy)
+      end
     end
 
-    private
+  private
 
     def generate_token
-      requsted_scopes = scopes.to_s
-      raise "Invalid scope: #{requsted_scopes}" if requsted_scopes == 'all'
+      scopes = self.scopes.to_s
+      raise "Invalid scope: #{scopes}" if scopes == 'all'
 
-      member         = Member.find resource_owner_id
-      self.api_token = member.api_tokens.create!(label: application.name, scopes: requsted_scopes)
+      member         = Member.find(resource_owner_id)
+      self.api_token = member.api_tokens.create!(label: application.name, scopes: scopes)
       self.token     = api_token.to_oauth_token
     end
 
     def link_api_token
-      api_token.update_attributes(oauth_access_token_id: id, expire_at: expired_time)
+      api_token.update_attributes(oauth_access_token_id: id, expires_at: expired_time)
     end
-
   end
 end

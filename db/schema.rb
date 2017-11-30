@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150405053726) do
+ActiveRecord::Schema.define(version: 20171130150354) do
 
   create_table "account_versions", force: true do |t|
     t.integer  "member_id"
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 20150405053726) do
     t.string   "trusted_ip_list"
     t.string   "label"
     t.integer  "oauth_access_token_id"
-    t.datetime "expire_at"
+    t.datetime "expires_at"
     t.string   "scopes"
     t.datetime "deleted_at"
   end
@@ -399,7 +399,7 @@ ActiveRecord::Schema.define(version: 20150405053726) do
 
   create_table "tokens", force: true do |t|
     t.string   "token"
-    t.datetime "expire_at"
+    t.datetime "expires_at"
     t.integer  "member_id"
     t.boolean  "is_used",    default: false
     t.string   "type"
@@ -407,7 +407,7 @@ ActiveRecord::Schema.define(version: 20150405053726) do
     t.datetime "updated_at"
   end
 
-  add_index "tokens", ["type", "token", "expire_at", "is_used"], name: "index_tokens_on_type_and_token_and_expire_at_and_is_used", using: :btree
+  add_index "tokens", ["type", "token", "expires_at", "is_used"], name: "index_tokens_on_type_and_token_and_expires_at_and_is_used", using: :btree
 
   create_table "trades", force: true do |t|
     t.decimal  "price",         precision: 32, scale: 16

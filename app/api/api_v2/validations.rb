@@ -13,7 +13,6 @@ module APIv2
           raise Grape::Exceptions::Validation, param: @scope.full_name(attr_name), message: "must be in range: #{@range}"
         end
       end
-
     end
   end
 end

@@ -2,12 +2,6 @@ module APIv2
   module NamedParams
     extend ::Grape::API::Helpers
 
-    params :auth do
-      requires :access_key, type: String,  desc: "Access key."
-      requires :tonce,      type: Integer, desc: "Tonce is an integer represents the milliseconds elapsed since Unix epoch."
-      requires :signature,  type: String,  desc: "The signature of your request payload, generated using your secret key."
-    end
-
     params :market do
       requires :market, type: String, values: ::Market.all.map(&:id), desc: ::APIv2::Entities::Market.documentation[:id]
     end
@@ -28,8 +22,7 @@ module APIv2
       optional :timestamp, type: Integer, desc: "An integer represents the seconds elapsed since Unix epoch. If set, only trades executed before the time will be returned."
       optional :from,      type: Integer, desc: "Trade id. If set, only trades created after the trade will be returned."
       optional :to,        type: Integer, desc: "Trade id. If set, only trades created before the trade will be returned."
-      optional :order_by,     type: String, values: %w(asc desc), default: 'desc', desc: "If set, returned trades will be sorted in specific order, default to 'desc'."
+      optional :order_by,  type: String, values: %w(asc desc), default: 'desc', desc: "If set, returned trades will be sorted in specific order, default to 'desc'."
     end
-
   end
 end

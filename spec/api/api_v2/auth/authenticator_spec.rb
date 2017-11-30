@@ -114,7 +114,7 @@ describe APIv2::Auth::Authenticator do
   end
 
   it 'should not be authentic if token is expired' do
-    token.update_attributes expire_at: 1.second.ago
+    token.update_attributes expires_at: 1.second.ago
     lambda {
       subject.authenticate!
     }.should raise_error(APIv2::ExpiredAccessKeyError)
