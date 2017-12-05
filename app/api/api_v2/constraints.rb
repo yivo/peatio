@@ -7,14 +7,14 @@ module APIv2
       end
 
       def apply_rules!
-        return unless req.env['api_v2.token']
+        return unless req.env['api_v2.keypair_token']
 
         Rack::Attack.blacklist 'Allow access only for trusted IPs' do |req|
-          !req.env['api_v2.token'].allow_ip?(req.ip)
+          !req.env['api_v2.keypair_token'].allow_ip?(req.ip)
         end
 
         Rack::Attack.throttle 'Authorized access', limit: 6000, period: 5.minutes do |req|
-          req.env['api_v2.token'].access_key
+          req.env['api_v2.keypair_token'].access_key
         end
       end
     end
