@@ -4,10 +4,13 @@ module APIv2
       def before
         if auth_by_keypair?
           auth = KeypairAuthenticator.new(request, params)
-          @env['api_v2.token'] = auth.authenticate!
+          env['api_v2.token']  = auth.authenticate!
+          env['api_v2.member'] = env['api_v2.token'].member
         end
       end
 
+    private
+      
       def auth_by_keypair?
         params[:access_key] && params[:tonce] && params[:signature]
       end
