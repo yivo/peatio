@@ -479,6 +479,7 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   json
+  jwt (~> 1.5)
   kaminari
   launchy
   liability-proof (= 0.0.9)

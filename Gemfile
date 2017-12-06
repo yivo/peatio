@@ -72,6 +72,7 @@ gem 'unread', github: 'peatio/unread'
 gem 'carrierwave', '~> 0.10.0'
 gem 'simple_captcha2', require: 'simple_captcha'
 gem 'rest-client', '~> 1.6.8'
+gem 'jwt', '~> 1.5'
 
 group :development, :test do
   gem 'factory_bot_rails'
