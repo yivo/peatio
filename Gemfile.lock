@@ -176,7 +176,7 @@ GEM
       json
       multi_json
       request_store (>= 1.0.5)
-    grape (0.16.2)
+    grape (0.17.0)
       activesupport
       builder
       hashie (>= 2.1.0)
@@ -482,7 +482,7 @@ DEPENDENCIES
   font-awesome-sass
   globalize (~> 5.0)
   gon (~> 5.2.0)
-  grape (~> 0.16.2)
+  grape (~> 0.17.0)
   grape-entity (~> 0.5.2)
   grape-swagger (~> 0.25.3)
   hashie
