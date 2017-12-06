@@ -18,7 +18,7 @@ module APIv2
     private
 
       def decode_and_verify_token(token)
-        JWT.decode(token, secret_key, true)
+        JWT.decode(token, Utils.jwt_shared_secret_key, true)
       rescue JWT::DecodeError => e
         Rails.logger.error { e.inspect }
         nil
@@ -27,10 +27,6 @@ module APIv2
       def fetch_member(payload)
         return nil if payload['member_id'].blank?
         Member.find_by_id(payload['member_id'])
-      end
-
-      def secret_key
-        OpenSSL::PKey::RSA.new(Base64.urlsafe_decode64(ENV.fetch('JWT_SHARED_SECRET_KEY')))
       end
     end
   end
