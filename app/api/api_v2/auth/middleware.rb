@@ -1,11 +1,13 @@
 module APIv2
   module Auth
-    class Middleware < ::Grape::Middleware::Base
+    class Middleware < Grape::Middleware::Base
       def before
-        if auth_by_keypair?
+        env['api_v2.member'] = if auth_by_keypair?
           auth = KeypairAuthenticator.new(request, params)
           env['api_v2.keypair_token'] = auth.authenticate!
-          env['api_v2.member']        = env['api_v2.keypair_token'].member
+          env['api_v2.keypair_token'].member
+        elsif auth_by_jwt?
+          JWTAuthenticator.new(headers['Authorization']).authenticate!
         end
       end
 
@@ -15,12 +17,20 @@ module APIv2
         params[:access_key] && params[:tonce] && params[:signature]
       end
 
+      def auth_by_jwt?
+        headers.key?('Authorization')
+      end
+
       def request
-        @request ||= ::Grape::Request.new(env)
+        @request ||= Grape::Request.new(env)
       end
 
       def params
-        @params ||= request.params
+        request.params
+      end
+
+      def headers
+        request.headers
       end
     end
   end
