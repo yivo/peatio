@@ -29,10 +29,13 @@ module APIv2
         raise AuthorizationError, 'Token is invalid or expired.'
       end
 
-      # TODO: Check if email is well-formed.
       def fetch_email(payload)
-        raise(AuthorizationError, 'E-Mail is blank.') if payload['email'].blank?
-        payload['email']
+        email = payload['email'].to_s.squish
+
+        raise(AuthorizationError, 'E-Mail is blank.') if email.blank?
+        raise(AuthorizationError, 'E-Mail is invalid.') unless EmailValidator.valid?(email)
+
+        email
       end
     end
   end

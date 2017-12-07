@@ -40,7 +40,6 @@ describe APIv2::Auth::JWTAuthenticator do
   end
 
   it 'should raise exception when email is invalid' do
-    pending
     payload[:email] = '@gmail.com'
     expect { subject.authenticate! }.to raise_error(APIv2::AuthorizationError) { |e| expect(e.reason).to match /invalid/ }
   end
