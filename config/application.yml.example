@@ -38,6 +38,10 @@ defaults: &defaults
   #
   #   JWT.encode(payload, APIv2::Auth::Utils.jwt_shared_secret_key, 'RS256')
   #
+  # To authenticate using JWT send it's value in "Authorization" header:
+  #
+  #   curl -H "Authorization: Bearer TOKEN" http://localhost:3000/api/v2/members/me
+  #
   JWT_SHARED_SECRET_KEY: ~
 
   # email notifications settings (only for production)
