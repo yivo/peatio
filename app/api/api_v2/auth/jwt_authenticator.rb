@@ -5,14 +5,17 @@ module APIv2
         @token_type, @token_value = token.to_s.split(' ')
       end
 
+      #
+      # Decodes and verifies JWT.
+      # Returns authentic member email or raises an exception.
+      #
+      # @return [String]
       def authenticate!
         raise AuthorizationError unless @token_type == 'Bearer'
 
         payload, header = decode_and_verify_token(@token_value)
-        raise AuthorizationError unless payload
 
-        raise AuthorizationError unless (member = fetch_member(payload))
-        member
+        fetch_email(payload)
       end
 
     private
@@ -21,12 +24,13 @@ module APIv2
         JWT.decode(token, Utils.jwt_shared_secret_key, true)
       rescue JWT::DecodeError => e
         Rails.logger.error { e.inspect }
-        nil
+        raise AuthorizationError
       end
 
-      def fetch_member(payload)
-        return nil if payload['member_id'].blank?
-        Member.find_by_id(payload['member_id'])
+      # TODO: Check if email is well-formed.
+      def fetch_email(payload)
+        raise AuthorizationError if payload['email'].blank?
+        payload['email']
       end
     end
   end

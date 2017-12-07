@@ -20,10 +20,10 @@ describe APIv2::Auth::JWTAuthenticator do
   end
 
   let :payload do
-    { x: 'x', y: 'y', z: 'z', member_id: member.id }
+    { x: 'x', y: 'y', z: 'z', email: member.email }
   end
 
   subject { APIv2::Auth::JWTAuthenticator.new(request.headers['Authorization']) }
 
-  it { expect(subject.authenticate!).to eq member }
+  it { expect(subject.authenticate!).to eq member.email }
 end
