@@ -16,6 +16,7 @@ defaults: &defaults
   # This secret key is used for verifying digital signatures of cookies.
   #
   # You can generate one by running:
+  #
   #   bundle exec rake secret
   #
   # Development and test environments already include sample secret keys.
@@ -24,12 +25,19 @@ defaults: &defaults
   # This secret key is used for verifying JSON Web Tokens.
   #
   # Request this key from your JWT provider or generate one by running:
+  #
   #   ruby -e "require 'openssl'; require 'base64'; print Base64.urlsafe_encode64(OpenSSL::PKey::RSA.generate(2048).to_pem)"
+  #
   # Then send this token to your JWT provider.
   # Peatio and JWT provider should have the same key.
   # You may want to adjust key length or cipher.
   #
   # Development and test environments already include sample secret keys.
+  #
+  # You can generate valid JWT by running:
+  #
+  #   JWT.encode(payload, APIv2::Auth::Utils.jwt_shared_secret_key, 'RS256')
+  #
   JWT_SHARED_SECRET_KEY: ~
 
   # email notifications settings (only for production)
