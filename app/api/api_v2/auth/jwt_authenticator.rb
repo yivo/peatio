@@ -11,7 +11,9 @@ module APIv2
       #
       # @return [String]
       def authenticate!
-        raise AuthorizationError unless @token_type == 'Bearer'
+        unless @token_type == 'Bearer'
+          raise AuthorizationError, 'Token type is not provided or invalid.'
+        end
 
         payload, header = decode_and_verify_token(@token_value)
 
@@ -24,12 +26,12 @@ module APIv2
         JWT.decode(token, Utils.jwt_shared_secret_key, true)
       rescue JWT::DecodeError => e
         Rails.logger.error { e.inspect }
-        raise AuthorizationError
+        raise AuthorizationError, 'Token is invalid or expired.'
       end
 
       # TODO: Check if email is well-formed.
       def fetch_email(payload)
-        raise AuthorizationError if payload['email'].blank?
+        raise(AuthorizationError, 'E-Mail is blank.') if payload['email'].blank?
         payload['email']
       end
     end

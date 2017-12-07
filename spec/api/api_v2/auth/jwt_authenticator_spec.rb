@@ -25,5 +25,33 @@ describe APIv2::Auth::JWTAuthenticator do
 
   subject { APIv2::Auth::JWTAuthenticator.new(request.headers['Authorization']) }
 
-  it { expect(subject.authenticate!).to eq member.email }
+  it 'should work in standard conditions' do
+    expect(subject.authenticate!).to eq member.email
+  end
+
+  it 'should raise exception when email is not provided' do
+    payload.delete(:email)
+    expect { subject.authenticate! }.to raise_error(APIv2::AuthorizationError) { |e| expect(e.reason).to match /blank/ }
+  end
+
+  it 'should raise exception when email is blank' do
+    payload[:email] = ''
+    expect { subject.authenticate! }.to raise_error(APIv2::AuthorizationError) { |e| expect(e.reason).to match /blank/ }
+  end
+
+  it 'should raise exception when email is invalid' do
+    pending
+    payload[:email] = '@gmail.com'
+    expect { subject.authenticate! }.to raise_error(APIv2::AuthorizationError) { |e| expect(e.reason).to match /invalid/ }
+  end
+
+  it 'should raise exception when token is expired' do
+    payload[:exp] = 1.minute.ago.to_i
+    expect { subject.authenticate! }.to raise_error(APIv2::AuthorizationError) { |e| expect(e.reason).to match /expired/ }
+  end
+
+  it 'should raise exception when token type is invalid' do
+    subject.instance_variable_set(:@token_type, 'Foo')
+    expect { subject.authenticate! }.to raise_error(APIv2::AuthorizationError) { |e| expect(e.reason).to match /invalid/ }
+  end
 end
