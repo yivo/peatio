@@ -181,7 +181,7 @@ class Member < ActiveRecord::Base
   end
 
   def send_activation
-    Token::Activation.create(member: self)
+    Token::Activation.create!(member: self)
   end
 
   def send_password_changed_notification
