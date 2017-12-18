@@ -22,19 +22,4 @@ describe APIv2::Members, type: :request do
     expect(response).to be_success
     check_cors(response)
   end
-
-  # describe 'GET /members/me' do
-  #   it 'should return current user profile with accounts info' do
-  #     signed_get '/api/v2/members/me', token: token
-  #     expect(response).to be_success
-  #
-  #     result = JSON.parse(response.body)
-  #     expect(result['sn']).to eq member.sn
-  #     expect(result['activated']).to be true
-  #     expect(result['accounts']).to match [
-  #       { 'currency' => 'cny', 'balance' => '2014.47', 'locked' => '0.0' },
-  #       { 'currency' => 'btc', 'balance' => '12.13', 'locked' => '3.14' }
-  #     ]
-  #   end
-  # end
 end
