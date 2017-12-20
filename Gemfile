@@ -6,7 +6,6 @@ gem 'responders', '~> 2.0'
 
 gem 'puma'
 gem 'mysql2', '~> 0.3.21'
-gem 'daemons-rails'
 gem 'redis-rails'
 
 gem 'rotp'

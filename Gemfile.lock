@@ -116,10 +116,6 @@ GEM
       countries (>= 0.9.3, < 0.10.0)
     crass (1.0.3)
     currencies (0.4.2)
-    daemons (1.2.5)
-    daemons-rails (1.2.1)
-      daemons
-      multi_json (~> 1.0)
     database_cleaner (1.6.2)
     datagrid (1.5.7)
       rails (>= 4.0)
@@ -462,7 +458,6 @@ DEPENDENCIES
   clipboard-rails (~> 1.7)
   coffee-rails
   country_select (~> 2.1.0)
-  daemons-rails
   database_cleaner
   datagrid
   doorkeeper (~> 1.4.1)
