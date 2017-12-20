@@ -27,8 +27,8 @@ def daemon(name, options = {})
     w.stop_signal  = 'TERM'
     w.stop_timeout = 10.seconds
 
-    # God will restart process if it's memory usage exceeds 64 megabytes.
-    w.keepalive memory_max: 64.megabytes
+    # God will always keep process running unless it was manually terminated.
+    w.keepalive
 
     # Allow customizations.
     yield(w) if block_given?
