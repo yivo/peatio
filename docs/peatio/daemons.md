@@ -27,6 +27,12 @@ To stop only daemons leaving God up run:
 
 `god stop`
 
+## Restarting daemons
+
+`god restart`
+
+Be patient when starting or stopping daemons: most of daemons support graceful termination so God will first send SIGTERM, wait short period of time, and forcefully kill process by sending SIGKILL if it is still up.
+
 ## Querying status
 
 `god status`
