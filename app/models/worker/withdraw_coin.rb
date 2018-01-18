@@ -3,6 +3,8 @@ module Worker
     def process(payload, metadata, delivery_info)
       payload.symbolize_keys!
 
+      # binding.pry
+
       Withdraw.transaction do
         withdraw = Withdraw.lock.find payload[:id]
 

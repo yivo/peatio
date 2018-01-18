@@ -19,7 +19,7 @@ gem 'omniauth-google-oauth2', '~> 0.5.2'
 gem 'figaro'
 gem 'hashie', '~> 3.0'
 
-gem 'aasm', '~> 3.4.0'
+gem 'aasm', '~> 4.12'
 gem 'amqp', '~> 1.3.0'
 gem 'bunny', '~> 2.9.0'
 gem 'cancancan'
@@ -75,7 +75,7 @@ group :development, :test do
   gem 'binding_of_caller'
   gem 'quiet_assets'
   gem 'timecop'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 3.7'
   gem 'pry-byebug'
 end
 
