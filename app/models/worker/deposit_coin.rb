@@ -4,32 +4,26 @@ module Worker
     def process(payload)
       payload.symbolize_keys!
 
-      channel_key = payload[:channel_key]
-      txid = payload[:txid]
+      channel = DepositChannel.find_by_key(payload.fetch(:channel_key))
+      tx      = channel.currency_obj.api.load_transaction!(payload.fetch(:txid))
 
-      channel = DepositChannel.find_by_key(channel_key)
-      raw     = get_raw channel, txid
-
-      raw[:details].each_with_index do |detail, i|
-        detail.symbolize_keys!
-        deposit!(channel, txid, i, raw, detail)
-      end
+      deposit!(channel, tx)
     end
 
-    def deposit!(channel, txid, txout, raw, detail)
-      return if detail[:account] != 'payment' || detail[:category] != 'receive'
-      return unless PaymentAddress.where(currency: channel.currency_obj.id, address: detail[:address]).exists?
-      return if PaymentTransaction::Normal.where(txid: txid, txout: txout).exists?
+    def deposit!(channel, tx)
+      return if tx[:amount] < 0
+      return unless PaymentAddress.where(currency: channel.currency_obj.id, address: tx[:address]).exists?
+      return if PaymentTransaction::Normal.where(txid: tx[:id], txout: tx[:address]).exists?
 
       ActiveRecord::Base.transaction do
 
         tx = PaymentTransaction::Normal.create! \
-          txid: txid,
-          txout: txout,
-          address: detail[:address],
-          amount: detail[:amount].to_s.to_d,
-          confirmations: raw[:confirmations],
-          receive_at: Time.at(raw[:timereceived]).to_datetime,
+          txid: tx[:id],
+          txout: 1,
+          address: tx[:address],
+          amount: tx[:amount],
+          confirmations: tx[:confirmations],
+          receive_at: Time.at(tx[:timereceived]).to_datetime,
           currency: channel.currency
 
         deposit = channel.kls.create! \
@@ -45,14 +39,9 @@ module Worker
         deposit.submit!
       end
     rescue => e
-      Rails.logger.error 'Failed to deposit.'
-      Rails.logger.error "txid: #{txid}, txout: #{txout}, detail: #{detail.inspect}."
+      Rails.logger.error 'Failed to process deposit.'
+      Rails.logger.debug { tx.inspect }
       report_exception(e)
     end
-
-    def get_raw(channel, txid)
-      channel.currency_obj.api.gettransaction(txid)
-    end
-
   end
 end

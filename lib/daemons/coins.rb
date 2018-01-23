@@ -5,8 +5,8 @@ Signal.trap(:TERM) { running = false }
 
 def load_transactions(coin)
   # Download more transactions which is safer in case daemon haven't been active long time.
-  # NOTE: The second argument of CoinRPC#listtransactions has different meaning for XRP. Check the sources.
-  CoinRPC[coin.code.to_sym].listtransactions('payment', coin.code.xrp? ? 100 : 1000)
+  # NOTE: The second argument of CoinAPI#listtransactions has different meaning for XRP. Check the sources.
+  CoinAPI[coin.code.to_sym].listtransactions('payment', coin.code.xrp? ? 100 : 1000)
 rescue => e
   report_exception(e)
   [] # Fallback with empty transaction list.

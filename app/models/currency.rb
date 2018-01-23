@@ -35,7 +35,7 @@ class Currency < ActiveYamlBase
 
   def api
     raise unless coin?
-    CoinRPC[code]
+    CoinAPI[code]
   end
 
   def fiat?
@@ -55,7 +55,7 @@ class Currency < ActiveYamlBase
   end
 
   def refresh_balance
-    Rails.cache.write(balance_cache_key, api.safe_getbalance) if coin?
+    Rails.cache.write(balance_cache_key, api.balance || 'N/A') if coin?
   end
 
   def blockchain_url(txid)

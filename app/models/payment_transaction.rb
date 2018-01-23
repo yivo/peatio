@@ -39,7 +39,7 @@ class PaymentTransaction < ActiveRecord::Base
   end
 
   def refresh_confirmations
-    raw = CoinRPC[deposit.currency].gettransaction(txid)
+    raw = CoinAPI[deposit.currency].gettransaction(txid)
     self.confirmations = raw[:confirmations]
     save!
   end

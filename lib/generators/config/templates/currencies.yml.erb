@@ -20,7 +20,8 @@
   coin: true
   precision: 8
   quick_withdraw_max: 1
-  rpc: http://username:password@127.0.0.1:18332
+  # api_client: BitGo
+  json_rpc_endpoint: http://username:password@127.0.0.1:18332
   blockchain: https://blockchain.info/tx/#{txid}
   address_url: https://blockchain.info/address/#{address}
   assets:
@@ -32,10 +33,11 @@
   symbol: "ꭆ"
   coin: true
   quick_withdraw_max: 10000
-  rpc: https://api.altnet.rippletest.net:51234
-  rest_api: "https://api.altnet.rippletest.net:5990"
-  blockchain: "https://bithomp.com/explorer/#{txid}"
-  address_url: "https://bithomp.com/explorer/#{address}"
+  # api_client: BitGo
+  json_rpc_endpoint: https://api.altnet.rippletest.net:51234
+  rest_api_endpoint: https://api.altnet.rippletest.net:5990
+  blockchain: https://bithomp.com/explorer/#{txid}
+  address_url: https://bithomp.com/explorer/#{address}
   assets:
     accounts:
       - address: r1234567890abcdefghijklmnopqrstuvw
