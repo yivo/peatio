@@ -135,11 +135,7 @@ test:
   <<: *defaults
 
 production:
-  # Default production sign in provider.
-  OAUTH2_SIGN_IN_PROVIDER:    barong
-
-  # Production configuration variables for sign in with Barong.
-  BARONG_CLIENT_ID:           ~
-  BARONG_CLIENT_SECRET:       ~
-  BARONG_DOMAIN:              ~
   <<: *defaults
+
+  # Default production sign in provider.
+  OAUTH2_SIGN_IN_PROVIDER: barong
