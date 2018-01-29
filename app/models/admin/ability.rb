@@ -17,12 +17,14 @@ module Admin
       can :manage, ::Deposits::Satoshi
       can :manage, ::Deposits::Ripple
       can :manage, ::Deposits::BitcoinCash
+      can :manage, ::Deposits::Litoshi
 
       can :menu, Withdraw
       can :manage, ::Withdraws::Bank
       can :manage, ::Withdraws::Satoshi
       can :manage, ::Withdraws::Ripple
       can :manage, ::Withdraws::BitcoinCash
+      can :manage, ::Withdraws::Litoshi
     end
   end
 end
