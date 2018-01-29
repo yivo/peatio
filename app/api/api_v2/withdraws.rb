@@ -50,5 +50,22 @@ module APIv2
         uid:        params[:address]
       present order, with: APIv2::Entities::WithdrawAddress
     end
+
+    post '/withdraws' do
+      currency = Currency.find_by_code!(params[:currency])
+      withdraw = "withdraws/#{currency.key}".camelize.constantize.new \
+        fund_source: params[:address_id],
+        sum:         params[:amount],
+        member_id:   current_user.id,
+        currency:    currency.code
+
+      if withdraw.save
+        withdraw.submit!
+        present withdraw, with: APIv2::Entities::Withdraw
+      else
+        body errors: withdraw.errors.full_messages
+        status 422
+      end
+    end
   end
 end
