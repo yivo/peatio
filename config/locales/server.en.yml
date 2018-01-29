@@ -317,7 +317,7 @@ en:
       btc: BTC
       bch: BCH
       xrp: XRP
-      usd: USD
+      cad: CAD
       doge: DOGE
       pts: PTS
       ltc: LTC
@@ -348,9 +348,9 @@ en:
       name: BitsharesX
       format: '0,0.0000'
     dollar:
-      key: usd
-      code: usd
-      name: USD
+      key: cad
+      code: cad
+      name: CAD
       format: '0,0.00'
     dogecoin:
       key: DOG
@@ -741,18 +741,18 @@ en:
         btc-assets: BTC Assets
         bch-assets: BCH Assets
         xrp-assets: XRP Assets
-        usd-assets: USD Assets
+        cad-assets: CAD Assets
       liability_tabs:
         verify-btc: Verify My BTC Assets
         verify-bch: Verify My BCH Assets
         verify-ltc: Verify My LTC Assets
         verify-xrp: Verify My XRP Assets
-        verify-usd: Verify My USD Assets
+        verify-cad: Verify My CAD Assets
         btc-assets-total: 'Total BTC assets of exchange: '
         bch-assets-total: 'Total BCH assets of exchange: '
         ltc-assets-total: 'Total LTC assets of exchange: '
         xrp-assets-total: 'Total XRP assets of exchange: '
-        usd-assets-total: 'Total USD assets of exchange: '
+        cad-assets-total: 'Total CAD assets of exchange: '
       liability_proof:
         title: Proof of Liabilities
         intro: As an exchange, our liabilities refer to the sum of money (in both
@@ -787,10 +787,10 @@ en:
         intro: All of exchange's XRP assets are listed here.
         total: Total XRP Assets
         address: Address
-      usd_assets:
-        title: USD Assets
-        intro: All of exchange's USD assets are listed here.
-        total: Total USD Assets
+      cad_assets:
+        title: CAD Assets
+        intro: All of exchange's CAD assets are listed here.
+        total: Total CAD Assets
         description: " <p>For supervision, you can inquiry the balance of our deposit
           account:</p> <p>Bank: %{bank}</p> <p>Account： %{address}</p> <p>Inquiry
           Password： %{password}</p> <p>Inquiry Tel.： %{tel}</p>"
@@ -799,10 +799,10 @@ en:
     funds:
       show:
         account_history: Account History
-        usd_format: '0.00'
+        cad_format: '0.00'
         btc_format: '0.00000000'
         reason:
-          usd:
+          cad:
             strike_add: Plus
             strike_sub: Sub
             deposit: Deposit
@@ -873,7 +873,7 @@ en:
       market_list:
         all: All Markets
         all_html: "<i class='fa fa-check'></i><span>All Markets</span>"
-        usd_html: "<i class='fa fa-check'></i><span>USD Markets</span>"
+        cad_html: "<i class='fa fa-check'></i><span>CAD Markets</span>"
         btc_html: "<i class='fa fa-check'></i><span>BTC Markets</span>"
         bch_html: "<i class='fa fa-check'></i><span>BCH Markets</span>"
         ltc_html: "<i class='fa fa-check'></i><span>LTC Markets</span>"
@@ -1010,7 +1010,7 @@ en:
         balance: Balance
         available: Available
         title: "%{icon} %{c} Account"
-        usd_format: '0.00'
+        cad_format: '0.00'
         btc_format: '0.00000000'
         xrp_format: '0.000000'
         total: Total
@@ -1385,7 +1385,7 @@ en:
       wait: Wait
       cancel: Cancel
     currency:
-      usd: USD
+      cad: CAD
       btc: BTC
       bch: BCH
       ltc: LTC

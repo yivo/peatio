@@ -103,14 +103,14 @@ ru:
   market:
     currency:
       btc: BTC
-      usd: USD
+      cad: CAD
   currency:
     satoshi:
       key: BTC
       code: BTC
     dollar:
-      key: USD
-      code: USD
+      key: CAD
+      code: CAD
   datagrid:
     admin_deposits_grid:
       columns:
@@ -198,7 +198,7 @@ ru:
       member_name: Участник
   enumerize:
     currency:
-      usd: USD
+      cad: CAD
       btc: BTC
     deposit:
       aasm_state:

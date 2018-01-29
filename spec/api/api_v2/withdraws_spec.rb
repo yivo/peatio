@@ -2,9 +2,9 @@ describe APIv2::Withdraws, type: :request do
   let(:member)         { create(:member) }
   let(:token)          { create(:api_token, member: member) }
   let!(:btc_withdraws) { create_list(:satoshi_withdraw, 20, member: member) }
-  let!(:usd_withdraws) { create_list(:bank_withdraw, 20, member: member) }
+  let!(:cad_withdraws) { create_list(:bank_withdraw, 20, member: member) }
   let!(:btc_withdraw_addresses) { create_list(:btc_fund_source, 20, member: member) }
-  let!(:usd_withdraw_addresses) { create_list(:usd_fund_source, 20, member: member) }
+  let!(:cad_withdraw_addresses) { create_list(:cad_fund_source, 20, member: member) }
 
   describe 'GET /api/v2/withdraws' do
     it 'should require authentication' do
@@ -33,7 +33,7 @@ describe APIv2::Withdraws, type: :request do
     it 'should return withdraws for all currencies by default' do
       signed_get '/api/v2/withdraws', params: { limit: 1000 }, token: token
       expect(response).to be_success
-      expect(JSON.parse(response.body).map { |x| x['currency'] }.uniq.sort).to eq %w[ BTC USD ]
+      expect(JSON.parse(response.body).map { |x| x['currency'] }.uniq.sort).to eq %w[ BTC CAD ]
     end
 
     it 'should return withdraws specified currency' do
@@ -91,7 +91,7 @@ describe APIv2::Withdraws, type: :request do
     it 'should return withdraw addresses for all currencies by default' do
       signed_get '/api/v2/withdraws/addresses', params: { limit: 1000 }, token: token
       expect(response).to be_success
-      expect(JSON.parse(response.body).map { |x| x['currency'] }.uniq.sort).to eq %w[ BTC USD ]
+      expect(JSON.parse(response.body).map { |x| x['currency'] }.uniq.sort).to eq %w[ BTC CAD ]
     end
 
     it 'should return withdraw addresses for specified currency' do

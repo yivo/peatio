@@ -13,7 +13,7 @@
       <a class="xrp-proof" href="#xrp-proof" data-toggle="tab"><%= t('.verify-xrp').html_safe %></a>
     </li>
     <li>
-      <a class="usd-proof" href="#usd-proof" data-toggle="tab"><%= t('.verify-usd').html_safe %></a>
+      <a class="cad-proof" href="#cad-proof" data-toggle="tab"><%= t('.verify-cad').html_safe %></a>
     </li>
   </ul>
 
@@ -46,16 +46,16 @@
       </div>
     </div>
 
-    <div id="usd-proof" class="tab-pane">
+    <div id="cad-proof" class="tab-pane">
       <div class="trade-wrapper">
         <div class="assets">
-          <span class="title"><%= t('.usd-assets-total').html_safe %></span>
+          <span class="title"><%= t('.cad-assets-total').html_safe %></span>
           <span class="currency">
-            <%= t('currency.icon.usd').html_safe %>
-            <%= @usd_proof.sum %>
+            <%= t('currency.icon.cad').html_safe %>
+            <%= @cad_proof.sum %>
           </span>
         </div>
-        <%= render 'liability_data', account: @usd_account, proof: @usd_proof %>
+        <%= render 'liability_data', account: @cad_account, proof: @cad_proof %>
 
       </div>
     </div>

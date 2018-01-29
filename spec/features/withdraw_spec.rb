@@ -9,13 +9,13 @@ feature 'withdraw', js: true do
     Withdraw.any_instance.stubs(:examine).returns(true)
     btc_account = member.get_account(:btc)
     btc_account.update_attributes balance: 1000
-    usd_account = member.get_account(:usd)
-    usd_account.update_attributes balance: 0
+    cad_account = member.get_account(:cad)
+    cad_account.update_attributes balance: 0
 
     @label = 'common address'
     @bank = 'bc'
     @btc_addr = create :btc_fund_source, extra: @label, uid: '1btcaddress', member: member
-    @usd_addr = create :usd_fund_source, extra: @bank, uid: '1234566890', member: member
+    @cad_addr = create :cad_fund_source, extra: @bank, uid: '1234566890', member: member
   end
 
   it 'allows user to add a BTC withdraw address, withdraw BTC' do

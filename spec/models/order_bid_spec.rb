@@ -14,7 +14,7 @@ describe OrderBid do
     end
 
     before do
-      global = Global.new('btcusd')
+      global = Global.new('btccad')
       global.stubs(:asks).returns(price_levels)
       Global.stubs(:[]).returns(global)
     end

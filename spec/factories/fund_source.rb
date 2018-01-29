@@ -7,13 +7,13 @@ FactoryBot.define do
 
     member { create(:member) }
 
-    trait :usd do
+    trait :cad do
       extra 'bc'
       uid '123412341234'
-      currency 'usd'
+      currency 'cad'
     end
 
-    factory :usd_fund_source, traits: [:usd]
+    factory :cad_fund_source, traits: [:cad]
     factory :btc_fund_source
   end
 end

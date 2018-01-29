@@ -7,12 +7,12 @@ One coin currency may have one coin deposit
 * Deposit inheritable model
 * Deposit inheritable controller and views
 
-e.g. add litecoin currency and deposit
+e.g. add litoshi currency and deposit
 
 ### add currency config to `config/currencies.yml`
 
     - id: [uniq number]
-      key: litecoin
+      key: litoshi
       code: ltc
       coin: true
       rpc: http://username:password@host:port
@@ -20,11 +20,11 @@ e.g. add litecoin currency and deposit
 ### add deposit channel to `config/deposit_channels.yml`
 
     - id: [uniq number]
-      key: litecoin
+      key: litoshi
       min_confirm: 1
       max_confirm: 6
 
-### add deposit inheritable model in `app/models/deposits/litecoin.rb`
+### add deposit inheritable model in `app/models/deposits/litoshi.rb`
 
     module Deposits
       class Litecoin < ::Deposit
@@ -33,7 +33,7 @@ e.g. add litecoin currency and deposit
       end
     end
 
-### add deposit inheritable controller in `app/controllers/private/deposits/litecoins_controller.rb`
+### add deposit inheritable controller in `app/controllers/private/deposits/litoshis_controller.rb`
 
     module Private
       module Deposits
@@ -45,5 +45,5 @@ e.g. add litecoin currency and deposit
 
 ### check your routes result have below path helper
 
-    deposits_litecoins POST /deposits/litecoins(.:format) private/deposits/litecoins#create
-    new_deposits_litecoin GET /deposits/litecoins/new(.:format) private/deposits/litecoins#new
+    deposits_litoshis POST /deposits/litoshis(.:format) private/deposits/litoshis#create
+    new_deposits_litoshi GET /deposits/litoshis/new(.:format) private/deposits/litoshis#new

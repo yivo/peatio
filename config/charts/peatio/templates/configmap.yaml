@@ -11,7 +11,7 @@ data:
   currencies.yml: |-
     - id: 1
       key: dollar
-      code: usd
+      code: cad
       symbol: "$"
       coin: false
       precision: 2
