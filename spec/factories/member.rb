@@ -3,11 +3,9 @@ FactoryBot.define do
     email { Faker::Internet.email }
 
     trait :verified do
+      # TODO
       after :create do |member|
-        id_doc = member.id_document
-        id_doc.update!(attributes_for(:id_document))
-        id_doc.submit!
-        id_doc.approve!
+
       end
     end
 

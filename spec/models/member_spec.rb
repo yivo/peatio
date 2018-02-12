@@ -26,13 +26,6 @@ describe Member do
     end
   end
 
-  describe 'build id_document before create' do
-    it 'create id_document for the member' do
-      member.save
-      expect(member.reload.id_document).to_not be_blank
-    end
-  end
-
   describe '#trades' do
     subject { create(:member) }
 
