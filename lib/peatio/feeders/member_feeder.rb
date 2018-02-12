@@ -4,7 +4,7 @@ class MemberFeeder < AbstractFeeder
       member = Member.find_or_initialize_by(email: email)
       member.assign_attributes(nickname: Faker::Internet.user_name)
       member.save!
-
+# TODO
       member.id_document.update! \
         name:               Faker::Name.name,
         address:            Faker::Address.street_address,
