@@ -93,6 +93,7 @@ Peatio::Application.routes.draw do
 
   scope ['', 'webhooks', ENV['WEBHOOKS_SECURE_URL_COMPONENT'].presence, ':ccy'].compact.join('/'), as: 'webhooks' do
     post 'tx_created', to: 'webhooks#tx_created'
+    put  'member_level_updated', to: 'webhooks#member_level_updated'
   end
 
   draw :admin

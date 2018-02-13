@@ -8,6 +8,6 @@ class RefactorMemberStructure < ActiveRecord::Migration
     change_column :members, :api_disabled, :boolean, null: false, default: false
     change_column :members, :nickname, :string, null: true, limit: 32
     add_column    :members, :name, :string, null: true, limit: 45, after: :api_disabled
-    add_column    :members, :level, :string, null: true, limit: 20, after: :id
+    add_column    :members, :level, :string, null: true, limit: 20, after: :id, default: ''
   end
 end

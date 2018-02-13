@@ -18,6 +18,16 @@ class WebhooksController < ApplicationController
     end
   end
 
+  def member_level_updated
+    email, level = params[:email], Member::Levels.from_numerical_barong_level(params[:level].to_s.to_i)
+    if EmailValidator.valid?(email) && (member = Member.find_by(email: email))
+      member.update!(level: level)
+      head :no_content
+    else
+      head :unprocessable_entity
+    end
+  end
+
 private
 
   def currency_exists!

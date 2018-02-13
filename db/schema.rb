@@ -133,7 +133,7 @@ ActiveRecord::Schema.define(version: 20180212115751) do
   end
 
   create_table "members", force: :cascade do |t|
-    t.string   "level",        limit: 20
+    t.string   "level",        limit: 20,  default: ""
     t.string   "sn",           limit: 14,                  null: false
     t.string   "email",        limit: 255,                 null: false
     t.boolean  "disabled",                 default: false, null: false
