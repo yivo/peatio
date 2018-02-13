@@ -907,7 +907,7 @@ en:
       failure: Invalid passcode. Please try again.
       index:
         reauthenticate: Authentication
-        auth-verified: Please verify your account first.
+        auth-verified: Please confirm your identity first.
         api_tokens:
           title: API Tokens
           description: Create and manage your API tokens.
