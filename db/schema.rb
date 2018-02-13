@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180212115751) do
+ActiveRecord::Schema.define(version: 20180213160501) do
 
   create_table "account_versions", force: :cascade do |t|
     t.integer  "member_id",       limit: 4
@@ -64,13 +64,6 @@ ActiveRecord::Schema.define(version: 20180212115751) do
 
   add_index "api_tokens", ["access_key"], name: "index_api_tokens_on_access_key", unique: true, using: :btree
   add_index "api_tokens", ["secret_key"], name: "index_api_tokens_on_secret_key", unique: true, using: :btree
-
-  create_table "assets", force: :cascade do |t|
-    t.string  "type",            limit: 255
-    t.integer "attachable_id",   limit: 4
-    t.string  "attachable_type", limit: 255
-    t.string  "file",            limit: 255
-  end
 
   create_table "audit_logs", force: :cascade do |t|
     t.string   "type",           limit: 255

@@ -11,9 +11,6 @@ class Member < ActiveRecord::Base
 
   scope :enabled, -> { where(disabled: false) }
 
-  # delegate :full_name,  to: :id_document, allow_nil: true
-  # delegate :verified?,  to: :id_document, prefix: true, allow_nil: true
-
   before_validation :sanitize, :generate_sn
 
   validates :sn, presence: true
