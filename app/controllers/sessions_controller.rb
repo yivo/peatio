@@ -4,7 +4,6 @@ class SessionsController < ApplicationController
 
   def create
     @member = Member.from_auth(auth_hash)
-    @member&.update!(level: Member::Levels.get(auth_hash['info']['level']))
 
     return redirect_on_unsuccessful_sign_in unless @member
     return redirect_to(root_path, alert: t('.disabled')) if @member.disabled?

@@ -21,7 +21,9 @@ class Member < ActiveRecord::Base
 
   class << self
     def from_auth(auth_hash)
-      locate_auth(auth_hash) || locate_email(auth_hash) || create_from_auth(auth_hash)
+      (locate_auth(auth_hash) || locate_email(auth_hash) || create_from_auth(auth_hash)).tap do |member|
+        member.update!(level: Member::Levels.get(auth_hash['info']['level']))
+      end
     end
 
     def current
