@@ -72,7 +72,8 @@ class Member < ActiveRecord::Base
 
     def create_from_auth(auth_hash)
       new(email:    auth_hash['info']['email'],
-          nickname: auth_hash['info']['nickname']
+          nickname: auth_hash['info']['nickname'],
+          level:    Member::Levels.get(auth_hash['info']['level'])
       ).tap do |member|
         member.save!
         member.add_auth(auth_hash)
