@@ -52,15 +52,10 @@ en:
         state_and_action: "State/Action"
         cancel: cancel
         no_data: There is no history data
-
-        submitting: Submitting
         cancelled: Cancelled
         submitted: Submitted
         accepted: Accepted
         rejected: Rejected
-        checked: Checked
-        warning: Warning
-        suspect: Suspect
 
       withdraw_fiat:
         title: '{{currency}} Withdraw'

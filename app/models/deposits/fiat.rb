@@ -8,7 +8,6 @@ module Deposits
 
     def charge!(txid)
       with_lock do
-        submit!
         accept!
         touch(:done_at)
         update_attribute(:txid, txid)

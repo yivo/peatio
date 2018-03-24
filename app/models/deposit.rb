@@ -1,5 +1,5 @@
 class Deposit < ActiveRecord::Base
-  STATES = [:submitting, :cancelled, :submitted, :rejected, :accepted, :checked, :warning]
+  STATES = %i[submitted cancelled rejected accepted].freeze
 
   extend Enumerize
 
@@ -19,9 +19,7 @@ class Deposit < ActiveRecord::Base
   belongs_to :member
   belongs_to :account
 
-  validates_presence_of \
-    :amount, :account, \
-    :member, :currency
+  validates_presence_of :amount, :account, :member, :currency
   validates_numericality_of :amount, greater_than: 0
 
   scope :recent, -> { order('id DESC')}
@@ -30,38 +28,14 @@ class Deposit < ActiveRecord::Base
   after_create :sync_create
   after_destroy :sync_destroy
 
-  aasm :whiny_transitions => false do
-    state :submitting, initial: true, before_enter: :set_fee
+  aasm whiny_transitions: false do
+    state :submitted, initial: true, before_enter: :set_fee
     state :cancelled
-    state :submitted
     state :rejected
     state :accepted
-    state :checked
-    state :warning
-
-    event :submit do
-      transitions from: :submitting, to: :submitted
-    end
-
-    event :cancel do
-      transitions from: :submitting, to: :cancelled
-    end
-
-    event :reject do
-      transitions from: :submitted, to: :rejected
-    end
-
-    event :accept, after_commit: %i[ do send_mail ] do
-      transitions from: :submitted, to: :accepted
-    end
-
-    event :check do
-      transitions from: :accepted, to: :checked
-    end
-
-    event :warn do
-      transitions from: :accepted, to: :warning
-    end
+    event(:cancel) { transitions from: :submitted, to: :cancelled }
+    event(:reject) { transitions from: :submitted, to: :rejected }
+    event(:accept, after_commit: %i[do send_mail]) { transitions from: :submitted, to: :accepted }
   end
 
   def txid_desc

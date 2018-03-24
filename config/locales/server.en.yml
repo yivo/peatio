@@ -301,13 +301,10 @@ en:
       go: Deposit
   deposits/fiat:
     aasm_state:
-      submitting: Submitting
       cancelled: Cancelled
       submitted: Submitted
       accepted: Accepted
       rejected: Rejected
-      checked: Checked
-      warning: Warning
   private:
     deposits:
       fiats:
@@ -702,12 +699,9 @@ en:
     deposit:
       aasm_state:
         submitted: Submitted
-        submitting: Submitting
         accepted: Accepted
         cancelled: Canceled
         rejected: Rejected
-        checked: Checked
-        warning: Warning
     withdraw:
       state:
         submitting: Submitting

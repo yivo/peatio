@@ -28,13 +28,10 @@ ru:
         amount: Сумма
         cancel: отменить
         no_data: Нет исторических данных
-        submitting: В процессе подтверждения
         cancelled: Отменен
         submitted: Подтвержден
         accepted: Принят
         rejected: Отклонен
-        checked: Проверен
-        warning: Предупреждение
       withdraw_fiat:
         title: 'Вывести в {{currency}}'
         intro: Выберите банк для вывода средств и введите номер счета.

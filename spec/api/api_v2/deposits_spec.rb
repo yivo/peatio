@@ -39,7 +39,6 @@ describe APIv2::Deposits, type: :request do
       expect(JSON.parse(response.body).size).to eq 0
 
       d = create(:deposit_btc, member: member)
-      d.submit!
       api_get '/api/v2/deposits', params: { state: 'submitted' }, token: token
       json = JSON.parse(response.body)
       expect(json.size).to eq 1
