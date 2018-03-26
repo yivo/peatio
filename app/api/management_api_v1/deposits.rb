@@ -1,6 +1,7 @@
 module ManagementAPIv1
   class Deposits < Grape::API
 
+    desc 'Returns deposits as paginated collection.', scope: :read_deposits
     params do
       optional :member,   type: String,  desc: 'Member email.'
       optional :currency, type: String,  values: -> { Currency.codes(bothcase: true) }, desc: 'Currency code.'
@@ -27,10 +28,14 @@ module ManagementAPIv1
       status 200
     end
 
+    desc 'Returns deposit by ID.', scope: :read_deposits
     post '/deposits/:id' do
       present Deposit.find(params[:id]), with: ManagementAPIv1::Entities::Deposit
     end
 
+    desc 'Creates new fiat deposit with state set to «submitted». ' \
+         'Use PUT /fiat_deposits/:id to load money or cancel deposit.',
+         scope: :create_deposits
     params do
       requires :member,   type: String, desc: 'Member email.'
       requires :currency, type: String, values: -> { Currency.fiats.codes(bothcase: true) }, desc: 'Currency code.'
@@ -40,7 +45,7 @@ module ManagementAPIv1
       member   = Member.find_by(params.slice(:email))
       currency = Currency.find_by(code: params[:currency])
       account  = member&.ac(currency) if currency
-      deposit  = Deposit::Fiat.new(member: member, currency: currency, account: account)
+      deposit  = Deposit::Fiat.new(member: member, currency: currency, account: account, amount: amount)
       if deposit.save
         body errors: deposit.errors.full_messages
         status 422
@@ -49,6 +54,7 @@ module ManagementAPIv1
       end
     end
 
+    desc 'Allows to load money or cancel deposit.', scope: :edit_deposits
     params do
       requires :state, type: String, values: %w[cancelled accepted]
     end
