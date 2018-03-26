@@ -1,5 +1,3 @@
-<% if ENV['MANAGEMENT_API_V1'] %>
-<%= File.read(ENV['MANAGEMENT_API_V1']) %>
-<% else %>
-
+<% if ENV['MANAGEMENT_API_V1_CONFIG'] %>
+<%= File.read(ENV['MANAGEMENT_API_V1_CONFIG']) %>
 <% end %>

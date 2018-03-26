@@ -8,7 +8,8 @@ module ManagementAPIv1
       check_request_method!
       check_query_parameters!
       check_content_type!
-      env['rack.input'] = StringIO.new(jwt.fetch('payload').to_json)
+      payload = check_jwt!(jwt)
+      env['rack.input'] = StringIO.new(payload.to_json)
     end
 
   private
@@ -22,7 +23,7 @@ module ManagementAPIv1
       JSON.parse(request.body.read)
     rescue => e
       raise Exceptions::Authentication, \
-        message:       'Couldn\'t parse JWT',
+        message:       'Couldn\'t parse JWT.',
         debug_message: e.inspect,
         status:        400
     end
@@ -52,11 +53,39 @@ module ManagementAPIv1
       end
     end
 
-    # TODO: Implement.
-    def security_requirements
-      endpoint.options[:route_options].yield_self do |o|
-        { minimum_signatures_required: 1 }
+    def check_jwt!(jwt)
+      begin
+        scope    = security_configuration.fetch(:scopes).fetch(security_scope)
+        keychain = security_configuration.fetch(:keychain).slice(scope.fetch(:allowed_keys))
+        minimum  = scope.fetch(:minimum_signatures_required)
+        result   = JWT::Multisig.verify_jwt(jwt, keychain)
+      rescue => e
+        raise Exceptions::Authentication, \
+          message:       'Failed to verify JWT.',
+          debug_message: e.inspect,
+          status:        400
       end
+
+      if result[:verified] < minimum
+        raise Exceptions::Authentication, \
+          message: 'Not enough signatures for the action.',
+          status:  401
+      end
+
+      result[:payload]
+    end
+
+    def security_scope
+      endpoint.options.fetch(:route_options).fetch(:scope)
+    end
+
+    class << self
+      extend Memoist
+
+      def security_configuration
+        YAML.load_file('config/management_api_v1.yml').deep_symbolize_keys
+      end
+      memoize :security_configuration
     end
   end
 end
