@@ -15,6 +15,7 @@ module ManagementAPIv1
     helpers ManagementAPIv1::Helpers
 
     rescue_from(ManagementAPIv1::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
+    rescue_from(Grape::Exceptions::ValidationErrors) { |e| error!(e.message, 422) }
 
     use ManagementAPIv1::JWTAuthenticationMiddleware
 
