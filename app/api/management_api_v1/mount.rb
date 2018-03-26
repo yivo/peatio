@@ -10,17 +10,14 @@ module ManagementAPIv1
     content_type   :json, 'application/json'
     default_format :json
 
-    # helpers ManagementAPIv1::Helpers
-
     do_not_route_options!
 
-    # use ManagementAPIv1::Auth::Middleware
-    #
-    # include Constraints
-    # include ExceptionHandlers
-    #
-    # use ManagementAPIv1::CORS::Middleware
-    #
-    # mount ManagementAPIv1::Solvency
+    helpers ManagementAPIv1::Helpers
+
+    rescue_from(ManagementAPIv1::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
+
+    use ManagementAPIv1::JWTAuthenticationMiddleware
+
+    mount ManagementAPIv1::Deposits
   end
 end

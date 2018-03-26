@@ -7,7 +7,7 @@ module ManagementAPIv1
       optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
       optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of deposits per page (defaults to 100, maximum is 1000).'
     end
-    get '/deposits' do
+    post '/deposits' do
       if params[:currency].present?
         currency = Currency.find_by!(code: params[:currency])
       end
@@ -24,18 +24,19 @@ module ManagementAPIv1
         .page(params[:page])
         .per(params[:limit])
         .tap { |q| present q, with: ManagementAPIv1::Entities::Deposit }
+      status 200
     end
 
-    get '/deposits/:id' do
+    post '/deposits/:id' do
       present Deposit.find(params[:id]), with: ManagementAPIv1::Entities::Deposit
     end
 
     params do
-      required :member,   type: String, desc: 'Member email.'
-      required :currency, type: String, values: -> { Currency.fiats.codes(bothcase: true) }, desc: 'Currency code.'
-      required :amount,   type: BigDecimal, desc: 'Deposit amount.'
+      requires :member,   type: String, desc: 'Member email.'
+      requires :currency, type: String, values: -> { Currency.fiats.codes(bothcase: true) }, desc: 'Currency code.'
+      requires :amount,   type: BigDecimal, desc: 'Deposit amount.'
     end
-    post '/fiat_deposits' do
+    post '/fiat_deposits/new' do
       member   = Member.find_by(params.slice(:email))
       currency = Currency.find_by(code: params[:currency])
       account  = member&.ac(currency) if currency
@@ -49,7 +50,7 @@ module ManagementAPIv1
     end
 
     params do
-      required :state, type: String, values: %w[cancelled accepted]
+      requires :state, type: String, values: %w[cancelled accepted]
     end
     put '/fiat_deposits/:id' do
       deposit = Deposit::Fiat.find(params[:id])
