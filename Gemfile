@@ -72,6 +72,7 @@ gem 'method-not-implemented', '~> 1.0'
 gem 'passgen', '~> 1.0'
 gem 'validates_lengths_from_database', '~> 0.7.0'
 gem 'ejs','~> 1.1'
+gem 'jwt-multisig', github: 'rubykube/jwt-multisig'
 
 group :development, :test do
   gem 'factory_bot_rails'
