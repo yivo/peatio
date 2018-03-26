@@ -3,6 +3,7 @@ require 'stringio'
 module ManagementAPIv1
   class JWTAuthenticationMiddleware < Grape::Middleware::Base
     extend Memoist
+    mattr_accessor :security_configuration
 
     def before
       check_request_method!
@@ -77,15 +78,6 @@ module ManagementAPIv1
 
     def security_scope
       endpoint.options.fetch(:route_options).fetch(:scope)
-    end
-
-    class << self
-      extend Memoist
-
-      def security_configuration
-        YAML.load_file('config/management_api_v1.yml').deep_symbolize_keys
-      end
-      memoize :security_configuration
     end
   end
 end
