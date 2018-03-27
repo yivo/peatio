@@ -6,6 +6,7 @@ module ManagementAPIv1
     mattr_accessor :security_configuration
 
     def before
+      return if request.path == '/management_api/v1/doc/swagger'
       check_request_method!
       check_query_parameters!
       check_content_type!

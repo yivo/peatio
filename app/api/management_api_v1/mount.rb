@@ -20,5 +20,15 @@ module ManagementAPIv1
     use ManagementAPIv1::JWTAuthenticationMiddleware
 
     mount ManagementAPIv1::Deposits
+
+    add_swagger_documentation base_path:   PREFIX,
+                              mount_path:  '/doc/swagger',
+                              api_version: 'v1',
+                              doc_version: '0.0.1.alpha.1',
+                              info: {
+                                title:       'Management API v1',
+                                description: 'Management API is server-to-server API with high privileges.',
+                                licence:     'MIT',
+                                license_url: 'https://github.com/rubykube/peatio/blob/master/LICENSE.md' }
   end
 end
