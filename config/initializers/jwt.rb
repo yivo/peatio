@@ -11,7 +11,7 @@ require 'openssl'
   x.fetch(:keychain).each do |id, key|
     key = OpenSSL::PKey.read(Base64.urlsafe_decode64(key.fetch(:value)))
     if key.private?
-      raise ArgumentError, 'keychain.' + id + ' was set to private key, ' \
+      raise ArgumentError, 'keychain.' + id.to_s + ' was set to private key, ' \
                            'however it should be public (in config/management_api_v1.yml).'
     end
     x[:keychain][id] = key
