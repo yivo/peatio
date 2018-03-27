@@ -21,8 +21,9 @@ module ManagementAPIv1
 
     mount ManagementAPIv1::Deposits
 
+    # The documentation is accessible at http://localhost:3000/swagger?url=/management_api/v1/swagger
     add_swagger_documentation base_path:   PREFIX,
-                              mount_path:  '/doc/swagger',
+                              mount_path:  '/swagger',
                               api_version: 'v1',
                               doc_version: '0.0.1.alpha.1',
                               info: {
