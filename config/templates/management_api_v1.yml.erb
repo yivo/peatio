@@ -1,3 +1,7 @@
 <% if ENV['MANAGEMENT_API_V1_CONFIG'] %>
 <%= File.read(ENV['MANAGEMENT_API_V1_CONFIG']) %>
+<% else %>
+jwt: {}
+keychain: []
+scopes: {}
 <% end %>
