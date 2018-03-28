@@ -58,8 +58,8 @@ class Withdraw < ActiveRecord::Base
     update_column(:sn, sn)
   end
 
-  aasm :whiny_transitions => false do
-    state :submitting,  initial: true
+  aasm whiny_transitions: false do
+    state :submitting, initial: true
     state :submitted
     state :canceled
     state :accepted

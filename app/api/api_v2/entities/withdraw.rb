@@ -10,7 +10,7 @@ module APIv2
       expose :destination, using: APIv2::Entities::WithdrawDestination
       expose :state do |withdraw|
         case withdraw.aasm_state
-          when :canceled                            then :cancelled
+          when :canceled                            then :canceled
           when :suspect                             then :suspected
           when :rejected, :accepted, :done, :failed then withdraw.aasm_state
           when :processing                          then :processing

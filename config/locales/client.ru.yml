@@ -28,7 +28,7 @@ ru:
         amount: Сумма
         cancel: отменить
         no_data: Нет исторических данных
-        cancelled: Отменен
+        canceled: Отменен
         submitted: Подтвержден
         accepted: Принят
         rejected: Отклонен

@@ -1,5 +1,5 @@
 class Deposit < ActiveRecord::Base
-  STATES = %i[submitted cancelled rejected accepted].freeze
+  STATES = %i[submitted canceled rejected accepted].freeze
 
   extend Enumerize
 
@@ -30,10 +30,10 @@ class Deposit < ActiveRecord::Base
 
   aasm whiny_transitions: false do
     state :submitted, initial: true, before_enter: :set_fee
-    state :cancelled
+    state :canceled
     state :rejected
     state :accepted
-    event(:cancel) { transitions from: :submitted, to: :cancelled }
+    event(:cancel) { transitions from: :submitted, to: :canceled }
     event(:reject) { transitions from: :submitted, to: :rejected }
     event(:accept, after_commit: %i[do send_mail]) { transitions from: :submitted, to: :accepted }
   end

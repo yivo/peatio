@@ -35,7 +35,7 @@ describe APIv2::Deposits, type: :request do
     end
 
     it 'filter deposits by state' do
-      api_get '/api/v2/deposits', params: { state: 'cancelled' }, token: token
+      api_get '/api/v2/deposits', params: { state: 'canceled' }, token: token
       expect(JSON.parse(response.body).size).to eq 0
 
       d = create(:deposit_btc, member: member)

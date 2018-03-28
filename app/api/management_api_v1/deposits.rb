@@ -56,13 +56,13 @@ module ManagementAPIv1
 
     desc 'Allows to load money or cancel deposit.', scope: :edit_deposits
     params do
-      requires :state, type: String, values: %w[cancelled accepted]
+      requires :state, type: String, values: %w[canceled accepted]
     end
     put '/fiat_deposits/:id' do
       deposit = Deposit::Fiat.find(params[:id])
       if deposit.submitted?
         deposit.with_lock do
-          params[:state] == 'cancelled' ? deposit.cancel! : deposit.accept!
+          params[:state] == 'canceled' ? deposit.cancel! : deposit.accept!
           deposit.touch(:done_at)
         end
         status 200

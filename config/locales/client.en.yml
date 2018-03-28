@@ -52,7 +52,7 @@ en:
         state_and_action: "State/Action"
         cancel: cancel
         no_data: There is no history data
-        cancelled: Cancelled
+        canceled: canceled
         submitted: Submitted
         accepted: Accepted
         rejected: Rejected

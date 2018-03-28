@@ -301,7 +301,7 @@ en:
       go: Deposit
   deposits/fiat:
     aasm_state:
-      cancelled: Cancelled
+      canceled: canceled
       submitted: Submitted
       accepted: Accepted
       rejected: Rejected
@@ -351,7 +351,7 @@ en:
         ask: Sell
         bid: Buy
         wait: Open
-        cancel: Cancelled
+        cancel: canceled
         done: Done
       trades:
         trade_history: Trade History
@@ -395,7 +395,7 @@ en:
           notice: Bank Transfer withdrawal application has been submitted, we will
             process it as soon as possible
         destroy:
-          notice: Bank Transfer withdraw has been cancelled, frozen amount has been
+          notice: Bank Transfer withdraw has been canceled, frozen amount has been
             returned to your account.
         new:
           submit: Submit
@@ -700,7 +700,7 @@ en:
       aasm_state:
         submitted: Submitted
         accepted: Accepted
-        cancelled: Canceled
+        canceled: Canceled
         rejected: Rejected
     withdraw:
       state:
@@ -975,5 +975,5 @@ en:
       suspect: Suspect
       processing: processing
       done: Done
-      canceled: Cancelled
+      canceled: canceled
       failed: Failed
