@@ -92,8 +92,6 @@ en:
         state_and_action: "State/Action"
         cancel: Cancel
         no_data: There is no history data
-
-        submitting: Submitting
         submitted: Submitted
         rejected: Rejected
         accepted: Accepted

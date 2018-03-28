@@ -17,7 +17,6 @@ describe Withdraw do
   context 'bank withdraw' do
     describe '#audit!' do
       subject { create(:bank_withdraw) }
-      before  { subject.submit! }
 
       it 'should accept withdraw with clean history' do
         subject.audit!
@@ -41,10 +40,6 @@ describe Withdraw do
   context 'coin withdraw' do
     describe '#audit!' do
       subject { create(:satoshi_withdraw) }
-
-      before do
-        subject.submit!
-      end
 
       it 'should be rejected if address is invalid' do
         CoinAPI.stubs(:[]).returns(mock('rpc', inspect_address!: { is_valid: false }))
@@ -116,7 +111,6 @@ describe Withdraw do
       @broken_rpc = CoinAPI
       @broken_rpc.stubs(load_balance!: 5)
 
-      subject.submit
       subject.accept
       subject.process
       subject.save!
@@ -165,31 +159,18 @@ describe Withdraw do
       subject.stubs(:send_withdraw_confirm_email)
     end
 
-    it 'initializes with state :submitting' do
-      expect(subject.submitting?).to be true
-    end
-
-    it 'transitions to :submitted after calling #submit!' do
-      subject.submit!
-
+    it 'initializes with state :submitted' do
       expect(subject.submitted?).to be true
-      expect(subject.sum).to eq subject.account.locked
-      expect(subject.sum).to eq subject.account_versions.last.locked
     end
 
     it 'transitions to :rejected after calling #reject!' do
-      subject.submit!
-      subject.accept!
       subject.reject!
 
       expect(subject.rejected?).to be true
     end
 
     context :process do
-      before do
-        subject.submit!
-        subject.accept!
-      end
+      before { subject.accept! }
 
       it 'transitions to :processing after calling #process! when withdrawing fiat currency' do
         subject.stubs(:coin?).returns(false)
@@ -227,7 +208,6 @@ describe Withdraw do
       end
 
       it 'transitions from :submitted to :canceled after calling #cancel!' do
-        subject.submit!
         subject.cancel!
 
         expect(subject.canceled?).to be true
@@ -235,7 +215,6 @@ describe Withdraw do
       end
 
       it 'transitions from :accepted to :canceled after calling #cancel!' do
-        subject.submit!
         subject.accept!
         subject.cancel!
 

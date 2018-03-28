@@ -8,7 +8,7 @@ module Worker
 
       withdraw.transaction do
         balance = CoinAPI[withdraw.currency.code.to_sym].load_balance!
-        withdraw.mark_suspect if balance < withdraw.sum
+        return withdraw.suspect! if balance < withdraw.sum
 
         pa = withdraw.account.payment_address
 

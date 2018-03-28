@@ -704,7 +704,6 @@ en:
         rejected: Rejected
     withdraw:
       state:
-        submitting: Submitting
         submitted: Submitted
         rejected: Rejected
         accepted: Accepted
@@ -957,7 +956,6 @@ en:
     invalid_address: is not valid. You can not withdraw to this address.
   withdraws/fiat:
     aasm_state:
-      submitting: Submitting
       submitted: Submitted
       rejected: Rejected
       accepted: Accepted
@@ -968,7 +966,6 @@ en:
       failed: Failed
   withdraws/coin:
     aasm_state:
-      submitting: Submitting
       submitted: Submitted
       rejected: Rejected
       accepted: Accepted

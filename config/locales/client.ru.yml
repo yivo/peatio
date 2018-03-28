@@ -64,7 +64,6 @@ ru:
         miner_fee: Комиссия
         cancel: Отмена
         no_data: Нет исторических данных
-        submitting: В процессе подтверждения
         submitted: Подтверждено
         rejected: Отклонено
         accepted: Принято
