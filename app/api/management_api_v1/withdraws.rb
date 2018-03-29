@@ -15,7 +15,7 @@ module ManagementAPIv1
       end
 
       if params[:member].present?
-        member = Member.find_by!(email: params[:member])
+        member = Authentication.find_by!(provider: :barong, uid: params[:member]).member
       end
 
       Withdraw
@@ -34,20 +34,22 @@ module ManagementAPIv1
       present Withdraw.find(params[:id]), with: ManagementAPIv1::Entities::Withdraw
     end
 
-    desc 'Creates new withdraw.'
+    desc 'Creates new withdraw.' do
+      detail 'You can pass «state» set to «submitted» if you want to start processing withdraw.'
+    end
     params do
       requires :member,         type: String, desc: 'The member ID on Barong.'
       requires :currency,       type: String, values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
       requires :amount,         type: BigDecimal, desc: 'The amount to withdraw.'
       requires :destination_id, type: Integer, desc: 'The withdraw destination ID.'
-      optional :state,          type: String, values: %w[created submitted]
+      optional :state,          type: String, values: %w[created submitted], desc: 'The withdraw state to apply.'
     end
     post '/withdraws/new' do
       currency = Currency.find_by!(code: params[:currency])
       withdraw = "withdraws/#{currency.type}".camelize.constantize.new \
         destination_id: params[:destination_id],
         sum:            params[:amount],
-        member_id:      current_user.id,
+        member:         Authentication.find_by(provider: :barong, uid: params[:member])&.member,
         currency:       currency
       if withdraw.save
         withdraw.submit! if params[:state] == 'submitted'
@@ -58,21 +60,24 @@ module ManagementAPIv1
       end
     end
 
-    desc 'Updates withdraw state.'
+    desc 'Updates withdraw state.' do
+      detail '«submitted» – system will check for suspected activity, lock the money, and process the withdraw. ' \
+             '«canceled» – system will mark withdraw as «canceled», and unlock the money.'
+      success ManagementAPIv1::Entities::Withdraw
+    end
     params do
-      requires :state, type: String, values: %w[submitted canceled suspected rejected]
+      requires :state, type: String, values: %w[submitted canceled]
     end
     put '/withdraws/:id/state' do
       record = Withdraw.find(params[:id])
       record.with_lock do
         { submitted: :submit,
-          cancelled: :cancel,
-          suspected: :suspect,
-          rejected:  :reject
+          cancelled: :cancel
         }.each do |state, event|
           next unless params[:state] == state.to_s
           if record.may_fire_event?(event)
             record.fire!(event)
+            present record, with: ManagementAPIv1::Entities::Withdraw
             break status 200
           else
             break status 422

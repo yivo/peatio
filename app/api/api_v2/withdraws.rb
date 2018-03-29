@@ -88,7 +88,6 @@ module APIv2
         member_id:      current_user.id,
         currency:       currency
       if withdraw.save
-        withdraw.submit!
         present withdraw, with: APIv2::Entities::Withdraw
       else
         body errors: withdraw.errors.full_messages
