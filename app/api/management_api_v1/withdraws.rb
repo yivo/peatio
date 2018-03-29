@@ -1,7 +1,9 @@
 module ManagementAPIv1
   class Withdraws < Grape::API
 
-    desc 'Returns withdraws as paginated collection.'
+    desc 'Returns withdraws as paginated collection.' do
+      success ManagementAPIv1::Entities::Withdraw
+    end
     params do
       optional :member,   type: String,  desc: 'The member ID on Barong.'
       optional :currency, type: String,  values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
@@ -29,13 +31,16 @@ module ManagementAPIv1
       status 200
     end
 
-    desc 'Returns withdraw by ID.'
+    desc 'Returns withdraw by ID.' do
+      success ManagementAPIv1::Entities::Withdraw
+    end
     post '/deposits/:id' do
       present Withdraw.find(params[:id]), with: ManagementAPIv1::Entities::Withdraw
     end
 
     desc 'Creates new withdraw.' do
       detail 'You can pass «state» set to «submitted» if you want to start processing withdraw.'
+      success ManagementAPIv1::Entities::Withdraw
     end
     params do
       requires :member,         type: String, desc: 'The member ID on Barong.'

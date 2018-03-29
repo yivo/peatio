@@ -8,7 +8,7 @@ module ManagementAPIv1
       expose :fee, documentation: { type: String, desc: 'The exchange fee.' }
       expose :txid, documentation: { type: String, desc: 'The transaction ID.' }, unless: :coin?
       expose :destination, using: ManagementAPIv1::Entities::WithdrawDestination
-      expose :state, documentation: { type: String, desc: -> { 'The withdraw state: ' + Withdraw::STATES.join(', ') + '.' } }
+      expose :state, documentation: { type: String, desc: 'The withdraw state.' }
       expose :created_at, format_with: :iso8601
     end
   end

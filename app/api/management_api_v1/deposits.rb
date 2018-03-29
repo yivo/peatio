@@ -1,7 +1,9 @@
 module ManagementAPIv1
   class Deposits < Grape::API
 
-    desc 'Returns deposits as paginated collection.', scope: :read_deposits
+    desc 'Returns deposits as paginated collection.', scope: :read_deposits do
+      success ManagementAPIv1::Entities::Deposit
+    end
     params do
       optional :member,   type: String,  desc: 'The member ID on Barong.'
       optional :currency, type: String,  values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
@@ -28,7 +30,9 @@ module ManagementAPIv1
       status 200
     end
 
-    desc 'Returns deposit by ID.', scope: :read_deposits
+    desc 'Returns deposit by ID.', scope: :read_deposits do
+      success ManagementAPIv1::Entities::Deposit
+    end
     post '/deposits/:id' do
       present Deposit.find(params[:id]), with: ManagementAPIv1::Entities::Deposit
     end
@@ -36,7 +40,9 @@ module ManagementAPIv1
     desc 'Creates new fiat deposit with state set to «submitted». ' \
          'Optionally pass field «state» set to «accepted» if want to load money instantly. ' \
          'You can also use PUT /fiat_deposits/:id later to load money or cancel deposit.',
-         scope: :create_deposits
+         scope: :create_deposits do
+      success ManagementAPIv1::Entities::Deposit
+    end
     params do
       requires :member,   type: String, desc: 'The member ID on Barong.'
       requires :currency, type: String, values: -> { Currency.fiats.codes(bothcase: true) }, desc: 'The currency code.'
@@ -60,7 +66,9 @@ module ManagementAPIv1
       end
     end
 
-    desc 'Allows to load money or cancel deposit.', scope: :edit_deposits
+    desc 'Allows to load money or cancel deposit.', scope: :edit_deposits do
+      success ManagementAPIv1::Entities::Deposit
+    end
     params do
       requires :state, type: String, values: %w[canceled accepted]
     end
