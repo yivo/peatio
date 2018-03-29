@@ -1,9 +1,7 @@
 class Withdraw < ActiveRecord::Base
 
-  STATES = %i[submitted rejected accepted suspect processing done canceled failed]
-  COMPLETED_STATES = %i[done rejected canceled failed]
-
-  extend Enumerize
+  STATES           = %i[submitted rejected accepted suspected processing succeed canceled failed].freeze
+  COMPLETED_STATES = %i[succeed rejected canceled failed].freeze
 
   include AASM
   include AASM::Locking
@@ -11,11 +9,8 @@ class Withdraw < ActiveRecord::Base
 
   has_paper_trail on: %i[update destroy]
 
-  enumerize :aasm_state, in: STATES, scope: true
-
   belongs_to :member
   belongs_to :account
-  belongs_to :destination, class_name: 'WithdrawDestination', required: true
   has_many :account_versions, as: :modifiable
 
   delegate :balance, to: :account, prefix: true
@@ -58,23 +53,30 @@ class Withdraw < ActiveRecord::Base
   end
 
   aasm whiny_transitions: false do
-    state :submitted, initial: true
+    state :created, initial: true
+    state :submitted
     state :canceled
     state :accepted
-    state :suspect # TODO: Change to suspected.
+    state :suspected
     state :rejected
     state :processing
-    state :done # TODO: Change to succeeded.
+    state :succeed
     state :failed
 
+    event :submit do
+      transitions from: :created, to: :submitted
+      after :lock_funds
+      after { WithdrawMailer.submitted(id).deliver }
+    end
+
     event :cancel do
-      transitions from: %i[submitted accepted], to: :canceled
+      transitions from: %i[created submitted accepted], to: :canceled, after_commit: :unlock_funds
       after :unlock_funds
       after { WithdrawMailer.withdraw_state(id).deliver }
     end
 
     event :suspect do
-      transitions from: :submitted, to: :suspect
+      transitions from: :submitted, to: :suspected
       after :unlock_funds
       after { WithdrawMailer.withdraw_state(id).deliver }
     end
@@ -95,10 +97,10 @@ class Withdraw < ActiveRecord::Base
       after { WithdrawMailer.processing(id).deliver }
     end
 
-    event :succeed do
-      transitions from: :processing, to: :done
+    event :success do
+      transitions from: :processing, to: :succeed
       before %i[set_txid unlock_and_sub_funds]
-      after { WithdrawMailer.done(id).deliver }
+      after { WithdrawMailer.succeed(id).deliver }
     end
 
     event :fail do
@@ -108,13 +110,8 @@ class Withdraw < ActiveRecord::Base
     end
   end
 
-  after_commit on: :create do
-    lock_funds
-    WithdrawMailer.submitted(id).deliver
-  end
-
   def cancelable?
-    submitted? or accepted?
+    submitted? || accepted?
   end
 
   def quick?

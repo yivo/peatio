@@ -23,7 +23,7 @@ module Worker
 
           # withdraw.succeed! will start another transaction, cause
           # Account after_commit callbacks not to fire
-          withdraw.succeed
+          withdraw.success
           withdraw.save!
         end
       end

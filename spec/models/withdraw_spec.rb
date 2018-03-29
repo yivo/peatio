@@ -17,6 +17,7 @@ describe Withdraw do
   context 'bank withdraw' do
     describe '#audit!' do
       subject { create(:bank_withdraw) }
+      before  { subject.submit! }
 
       it 'should accept withdraw with clean history' do
         subject.audit!
@@ -26,7 +27,7 @@ describe Withdraw do
       it 'should mark withdraw with suspicious history' do
         subject.account.versions.delete_all
         subject.audit!
-        expect(subject).to be_suspect
+        expect(subject).to be_suspected
       end
 
       it 'should approve quick withdraw directly' do
@@ -40,6 +41,7 @@ describe Withdraw do
   context 'coin withdraw' do
     describe '#audit!' do
       subject { create(:satoshi_withdraw) }
+      before { subject.submit! }
 
       it 'should be rejected if address is invalid' do
         CoinAPI.stubs(:[]).returns(mock('rpc', inspect_address!: { is_valid: false }))
@@ -63,7 +65,7 @@ describe Withdraw do
         CoinAPI.stubs(:[]).returns(mock('rpc', inspect_address!: { is_valid: true }))
         subject.account.versions.delete_all
         subject.audit!
-        expect(subject).to be_suspect
+        expect(subject).to be_suspected
       end
 
       it 'should approve quick withdraw directly' do
@@ -111,9 +113,11 @@ describe Withdraw do
       @broken_rpc = CoinAPI
       @broken_rpc.stubs(load_balance!: 5)
 
+      subject.submit
       subject.accept
       subject.process
       subject.save!
+
     end
 
     it 'transitions to :failed after calling rpc but getting Exception' do
@@ -124,13 +128,13 @@ describe Withdraw do
       expect(subject.reload.failed?).to be true
     end
 
-    it 'transitions to :done after calling rpc' do
+    it 'transitions to :succeed after calling rpc' do
       CoinAPI.stubs(:[]).returns(@rpc)
 
       expect { Worker::WithdrawCoin.new.process({ id: subject.id }) }.to change { subject.account.reload.amount }.by(-subject.sum)
 
       subject.reload
-      expect(subject.done?).to be true
+      expect(subject.succeed?).to be true
       expect(subject.txid).to eq('12345')
     end
 
@@ -159,17 +163,26 @@ describe Withdraw do
       subject.stubs(:send_withdraw_confirm_email)
     end
 
-    it 'initializes with state :submitted' do
+    it 'initializes with state :created' do
+      expect(subject.created?).to be true
+    end
+
+    it 'transitions to :submitted after calling #submit!' do
+      subject.submit!
       expect(subject.submitted?).to be true
+      expect(subject.sum).to eq subject.account.locked
+      expect(subject.sum).to eq subject.account_versions.last.locked
     end
 
     it 'transitions to :rejected after calling #reject!' do
+      subject.submit!
       subject.reject!
 
       expect(subject.rejected?).to be true
     end
 
     context :process do
+      before { subject.submit! }
       before { subject.accept! }
 
       it 'transitions to :processing after calling #process! when withdrawing fiat currency' do
@@ -208,6 +221,7 @@ describe Withdraw do
       end
 
       it 'transitions from :submitted to :canceled after calling #cancel!' do
+        subject.submit!
         subject.cancel!
 
         expect(subject.canceled?).to be true
@@ -215,6 +229,7 @@ describe Withdraw do
       end
 
       it 'transitions from :accepted to :canceled after calling #cancel!' do
+        subject.submit!
         subject.accept!
         subject.cancel!
 

@@ -1,6 +1,6 @@
 module Withdraws
   class Coin < Withdraw
-    include ::AasmAbsolutely
+    belongs_to :destination, class_name: 'WithdrawDestination::Coin', required: true
 
     def wallet_url
       if destination.address? && currency.wallet_url_template?

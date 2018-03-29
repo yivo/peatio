@@ -95,7 +95,7 @@ en:
         submitted: Submitted
         rejected: Rejected
         accepted: Accepted
-        suspect: Suspect
+        suspected: Suspected
         processing: Processing
         coin_ready: Coin Ready
         coin_done: Coin Done
