@@ -3,10 +3,11 @@ module ManagementAPIv1
 
     desc 'Returns deposits as paginated collection.', scope: :read_deposits
     params do
-      optional :member,   type: String,  desc: 'Member email.'
-      optional :currency, type: String,  values: -> { Currency.codes(bothcase: true) }, desc: 'Currency code.'
-      optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-      optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of deposits per page (defaults to 100, maximum is 1000).'
+      optional :member,   type: String,  desc: 'The member ID on Barong.'
+      optional :currency, type: String,  values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
+      optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'The page number (defaults to 1).'
+      optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'The number of deposits per page (defaults to 100, maximum is 1000).'
+      optional :state,    type: String, values: -> { Deposit::STATES }, desc: 'The state to filter by.'
     end
     post '/deposits' do
       if params[:currency].present?
@@ -14,13 +15,12 @@ module ManagementAPIv1
       end
 
       if params[:member].present?
-        member = Member.find_by!(email: params[:member])
+        member = Authentication.find_by!(provider: :barong, uid: params[:member]).member
       end
 
       Deposit
         .order(id: :desc)
         .tap { |q| q.where!(currency: currency) if currency }
-        .tap { |q| q.where!(member: member) if member }
         .tap { |q| q.where!(member: member) if member }
         .page(params[:page])
         .per(params[:limit])
@@ -34,23 +34,29 @@ module ManagementAPIv1
     end
 
     desc 'Creates new fiat deposit with state set to «submitted». ' \
-         'Use PUT /fiat_deposits/:id to load money or cancel deposit.',
+         'Optionally pass field «state» set to «accepted» if want to load money instantly. ' \
+         'You can also use PUT /fiat_deposits/:id later to load money or cancel deposit.',
          scope: :create_deposits
     params do
-      requires :member,   type: String, desc: 'Member email.'
-      requires :currency, type: String, values: -> { Currency.fiats.codes(bothcase: true) }, desc: 'Currency code.'
-      requires :amount,   type: BigDecimal, desc: 'Deposit amount.'
+      requires :member,   type: String, desc: 'The member ID on Barong.'
+      requires :currency, type: String, values: -> { Currency.fiats.codes(bothcase: true) }, desc: 'The currency code.'
+      requires :amount,   type: BigDecimal, desc: 'The deposit amount.'
+      optional :state,    type: String, desc: 'The state of deposit.', values: %w[accepted]
     end
     post '/fiat_deposits/new' do
-      member   = Member.find_by(params.slice(:email))
+      member   = Authentication.find_by!(provider: :barong, uid: params[:member]).member
       currency = Currency.find_by(code: params[:currency])
       account  = member&.ac(currency) if currency
       deposit  = Deposit::Fiat.new(member: member, currency: currency, account: account, amount: amount)
       if deposit.save
+        deposit.with_lock do
+          deposit.accept!
+          deposit.touch(:done_at)
+        end if params[:state] == 'accepted'
+        present deposit, with: ManagementAPIv1::Entities::Deposit
+      else
         body errors: deposit.errors.full_messages
         status 422
-      else
-        present deposit, with: ManagementAPIv1::Entities::Deposit
       end
     end
 
