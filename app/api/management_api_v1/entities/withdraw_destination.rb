@@ -7,7 +7,7 @@ module ManagementAPIv1
       expose(:type, documentation: { type: String, desc: 'The withdraw destination type (fiat or coin).' }) { |w| w.class.name.demodulize.underscore }
       %w[ fiat coin ].each do |type|
         "withdraw_destination/#{type}".camelize.constantize.fields.each do |field, desc|
-          expose(field, documentation: { type: String, desc: desc }) { |w| w.try(field) }
+          expose(field, documentation: { type: String, desc: desc }, if: -> (w, _) { w.respond_to?(field) }) { |w| w.public_send(field) }
         end
       end
     end

@@ -9,6 +9,7 @@ FactoryBot.define do
     trait :btc_account do
       currency { Currency.find_by!(code: :btc) }
       account { member.get_account(:btc) }
+      payment_transaction { create(:payment_transaction) }
     end
 
     trait :usd_account do
@@ -16,7 +17,7 @@ FactoryBot.define do
       account { member.get_account(:usd) }
     end
 
-    factory :deposit_btc, traits: [:btc_account]
-    factory :deposit_usd, traits: [:usd_account]
+    factory :deposit_btc, class: 'Deposits::Coin', traits: [:btc_account]
+    factory :deposit_usd, class: 'Deposits::Fiat', traits: [:usd_account]
   end
 end
