@@ -70,7 +70,7 @@ class Withdraw < ActiveRecord::Base
     end
 
     event :cancel do
-      transitions from: %i[created submitted accepted], to: :canceled, after_commit: :unlock_funds
+      transitions from: %i[created submitted accepted], to: :canceled
       after :unlock_funds
       after { WithdrawMailer.withdraw_state(id).deliver }
     end
@@ -139,10 +139,6 @@ class Withdraw < ActiveRecord::Base
   end
 
 private
-
-  def after_cancel
-    unlock_funds unless aasm.from_state == :submitting
-  end
 
   def lock_funds
     account.lock!

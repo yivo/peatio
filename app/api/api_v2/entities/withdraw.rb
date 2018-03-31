@@ -8,7 +8,7 @@ module APIv2
       expose :fee
       expose :txid
       expose :destination, using: APIv2::Entities::WithdrawDestination
-      expose :state
+      expose :aasm_state, as: :state
       expose :created_at, :updated_at, :done_at, format_with: :iso8601
     end
   end
