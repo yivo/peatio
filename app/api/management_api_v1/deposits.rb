@@ -52,10 +52,10 @@ module ManagementAPIv1
       optional :state,    type: String, desc: 'The state of deposit.', values: %w[accepted]
     end
     post '/fiat_deposits/new' do
-      member   = Authentication.find_by!(provider: :barong, uid: params[:member]).member
+      member   = Authentication.find_by(provider: :barong, uid: params[:member])&.member
       currency = Currency.find_by(code: params[:currency])
       account  = member&.ac(currency) if currency
-      deposit  = Deposit::Fiat.new(member: member, currency: currency, account: account, amount: amount)
+      deposit  = ::Deposits::Fiat.new(member: member, currency: currency, account: account, amount: params[:amount])
       if deposit.save
         deposit.with_lock do
           deposit.accept!
@@ -76,7 +76,7 @@ module ManagementAPIv1
       requires :state, type: String, values: %w[canceled accepted]
     end
     put '/fiat_deposits/:id' do
-      deposit = Deposit::Fiat.find(params[:id])
+      deposit = ::Deposits::Fiat.find(params[:id])
       if deposit.submitted?
         deposit.with_lock do
           params[:state] == 'canceled' ? deposit.cancel! : deposit.accept!

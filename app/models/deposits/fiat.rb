@@ -2,7 +2,7 @@ module Deposits
   class Fiat < Deposit
     include ::AasmAbsolutely
 
-    validates :fund_extra, :fund_uid, :amount, presence: true
+    validates :amount, presence: true
     validate  { errors.add(:currency, :invalid) if currency && !currency.fiat? }
     delegate :accounts, to: :channel
 
@@ -18,9 +18,7 @@ module Deposits
       self.member = Member.find_by_sn(new_sn)
     end
 
-    before_validation do
-      self.account ||= member.ac(currency)
-    end
+    before_validation { self.account ||= member&.ac(currency) }
   end
 end
 
