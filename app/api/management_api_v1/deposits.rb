@@ -1,7 +1,8 @@
 module ManagementAPIv1
   class Deposits < Grape::API
 
-    desc 'Returns deposits as paginated collection.', scope: :read_deposits do
+    desc 'Returns deposits as paginated collection.' do
+      @settings[:scope] = :read_deposits
       success ManagementAPIv1::Entities::Deposit
     end
     params do
@@ -30,7 +31,8 @@ module ManagementAPIv1
       status 200
     end
 
-    desc 'Returns deposit by ID.', scope: :read_deposits do
+    desc 'Returns deposit by ID.' do
+      @settings[:scope] = :read_deposits
       success ManagementAPIv1::Entities::Deposit
     end
     post '/deposits/:id' do
@@ -39,8 +41,8 @@ module ManagementAPIv1
 
     desc 'Creates new fiat deposit with state set to «submitted». ' \
          'Optionally pass field «state» set to «accepted» if want to load money instantly. ' \
-         'You can also use PUT /fiat_deposits/:id later to load money or cancel deposit.',
-         scope: :create_deposits do
+         'You can also use PUT /fiat_deposits/:id later to load money or cancel deposit.' do
+      @settings[:scope] = :write_deposits
       success ManagementAPIv1::Entities::Deposit
     end
     params do
@@ -66,7 +68,8 @@ module ManagementAPIv1
       end
     end
 
-    desc 'Allows to load money or cancel deposit.', scope: :edit_deposits do
+    desc 'Allows to load money or cancel deposit.' do
+      @settings[:scope] = :write_deposits
       success ManagementAPIv1::Entities::Deposit
     end
     params do

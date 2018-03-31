@@ -2,6 +2,7 @@ module ManagementAPIv1
   class Withdraws < Grape::API
 
     desc 'Returns withdraws as paginated collection.' do
+      @settings[:scope] = :read_withdraws
       success ManagementAPIv1::Entities::Withdraw
     end
     params do
@@ -32,6 +33,7 @@ module ManagementAPIv1
     end
 
     desc 'Returns withdraw by ID.' do
+      @settings[:scope] = :read_withdraws
       success ManagementAPIv1::Entities::Withdraw
     end
     post '/deposits/:id' do
@@ -39,6 +41,7 @@ module ManagementAPIv1
     end
 
     desc 'Creates new withdraw.' do
+      @settings[:scope] = :write_withdraws
       detail 'You can pass «state» set to «submitted» if you want to start processing withdraw.'
       success ManagementAPIv1::Entities::Withdraw
     end
@@ -66,6 +69,7 @@ module ManagementAPIv1
     end
 
     desc 'Updates withdraw state.' do
+      @settings[:scope] = :write_withdraws
       detail '«submitted» – system will check for suspected activity, lock the money, and process the withdraw. ' \
              '«canceled» – system will mark withdraw as «canceled», and unlock the money.'
       success ManagementAPIv1::Entities::Withdraw
