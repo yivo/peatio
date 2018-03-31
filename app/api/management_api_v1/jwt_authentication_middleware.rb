@@ -11,7 +11,7 @@ module ManagementAPIv1
       check_query_parameters!
       check_content_type!
       payload = check_jwt!(jwt)
-      env['rack.input'] = StringIO.new(payload.to_json)
+      env['rack.input'] = StringIO.new(payload.fetch(:data, {}).to_json)
     end
 
   private
@@ -58,8 +58,10 @@ module ManagementAPIv1
     def check_jwt!(jwt)
       begin
         scope    = security_configuration.fetch(:scopes).fetch(security_scope)
-        keychain = security_configuration.fetch(:keychain).slice(scope.fetch(:allowed_keys))
-        minimum  = scope.fetch(:minimum_signatures_required)
+        keychain = security_configuration
+                    .fetch(:keychain)
+                    .slice(*scope.fetch(:permitted_signers))
+                    .each_with_object({}) { |(k, v), memo| memo[k] = v.fetch(:value) }
         result   = JWT::Multisig.verify_jwt(jwt, keychain)
       rescue => e
         raise Exceptions::Authentication, \
@@ -68,7 +70,7 @@ module ManagementAPIv1
           status:        400
       end
 
-      if result[:verified] < minimum
+      unless(result[:verified] - scope.fetch(:mandatory_signers)).empty?
         raise Exceptions::Authentication, \
           message: 'Not enough signatures for the action.',
           status:  401
@@ -78,7 +80,7 @@ module ManagementAPIv1
     end
 
     def security_scope
-      endpoint.options.fetch(:route_options).fetch(:scope)
+      request.env['api.endpoint'].options.fetch(:route_options).fetch(:scope)
     end
   end
 end

@@ -17,12 +17,9 @@ require 'openssl'
     x[:keychain][id] = key
   end
 
-  x.fetch(:scopes).each do |name, scope|
-    n = scope.fetch(:minimum_signatures_required)
-    if n < 1
-      raise ArgumentError, 'scopes.' + name + '.minimum_signatures_required was set to ' + n + ', ' \
-                           'however it should be at least 1 (in config/management_api_v1.yml).'
-    end
+  x.fetch(:scopes).values.each do |scope|
+    scope[:permitted_signers] = scope.fetch(:permitted_signers, []).map(&:to_sym)
+    scope[:mandatory_signers] = scope.fetch(:mandatory_signers, []).map(&:to_sym)
   end
 
   ManagementAPIv1::JWTAuthenticationMiddleware.security_configuration = x
