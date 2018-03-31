@@ -1,6 +1,6 @@
 describe ManagementAPIv1::Entities::Withdraw do
   context 'fiat' do
-    let(:record) { create(:bank_withdraw).reload }
+    let(:record) { create(:usd_withdraw).reload }
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Withdraw.represent(record).serializable_hash }
 
@@ -16,7 +16,7 @@ describe ManagementAPIv1::Entities::Withdraw do
   end
 
   context 'coin' do
-    let(:record) { create(:satoshi_withdraw) }
+    let(:record) { create(:btc_withdraw) }
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Withdraw.represent(record).serializable_hash }
 

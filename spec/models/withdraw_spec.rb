@@ -1,7 +1,7 @@
 describe Withdraw do
   describe '#fix_precision' do
     it 'should round down to max precision' do
-      withdraw = create(:satoshi_withdraw, sum: '0.123456789')
+      withdraw = create(:btc_withdraw, sum: '0.123456789')
       expect(withdraw.sum).to eq('0.12345678'.to_d)
     end
   end
@@ -9,14 +9,14 @@ describe Withdraw do
   context 'withdraw destination' do
     it 'should strip trailing spaces in address' do
       withdraw_destination = create(:btc_withdraw_destination, address: 'test')
-      @withdraw   = create(:satoshi_withdraw, destination_id: withdraw_destination.id)
+      @withdraw   = create(:btc_withdraw, destination_id: withdraw_destination.id)
       expect(@withdraw.destination.address).to eq('test')
     end
   end
 
   context 'bank withdraw' do
     describe '#audit!' do
-      subject { create(:bank_withdraw) }
+      subject { create(:usd_withdraw) }
       before  { subject.submit! }
 
       it 'should accept withdraw with clean history' do
@@ -40,7 +40,7 @@ describe Withdraw do
 
   context 'coin withdraw' do
     describe '#audit!' do
-      subject { create(:satoshi_withdraw) }
+      subject { create(:btc_withdraw) }
       before { subject.submit! }
 
       it 'should be rejected if address is invalid' do
@@ -79,7 +79,7 @@ describe Withdraw do
     describe 'sn' do
       before do
         Timecop.freeze(Time.local(2013, 10, 7, 18, 18, 18))
-        @withdraw = create(:satoshi_withdraw, id: 1)
+        @withdraw = create(:btc_withdraw, id: 1)
       end
 
       after do
@@ -96,7 +96,7 @@ describe Withdraw do
     end
 
     describe 'account id assignment' do
-      subject { build :satoshi_withdraw, account_id: 999 }
+      subject { build :btc_withdraw, account_id: 999 }
 
       it 'don\'t accept account id from outside' do
         subject.save
@@ -106,7 +106,7 @@ describe Withdraw do
   end
 
   context 'Worker::WithdrawCoin#process' do
-    subject { create(:satoshi_withdraw) }
+    subject { create(:btc_withdraw) }
     before do
       @rpc = mock
       @rpc.stubs(load_balance!: 50_000, create_withdrawal!: '12345')
@@ -157,7 +157,7 @@ describe Withdraw do
   end
 
   context 'aasm_state' do
-    subject { create(:bank_withdraw, sum: 1000) }
+    subject { create(:usd_withdraw, sum: 1000) }
 
     before do
       subject.stubs(:send_withdraw_confirm_email)
@@ -240,7 +240,7 @@ describe Withdraw do
   end
 
   context '#quick?' do
-    subject(:withdraw) { build(:satoshi_withdraw) }
+    subject(:withdraw) { build(:btc_withdraw) }
 
     it 'returns false if currency doesn\'t set quick withdraw max' do
       expect(withdraw).to_not be_quick
