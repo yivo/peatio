@@ -70,7 +70,7 @@ module ManagementAPIv1
           status:        400
       end
 
-      unless(result[:verified] - scope.fetch(:mandatory_signers)).empty?
+      unless (scope.fetch(:mandatory_signers) - result[:verified]).empty?
         raise Exceptions::Authentication, \
           message: 'Not enough signatures for the action.',
           status:  401
