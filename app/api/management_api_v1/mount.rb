@@ -21,12 +21,13 @@ module ManagementAPIv1
 
     mount ManagementAPIv1::Deposits
     mount ManagementAPIv1::Withdraws
+    mount ManagementAPIv1::Tools
 
     # The documentation is accessible at http://localhost:3000/swagger?url=/management_api/v1/swagger
     add_swagger_documentation base_path:   PREFIX,
                               mount_path:  '/swagger',
                               api_version: 'v1',
-                              doc_version: '0.0.1.alpha.3',
+                              doc_version: '0.0.1.alpha.4',
                               info: {
                                 title:       'Management API v1',
                                 description: 'Management API is server-to-server API with high privileges.',
