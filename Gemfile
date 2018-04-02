@@ -77,7 +77,7 @@ gem 'jwt-multisig', github: 'rubykube/jwt-multisig'
 
 group :development, :test do
   gem 'factory_bot_rails'
-  gem 'faker', '~> 1.4.3'
+  gem 'faker', '~> 1.8'
   gem 'binding_of_caller'
   gem 'quiet_assets'
   gem 'timecop'

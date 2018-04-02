@@ -11,9 +11,9 @@ GIT
 
 GIT
   remote: git://github.com/rubykube/jwt-multisig.git
-  revision: c65a45b076e68cae82bfdf6af591b6fe7cc02582
+  revision: 95a34b0e35c99939d43147c1bd53af1401c62561
   specs:
-    jwt-multisig (1.0.0.beta.1)
+    jwt-multisig (1.0.0.beta.3)
       activesupport (>= 4.0, < 6.0)
       jwt (~> 2.1)
 
@@ -151,8 +151,8 @@ GEM
     factory_bot_rails (4.8.2)
       factory_bot (~> 4.8.2)
       railties (>= 3.0.0)
-    faker (1.4.3)
-      i18n (~> 0.5)
+    faker (1.8.7)
+      i18n (>= 0.7)
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
@@ -455,7 +455,7 @@ DEPENDENCIES
   enumerize
   eventmachine (~> 1.0.4)
   factory_bot_rails
-  faker (~> 1.4.3)
+  faker (~> 1.8)
   faraday (~> 0.12)
   figaro
   font-awesome-sass
