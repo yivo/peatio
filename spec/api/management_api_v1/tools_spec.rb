@@ -1,6 +1,7 @@
 describe ManagementAPIv1::Tools, type: :request do
   before do
-    mock_security_configuration_for_management_api_v1 \
+    defaults_for_management_api_v1_security_configuration!
+    management_api_v1_security_configuration.merge! \
       scopes: {
         tools: { permitted_signers: %i[alex jeff], mandatory_signers: %i[jeff] }
       }

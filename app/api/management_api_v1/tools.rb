@@ -5,6 +5,7 @@ module ManagementAPIv1
     end
     post '/timestamp' do
       body timestamp: Time.now.to_i
+      status 200
     end
   end
 end

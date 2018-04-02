@@ -89,14 +89,13 @@ module APITestHelpers
   end
   memoize :management_api_v1_algorithms
 
-  def mock_security_configuration_for_management_api_v1(config = {})
-    config[:jwt] ||= {
-      verify_expiration: true,
-      verify_not_before: true,
-      verify_iat:        true,
-      verify_jti:        true }
+  def management_api_v1_security_configuration
+    ManagementAPIv1::JWTAuthenticationMiddleware.security_configuration
+  end
 
-    config[:keychain] ||= management_api_v1_keychain.each_with_object({}) do |(signer, key), memo|
+  def defaults_for_management_api_v1_security_configuration!
+    config = { jwt: {} }
+    config[:keychain] = management_api_v1_keychain.each_with_object({}) do |(signer, key), memo|
       memo[signer] = { algorithm: management_api_v1_algorithms.fetch(signer), value: key.public_key }
     end
 

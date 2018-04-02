@@ -62,12 +62,12 @@ module ManagementAPIv1
                     .fetch(:keychain)
                     .slice(*scope.fetch(:permitted_signers))
                     .each_with_object({}) { |(k, v), memo| memo[k] = v.fetch(:value) }
-        result   = JWT::Multisig.verify_jwt(jwt, keychain)
+        result   = JWT::Multisig.verify_jwt(jwt, keychain, security_configuration.fetch(:jwt, {}))
       rescue => e
         raise Exceptions::Authentication, \
           message:       'Failed to verify JWT.',
           debug_message: e.inspect,
-          status:        400
+          status:        401
       end
 
       unless (scope.fetch(:mandatory_signers) - result[:verified]).empty?

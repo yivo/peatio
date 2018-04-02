@@ -1,6 +1,7 @@
 describe ManagementAPIv1::Deposits, type: :request do
   before do
-    mock_security_configuration_for_management_api_v1 \
+    defaults_for_management_api_v1_security_configuration!
+    management_api_v1_security_configuration.merge! \
       scopes: {
         read_deposits:  { permitted_signers: %i[alex jeff],       mandatory_signers: %i[alex] },
         write_deposits: { permitted_signers: %i[alex jeff james], mandatory_signers: %i[alex jeff] }
