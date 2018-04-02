@@ -16,6 +16,7 @@ module ManagementAPIv1
 
     rescue_from(ManagementAPIv1::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
     rescue_from(Grape::Exceptions::ValidationErrors) { |e| error!(e.message, 422) }
+    rescue_from(ActiveRecord::RecordNotFound) { |e| error!('Couldn\'t find record.', 404) }
 
     use ManagementAPIv1::JWTAuthenticationMiddleware
 

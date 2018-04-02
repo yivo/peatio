@@ -76,13 +76,14 @@ module ManagementAPIv1
     params do
       requires :state, type: String, values: %w[canceled accepted]
     end
-    put '/fiat_deposits/:id' do
+    put '/fiat_deposits/:id/state' do
       deposit = ::Deposits::Fiat.find(params[:id])
       if deposit.submitted?
         deposit.with_lock do
           params[:state] == 'canceled' ? deposit.cancel! : deposit.accept!
           deposit.touch(:done_at)
         end
+        present deposit, with: ManagementAPIv1::Entities::Deposit
         status 200
       else
         status 422
