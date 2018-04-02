@@ -744,7 +744,7 @@ en:
     processing:
       subject: "[Peatio] Your withdraw state update"
       content: The request of your %{currency} withdrawal is in process. Please be patient with us. Contact us if you have any questions.
-    done:
+    succeed:
       subject: "[Peatio] Your withdraw state update"
       content: The request of your %{currency} withdrawal is complete. Please check it out. Contact us if you have any questions.
     withdraw_state:

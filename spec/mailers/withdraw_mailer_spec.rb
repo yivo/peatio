@@ -41,8 +41,8 @@ describe WithdrawMailer do
       withdraw.submit!
       withdraw.accept!
       withdraw.process!
-      withdraw.succeed!
-      WithdrawMailer.done(withdraw.id)
+      withdraw.success!
+      WithdrawMailer.succeed(withdraw.id)
     end
 
     it 'renders the headers' do

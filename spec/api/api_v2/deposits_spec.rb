@@ -38,8 +38,8 @@ describe APIv2::Deposits, type: :request do
       api_get '/api/v2/deposits', params: { state: 'canceled' }, token: token
       expect(JSON.parse(response.body).size).to eq 0
 
-      d = create(:deposit_btc, member: member)
-      api_get '/api/v2/deposits', params: { state: 'submitted' }, token: token
+      d = create(:deposit_btc, member: member, aasm_state: :canceled)
+      api_get '/api/v2/deposits', params: { state: 'canceled' }, token: token
       json = JSON.parse(response.body)
       expect(json.size).to eq 1
       expect(json.first['txid']).to eq d.txid
