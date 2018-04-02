@@ -20,8 +20,13 @@ describe ManagementAPIv1::Withdraws, type: :request do
     before do
       Withdraw::STATES.tap do |states|
         (states.count * 2).times do
-          create(:btc_withdraw, member: members.sample, aasm_state: states.sample)
-          create(:usd_withdraw, member: members.sample, aasm_state: states.sample)
+          member      = members.sample
+          destination = create(:coin_withdraw_destination, member: member)
+          create(:btc_withdraw, member: member, aasm_state: states.sample, destination: destination)
+
+          member      = members.sample
+          destination = create(:fiat_withdraw_destination, member: member)
+          create(:usd_withdraw, member: member, aasm_state: states.sample, destination: destination)
         end
       end
     end

@@ -1,11 +1,12 @@
 describe ManagementAPIv1::Entities::Deposit do
   context 'fiat' do
-    let(:record) { create(:deposit_usd) }
+    let(:record) { create(:deposit_usd, member: create(:member, :barong)) }
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Deposit.represent(record).serializable_hash }
 
     it { expect(subject.id).to eq record.id }
     it { expect(subject.currency).to eq 'usd' }
+    it { expect(subject.member).to eq record.member.authentications.barong.first.uid }
     it { expect(subject.type).to eq 'fiat' }
     it { expect(subject.amount).to eq record.amount.to_s }
     it { expect(subject.state).to eq record.aasm_state }
@@ -16,12 +17,13 @@ describe ManagementAPIv1::Entities::Deposit do
   end
 
   context 'coin' do
-    let(:record) { create(:deposit_btc) }
+    let(:record) { create(:deposit_btc, member: create(:member, :barong)) }
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Deposit.represent(record).serializable_hash }
 
     it { expect(subject.id).to eq record.id }
     it { expect(subject.currency).to eq 'btc' }
+    it { expect(subject.member).to eq record.member.authentications.barong.first.uid }
     it { expect(subject.type).to eq 'coin' }
     it { expect(subject.amount).to eq record.amount.to_s }
     it { expect(subject.state).to eq record.aasm_state }
