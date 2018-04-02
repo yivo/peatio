@@ -18,8 +18,14 @@ require 'openssl'
   end
 
   x.fetch(:scopes).values.each do |scope|
-    scope[:permitted_signers] = scope.fetch(:permitted_signers, []).map(&:to_sym)
-    scope[:mandatory_signers] = scope.fetch(:mandatory_signers, []).map(&:to_sym)
+    %i[permitted_signers mandatory_signers].each do |list|
+      scope[list] = scope.fetch(list, []).map(&:to_sym)
+      scope[list] = scope.fetch(list, []).map(&:to_sym)
+      if list == :mandatory_signers && scope[list].empty?
+        raise ArgumentError, 'scopes.' + scope.to_s + '.' + list.to_s + ' is empty, ' \
+                             'however it should contain at least one value (in config/management_api_v1.yml).'
+      end
+    end
   end
 
   ManagementAPIv1::JWTAuthenticationMiddleware.security_configuration = x
