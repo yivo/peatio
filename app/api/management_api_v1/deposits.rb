@@ -10,7 +10,7 @@ module ManagementAPIv1
       optional :currency, type: String,  values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
       optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'The page number (defaults to 1).'
       optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'The number of deposits per page (defaults to 100, maximum is 1000).'
-      optional :state,    type: String, values: -> { Deposit::STATES }, desc: 'The state to filter by.'
+      optional :state,    type: String, values: -> { Deposit::STATES.map(&:to_s) }, desc: 'The state to filter by.'
     end
     post '/deposits' do
       if params[:currency].present?
@@ -25,6 +25,7 @@ module ManagementAPIv1
         .order(id: :desc)
         .tap { |q| q.where!(currency: currency) if currency }
         .tap { |q| q.where!(member: member) if member }
+        .tap { |q| q.where!(aasm_state: params[:state]) if params[:state] }
         .page(params[:page])
         .per(params[:limit])
         .tap { |q| present q, with: ManagementAPIv1::Entities::Deposit }
