@@ -1,6 +1,4 @@
 describe ManagementAPIv1::Withdraws, type: :request do
-  let(:member) { create(:member, :verified_identity) }
-
   before do
     defaults_for_management_api_v1_security_configuration!
     management_api_v1_security_configuration.merge! \
@@ -11,16 +9,63 @@ describe ManagementAPIv1::Withdraws, type: :request do
   end
 
   describe 'list withdraws' do
+    def request
+      post_json '/management_api/v1/withdraws', multisig_jwt_management_api_v1({ data: data }, *signers)
+    end
+
+    let(:data) { {} }
+    let(:signers) { %i[alex jeff] }
+    let(:members) { create_list(:member, 2, :barong) }
+
     before do
-      create(:btc_withdraw, member: member)
-      create(:usd_withdraw, member: member)
-      create(:usd_withdraw, member: member)
-      create(:btc_withdraw, member: member)
+      Withdraw::STATES.tap do |states|
+        (states.count * 2).times do
+          create(:btc_withdraw, member: members.sample, aasm_state: states.sample)
+          create(:usd_withdraw, member: members.sample, aasm_state: states.sample)
+        end
+      end
     end
 
     it 'returns withdraws' do
-      post '/management_api/v1/withdraws', multisig_jwt_management_api_v1({}, :alex).to_json, { 'Content-Type' => 'application/json' }
-      expect(response).to be_success
+      request
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq Withdraw.order(id: :desc).pluck(:id)
+    end
+
+    it 'filters by member' do
+      member = members.last
+      data.merge!(member: member.authentications.first.uid)
+      request
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body).count).to eq member.withdraws.count
+    end
+
+    it 'filters by currency' do
+      data.merge!(currency: :usd)
+      request
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body).count).to eq Withdraw.with_currency(:usd).count
+    end
+
+    it 'filters by state' do
+      Withdraw::STATES.each do |state|
+        data.merge!(state: state)
+        request
+        expect(response).to have_http_status(200)
+        expect(JSON.parse(response.body).count).to eq Withdraw.where(aasm_state: state).count
+      end
+    end
+
+    it 'paginates' do
+      ids = Withdraw.order(id: :desc).pluck(:id)
+      data.merge!(page: 1, limit: 4)
+      request
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq ids[0...4]
+      data.merge!(page: 3, limit: 4)
+      request
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq ids[8...12]
     end
   end
 
