@@ -7,6 +7,12 @@ module APITestHelpers
          headers.reverse_merge('Content-Type' => 'application/json')
   end
 
+  def put_json(destination, body, headers = {})
+    put destination,
+        String === body ? body : body.to_json,
+        headers.reverse_merge('Content-Type' => 'application/json')
+  end
+
   def api_request(method, url, options = {})
     headers = options.fetch(:headers, {})
     params  = options.fetch(:params, {})

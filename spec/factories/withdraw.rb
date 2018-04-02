@@ -20,10 +20,6 @@ FactoryBot.define do
           fun: Account::FUNS[:plus_funds]
       end
     end
-
-    after(:build) do |x|
-      x.stubs(:validate_address).returns(true)
-    end
   end
 
   factory :usd_withdraw, class: Withdraws::Fiat do

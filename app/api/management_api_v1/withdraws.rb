@@ -84,8 +84,8 @@ module ManagementAPIv1
           cancelled: :cancel
         }.each do |state, event|
           next unless params[:state] == state.to_s
-          if record.may_fire_event?(event)
-            record.fire!(event)
+          if record.aasm.may_fire_event?(event)
+            record.aasm.fire!(event)
             present record, with: ManagementAPIv1::Entities::Withdraw
             break status 200
           else
