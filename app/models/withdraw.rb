@@ -205,7 +205,7 @@ public
 end
 
 # == Schema Information
-# Schema version: 20180305113434
+# Schema version: 20180329154130
 #
 # Table name: withdraws
 #
@@ -221,7 +221,7 @@ end
 #  updated_at     :datetime
 #  done_at        :datetime
 #  txid           :string(255)
-#  aasm_state     :string
+#  aasm_state     :string(255)
 #  sum            :decimal(32, 16)  default(0.0), not null
 #  type           :string(255)
 #
