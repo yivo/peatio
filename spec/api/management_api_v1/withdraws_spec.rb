@@ -87,7 +87,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
       { uid:      member.authentications.first.uid,
         currency: currency.code,
         amount:   amount,
-        bid:      Faker::Bitcoin.address }
+        rid:      Faker::Bitcoin.address }
     end
     let(:account) { member.accounts.with_currency(currency).first }
 
@@ -99,7 +99,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
       record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
       expect(record.sum).to eq 0.1575
       expect(record.aasm_state).to eq 'created'
-      expect(record.bid).to eq data[:bid]
+      expect(record.rid).to eq data[:rid]
       expect(record.account).to eq account
       expect(record.account.balance).to eq 1.2
       expect(record.account.locked).to eq 0
@@ -118,7 +118,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
         expect { request }.to change { WithdrawDestination::Coin.count }.by(1)
         expect(response).to have_http_status(201)
         record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
-        expect(record.destination.address).to eq record.bid
+        expect(record.destination.address).to eq record.rid
       end
     end
 

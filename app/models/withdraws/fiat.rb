@@ -5,7 +5,7 @@ module Withdraws
 end
 
 # == Schema Information
-# Schema version: 20180403135744
+# Schema version: 20180403145234
 #
 # Table name: withdraws
 #
@@ -25,7 +25,7 @@ end
 #  sum            :decimal(32, 16)  default(0.0), not null
 #  type           :string(255)
 #  tid            :string(64)       not null
-#  bid            :string(64)
+#  rid            :string(64)
 #
 # Indexes
 #

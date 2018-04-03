@@ -1,16 +1,16 @@
 describe ManagementAPIv1::Entities::Withdraw do
   context 'fiat' do
-    let(:bid) { Faker::Internet.password(10, 20) }
+    let(:rid) { Faker::Internet.password(10, 20) }
     let :record do
       member      = create(:member, :barong)
       destination = create(:fiat_withdraw_destination, member: member)
-      create(:usd_withdraw, member: member, destination: destination, bid: bid)
+      create(:usd_withdraw, member: member, destination: destination, rid: rid)
     end
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Withdraw.represent(record).serializable_hash }
 
     it { expect(subject.tid).to eq record.tid }
-    it { expect(subject.bid).to eq bid }
+    it { expect(subject.rid).to eq rid }
     it { expect(subject.currency).to eq 'usd' }
     it { expect(subject.uid).to eq record.member.authentications.barong.first.uid }
     it { expect(subject.type).to eq 'fiat' }
@@ -22,15 +22,15 @@ describe ManagementAPIv1::Entities::Withdraw do
   end
 
   context 'coin' do
-    let(:bid) { Faker::Internet.password(10, 20) }
+    let(:rid) { Faker::Internet.password(10, 20) }
     let(:destination) { create(:coin_withdraw_destination, member: member) }
     let(:member) { create(:member, :barong) }
-    let(:record) { create(:btc_withdraw, member: member, destination: destination, bid: bid) }
+    let(:record) { create(:btc_withdraw, member: member, destination: destination, rid: rid) }
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Withdraw.represent(record).serializable_hash }
 
     it { expect(subject.tid).to eq record.tid }
-    it { expect(subject.bid).to eq bid }
+    it { expect(subject.rid).to eq rid }
     it { expect(subject.currency).to eq 'btc' }
     it { expect(subject.uid).to eq record.member.authentications.barong.first.uid }
     it { expect(subject.type).to eq 'coin' }

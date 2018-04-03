@@ -51,9 +51,9 @@ module ManagementAPIv1
     params do
       requires :uid,      type: String, desc: 'The shared user ID.'
       optional :tid,      type: String, desc: 'The shared transaction ID. Must not exceed 64 characters. Peatio will generate one automatically unless supplied.'
+      requires :rid,      type: String, desc: 'The beneficiary ID or wallet address on the Blockchain.'
       requires :currency, type: String, values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
       requires :amount,   type: BigDecimal, desc: 'The amount to withdraw.'
-      requires :bid,      type: String, desc: 'The beneficiary ID or wallet address on the Blockchain.'
       optional :state,    type: String, values: %w[created submitted], desc: 'The withdraw state to apply.'
     end
     post '/withdraws/new' do
@@ -65,11 +65,11 @@ module ManagementAPIv1
         member:         member,
         currency:       currency,
         tid:            params[:tid],
-        bid:            params[:bid]
+        rid:            params[:rid]
 
       if withdraw.coin? && member
         member.coin_withdraw_destinations
-              .build(currency: currency, address: params[:bid], label: params[:bid])
+              .build(currency: currency, address: params[:rid], label: params[:rid])
       else
         member.fiat_withdraw_destinations
               .build(currency: currency)
