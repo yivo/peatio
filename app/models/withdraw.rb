@@ -1,6 +1,6 @@
 class Withdraw < ActiveRecord::Base
 
-  STATES           = %i[submitted rejected accepted suspected processing succeed canceled failed].freeze
+  STATES           = %i[created submitted rejected accepted suspected processing succeed canceled failed].freeze
   COMPLETED_STATES = %i[succeed rejected canceled failed].freeze
 
   include AASM
