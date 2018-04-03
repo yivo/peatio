@@ -6,6 +6,7 @@ class Withdraw < ActiveRecord::Base
   include AASM
   include AASM::Locking
   include Currencible
+  include TIDIdentifiable
 
   has_paper_trail on: %i[update destroy]
 
@@ -205,7 +206,7 @@ public
 end
 
 # == Schema Information
-# Schema version: 20180329154130
+# Schema version: 20180403134930
 #
 # Table name: withdraws
 #
@@ -224,6 +225,7 @@ end
 #  aasm_state     :string(255)
 #  sum            :decimal(32, 16)  default(0.0), not null
 #  type           :string(255)
+#  tid            :string(64)       not null
 #
 # Indexes
 #

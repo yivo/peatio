@@ -36,8 +36,11 @@ module ManagementAPIv1
       @settings[:scope] = :read_withdraws
       success ManagementAPIv1::Entities::Withdraw
     end
-    post '/deposits/:id' do
-      present Withdraw.find(params[:id]), with: ManagementAPIv1::Entities::Withdraw
+    params do
+      requires :tid, type: String, desc: 'The shared transaction ID.'
+    end
+    post '/withdraws/get' do
+      present Withdraw.find_by!(params.slice(:tid)), with: ManagementAPIv1::Entities::Withdraw
     end
 
     desc 'Creates new withdraw.' do
@@ -47,6 +50,7 @@ module ManagementAPIv1
     end
     params do
       requires :uid,            type: String, desc: 'The shared user ID.'
+      optional :tid,            type: String, desc: 'The shared transaction ID. Must not exceed 64 characters. Peatio will generate one automatically unless supplied.'
       requires :currency,       type: String, values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
       requires :amount,         type: BigDecimal, desc: 'The amount to withdraw.'
       requires :destination_id, type: Integer, desc: 'The withdraw destination ID.'
@@ -58,7 +62,8 @@ module ManagementAPIv1
         destination_id: params[:destination_id],
         sum:            params[:amount],
         member:         Authentication.find_by(provider: :barong, uid: params[:uid])&.member,
-        currency:       currency
+        currency:       currency,
+        tid:            params[:tid]
       if withdraw.save
         withdraw.submit! if params[:state] == 'submitted'
         present withdraw, with: ManagementAPIv1::Entities::Withdraw
@@ -75,10 +80,11 @@ module ManagementAPIv1
       success ManagementAPIv1::Entities::Withdraw
     end
     params do
+      requires :tid,   type: String, desc: 'The shared transaction ID.'
       requires :state, type: String, values: %w[submitted canceled]
     end
-    put '/withdraws/:id/state' do
-      record = Withdraw.find(params[:id])
+    put '/withdraws/state' do
+      record = Withdraw.find_by!(params.slice(:tid))
       record.with_lock do
         { submitted: :submit,
           cancelled: :cancel

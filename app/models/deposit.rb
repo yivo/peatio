@@ -8,6 +8,7 @@ class Deposit < ActiveRecord::Base
   include AASM
   include AASM::Locking
   include Currencible
+  include TIDIdentifiable
 
   has_paper_trail on: [:update, :destroy]
 
@@ -23,7 +24,6 @@ class Deposit < ActiveRecord::Base
 
   validates :amount, :account, :member, :currency, :tid, presence: true
   validates :amount, numericality: { greater_than: 0.0 }
-  validates :tid, uniqueness: { case_sensitive: false }
 
   scope :recent, -> { order('id DESC')}
 
@@ -40,15 +40,6 @@ class Deposit < ActiveRecord::Base
     event(:reject) { transitions from: :submitted, to: :rejected }
     event(:accept, after_commit: %i[do send_mail]) { transitions from: :submitted, to: :accepted }
   end
-
-  before_validation do
-    next unless tid.blank?
-    begin
-      self.tid = "TID#{SecureRandom.hex(5).upcase}"
-    end while self.class.where(tid: tid).any?
-  end
-
-  before_validation { self.tid = tid.to_s.upcase }
 
   def txid_desc
     txid

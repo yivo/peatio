@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403115050) do
+ActiveRecord::Schema.define(version: 20180403134930) do
 
   create_table "account_versions", force: :cascade do |t|
     t.integer  "member_id",       limit: 4
@@ -287,6 +287,7 @@ ActiveRecord::Schema.define(version: 20180403115050) do
     t.string   "aasm_state",     limit: 255
     t.decimal  "sum",                        precision: 32, scale: 16, default: 0.0, null: false
     t.string   "type",           limit: 255
+    t.string   "tid",            limit: 64,                                          null: false
   end
 
   add_index "withdraws", ["currency_id"], name: "index_withdraws_on_currency_id", using: :btree

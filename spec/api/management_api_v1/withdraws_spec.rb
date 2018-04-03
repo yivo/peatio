@@ -74,7 +74,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
     end
   end
 
-  context 'create withdraw' do
+  describe 'create withdraw' do
     def request
       post_json '/management_api/v1/withdraws/new', multisig_jwt_management_api_v1({ data: data }, *signers)
     end
@@ -115,9 +115,25 @@ describe ManagementAPIv1::Withdraws, type: :request do
     end
   end
 
-  context 'update withdraw' do
+  describe 'get withdraw' do
     def request
-      put_json '/management_api/v1/withdraws/' + record.id.to_s + '/state', multisig_jwt_management_api_v1({ data: data }, *signers)
+      post_json '/management_api/v1/withdraws/get', multisig_jwt_management_api_v1({ data: data }, *signers)
+    end
+
+    let(:signers) { %i[alex jeff] }
+    let(:data) { { tid: record.tid } }
+    let(:record) { create(:btc_withdraw, member: member) }
+    let(:member) { create(:member, :barong) }
+
+    it 'returns withdraw by TID' do
+      request
+      expect(JSON.parse(response.body).fetch('tid')).to eq record.tid
+    end
+  end
+
+  describe 'update withdraw' do
+    def request
+      put_json '/management_api/v1/withdraws/state', multisig_jwt_management_api_v1({ data: data }, *signers)
     end
 
     let(:currency) { Currency.find_by!(code: :usd) }
@@ -125,7 +141,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
     let(:destination) { create(:fiat_withdraw_destination, currency: currency, member: member) }
     let(:amount) { 160.79 }
     let(:signers) { %i[alex jeff] }
-    let(:data) { {} }
+    let(:data) { { tid: record.tid } }
     let(:account) { member.accounts.with_currency(currency).first }
     let(:record) { Withdraws::Fiat.create!(member: member, account: account, sum: amount, destination: destination, currency: currency) }
     let(:balance) { 800.77 }
