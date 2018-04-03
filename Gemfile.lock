@@ -9,14 +9,6 @@ GIT
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
 
-GIT
-  remote: git://github.com/rubykube/jwt-multisig.git
-  revision: 95a34b0e35c99939d43147c1bd53af1401c62561
-  specs:
-    jwt-multisig (1.0.0.beta.3)
-      activesupport (>= 4.0, < 6.0)
-      jwt (~> 2.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -202,6 +194,9 @@ GEM
       thor (>= 0.14, < 2.0)
     json (2.1.0)
     jwt (2.1.0)
+    jwt-multisig (1.0.0)
+      activesupport (>= 4.0, < 6.0)
+      jwt (~> 2.1)
     kaminari (1.1.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.1.1)
@@ -472,7 +467,7 @@ DEPENDENCIES
   jquery-rails
   json
   jwt (~> 2.1)
-  jwt-multisig!
+  jwt-multisig (~> 1.0)
   kaminari
   liability-proof (= 0.0.9)
   memoist (~> 0.16)
