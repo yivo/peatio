@@ -74,7 +74,7 @@ module APIv2
       end
     end
 
-    desc 'Create withdraw.', scopes: %w[ withdraw ]
+    desc '[DEPRECATED] Create withdraw.', scopes: %w[ withdraw ]
     params do
       requires :currency,       type: String,  values: -> { Currency.codes(bothcase: true) }, desc: -> { "Any supported currency: #{Currency.codes(bothcase: true).join(',')}." }
       requires :amount,         type: BigDecimal, desc: 'Withdraw amount without fees.'
