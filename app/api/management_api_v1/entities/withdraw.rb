@@ -3,7 +3,7 @@ module ManagementAPIv1
     class Withdraw < Base
       expose :id, documentation: { type: Integer, desc: 'The withdraw ID.' }
       expose(:currency, documentation: { type: String, desc: 'The currency code.' }) { |w| w.currency.code }
-      expose(:member, documentation: { type: String, desc: 'The member UID on Barong.' }) { |w| w.member.authentications.barong.first.uid }
+      expose(:uid, documentation: { type: String, desc: 'The member UID on Barong.' }) { |w| w.member.authentications.barong.first.uid }
       expose(:type, documentation: { type: String, desc: 'The withdraw type (fiat or coin).' }) { |w| w.class.name.demodulize.underscore }
       expose :amount, documentation: { type: String, desc: 'The withdraw amount excluding fee.' }, format_with: :decimal
       expose :fee, documentation: { type: String, desc: 'The exchange fee.' }, format_with: :decimal

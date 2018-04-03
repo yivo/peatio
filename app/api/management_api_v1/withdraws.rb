@@ -6,7 +6,7 @@ module ManagementAPIv1
       success ManagementAPIv1::Entities::Withdraw
     end
     params do
-      optional :member,   type: String,  desc: 'The member ID on Barong.'
+      optional :uid,      type: String,  desc: 'The member UID on Barong.'
       optional :currency, type: String,  values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
       optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'The page number (defaults to 1).'
       optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'The number of objects per page (defaults to 100, maximum is 1000).'
@@ -17,8 +17,8 @@ module ManagementAPIv1
         currency = Currency.find_by!(code: params[:currency])
       end
 
-      if params[:member].present?
-        member = Authentication.find_by!(provider: :barong, uid: params[:member]).member
+      if params[:uid].present?
+        member = Authentication.find_by!(provider: :barong, uid: params[:uid]).member
       end
 
       Withdraw
@@ -46,7 +46,7 @@ module ManagementAPIv1
       success ManagementAPIv1::Entities::Withdraw
     end
     params do
-      requires :member,         type: String, desc: 'The member ID on Barong.'
+      requires :uid,            type: String, desc: 'The member UID on Barong.'
       requires :currency,       type: String, values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
       requires :amount,         type: BigDecimal, desc: 'The amount to withdraw.'
       requires :destination_id, type: Integer, desc: 'The withdraw destination ID.'
@@ -57,7 +57,7 @@ module ManagementAPIv1
       withdraw = "withdraws/#{currency.type}".camelize.constantize.new \
         destination_id: params[:destination_id],
         sum:            params[:amount],
-        member:         Authentication.find_by(provider: :barong, uid: params[:member])&.member,
+        member:         Authentication.find_by(provider: :barong, uid: params[:uid])&.member,
         currency:       currency
       if withdraw.save
         withdraw.submit! if params[:state] == 'submitted'
