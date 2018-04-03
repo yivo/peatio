@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180329154130) do
+ActiveRecord::Schema.define(version: 20180403115050) do
 
   create_table "account_versions", force: :cascade do |t|
     t.integer  "member_id",       limit: 4
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20180329154130) do
     t.string   "type",                   limit: 255
     t.integer  "payment_transaction_id", limit: 4
     t.integer  "txout",                  limit: 4
+    t.string   "tid",                    limit: 64,                            null: false
   end
 
   add_index "deposits", ["currency_id"], name: "index_deposits_on_currency_id", using: :btree

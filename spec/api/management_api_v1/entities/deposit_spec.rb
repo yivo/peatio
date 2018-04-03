@@ -4,7 +4,7 @@ describe ManagementAPIv1::Entities::Deposit do
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Deposit.represent(record).serializable_hash }
 
-    it { expect(subject.id).to eq record.id }
+    it { expect(subject.tid).to eq record.tid }
     it { expect(subject.currency).to eq 'usd' }
     it { expect(subject.uid).to eq record.member.authentications.barong.first.uid }
     it { expect(subject.type).to eq 'fiat' }
@@ -21,7 +21,7 @@ describe ManagementAPIv1::Entities::Deposit do
 
     subject { OpenStruct.new ManagementAPIv1::Entities::Deposit.represent(record).serializable_hash }
 
-    it { expect(subject.id).to eq record.id }
+    it { expect(subject.tid).to eq record.tid }
     it { expect(subject.currency).to eq 'btc' }
     it { expect(subject.uid).to eq record.member.authentications.barong.first.uid }
     it { expect(subject.type).to eq 'coin' }

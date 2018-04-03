@@ -29,19 +29,19 @@ describe ManagementAPIv1::Deposits, type: :request do
     it 'returns deposits' do
       request
       expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq Deposit.order(id: :desc).pluck(:id)
+      expect(JSON.parse(response.body).map { |x| x.fetch('tid') }).to eq Deposit.order(id: :desc).pluck(:tid)
     end
 
     it 'paginates' do
-      ids = Deposit.order(id: :desc).pluck(:id)
+      ids = Deposit.order(id: :desc).pluck(:tid)
       data.merge!(page: 1, limit: 4)
       request
       expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq ids[0...4]
+      expect(JSON.parse(response.body).map { |x| x.fetch('tid') }).to eq ids[0...4]
       data.merge!(page: 3, limit: 4)
       request
       expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq ids[8...12]
+      expect(JSON.parse(response.body).map { |x| x.fetch('tid') }).to eq ids[8...12]
     end
 
     it 'filters by state' do
@@ -69,7 +69,7 @@ describe ManagementAPIv1::Deposits, type: :request do
     end
   end
 
-  context 'create deposits' do
+  describe 'create deposits' do
     let(:member) { create(:member, :barong) }
     let(:currency) { Currency.find_by!(code: :usd) }
     let(:amount) { 750.77 }
@@ -81,13 +81,13 @@ describe ManagementAPIv1::Deposits, type: :request do
     let(:signers) { %i[alex jeff] }
 
     def request
-      post_json '/management_api/v1/fiat_deposits/new', multisig_jwt_management_api_v1({ data: data }, *signers)
+      post_json '/management_api/v1/deposits/new', multisig_jwt_management_api_v1({ data: data }, *signers)
     end
 
     it 'creates new fiat deposit with state «submitted»' do
       request
       expect(response.status).to eq 201
-      record = Deposit.find(JSON.parse(response.body).fetch('id'))
+      record = Deposit.find_by_tid!(JSON.parse(response.body).fetch('tid'))
       expect(record.amount).to eq 750.77
       expect(record.aasm_state).to eq 'submitted'
       expect(record.account).to eq member.accounts.with_currency(currency).first
@@ -137,18 +137,42 @@ describe ManagementAPIv1::Deposits, type: :request do
       request
       expect(response.body).to match(/state does not have a valid value/i)
     end
+
+    context 'when coin instead of fiat is supplied' do
+      let(:currency) { Currency.find_by!(code: :btc) }
+      it 'doesn\'t work' do
+        request
+        expect(response.body).to match(/currency does not have a valid value/i)
+      end
+    end
   end
 
-  context 'update deposit' do
+  describe 'get deposit' do
     def request
-      put_json '/management_api/v1/fiat_deposits/' + record.id.to_s + '/state', multisig_jwt_management_api_v1({ data: data }, *signers)
+      post_json '/management_api/v1/deposits/get', multisig_jwt_management_api_v1({ data: data }, *signers)
+    end
+
+    let(:signers) { %i[alex jeff] }
+    let(:data) { { tid: record.tid } }
+    let(:record) { create(:deposit_btc, member: member) }
+    let(:member) { create(:member, :barong) }
+
+    it 'returns deposit by TID' do
+      request
+      expect(JSON.parse(response.body).fetch('tid')).to eq record.tid
+    end
+  end
+
+  describe 'update deposit' do
+    def request
+      put_json '/management_api/v1/deposits/state', multisig_jwt_management_api_v1({ data: data }, *signers)
     end
 
     let(:currency) { Currency.find_by!(code: :usd) }
     let(:member) { create(:member, :barong) }
     let(:amount) { 500.90 }
     let(:signers) { %i[alex jeff] }
-    let(:data) { {} }
+    let(:data) { { tid: record.tid } }
     let(:account) { member.accounts.with_currency(currency).first }
     let(:record) { Deposits::Fiat.create!(member: member, account: account, amount: amount, currency: currency) }
 
@@ -166,7 +190,7 @@ describe ManagementAPIv1::Deposits, type: :request do
       data.merge!(state: :canceled)
       request
       expect(response).to have_http_status(200)
-      expect(Deposit.find(JSON.parse(response.body).fetch('id')).aasm_state).to eq 'canceled'
+      expect(Deposit.find_by_tid!(JSON.parse(response.body).fetch('tid')).aasm_state).to eq 'canceled'
       account.reload
       expect(account.balance).to eq 0
       expect(account.locked).to eq 0
@@ -176,7 +200,7 @@ describe ManagementAPIv1::Deposits, type: :request do
       data.merge!(state: :accepted)
       request
       expect(response).to have_http_status(200)
-      expect(Deposit.find(JSON.parse(response.body).fetch('id')).aasm_state).to eq 'accepted'
+      expect(Deposit.find_by_tid!(JSON.parse(response.body).fetch('tid')).aasm_state).to eq 'accepted'
       account.reload
       expect(account.balance).to eq amount
       expect(account.locked).to eq 0

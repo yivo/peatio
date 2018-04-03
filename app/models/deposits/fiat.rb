@@ -23,7 +23,7 @@ module Deposits
 end
 
 # == Schema Information
-# Schema version: 20180227163417
+# Schema version: 20180403115050
 #
 # Table name: deposits
 #
@@ -45,6 +45,7 @@ end
 #  type                   :string(255)
 #  payment_transaction_id :integer
 #  txout                  :integer
+#  tid                    :string(64)       not null
 #
 # Indexes
 #
