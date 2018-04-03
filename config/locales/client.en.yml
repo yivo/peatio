@@ -92,6 +92,7 @@ en:
         state_and_action: "State/Action"
         cancel: Cancel
         no_data: There is no history data
+        created: Created
         submitted: Submitted
         rejected: Rejected
         accepted: Accepted
@@ -99,6 +100,6 @@ en:
         processing: Processing
         coin_ready: Coin Ready
         coin_done: Coin Done
-        done: Done
+        succeed: Done
         canceled: Canceld
         failed: Failed

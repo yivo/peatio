@@ -64,10 +64,11 @@ ru:
         miner_fee: Комиссия
         cancel: Отмена
         no_data: Нет исторических данных
+        submitted: Подгтовлено
         submitted: Подтверждено
         rejected: Отклонено
         accepted: Принято
         processing: Обрабатывается
-        done: Готово
+        succeed: Готово
         canceled: Отклонено
         failed: Не удалось
