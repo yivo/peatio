@@ -3,12 +3,16 @@ class Withdraw < ActiveRecord::Base
   STATES           = %i[created submitted rejected accepted suspected processing succeed canceled failed].freeze
   COMPLETED_STATES = %i[succeed rejected canceled failed].freeze
 
+  extend Enumerize
+
   include AASM
   include AASM::Locking
   include Currencible
   include TIDIdentifiable
 
   has_paper_trail on: %i[update destroy]
+
+  enumerize :aasm_state, in: STATES, scope: true
 
   belongs_to :member
   belongs_to :account
