@@ -49,21 +49,35 @@ module ManagementAPIv1
       success ManagementAPIv1::Entities::Withdraw
     end
     params do
-      requires :uid,            type: String, desc: 'The shared user ID.'
-      optional :tid,            type: String, desc: 'The shared transaction ID. Must not exceed 64 characters. Peatio will generate one automatically unless supplied.'
-      requires :currency,       type: String, values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
-      requires :amount,         type: BigDecimal, desc: 'The amount to withdraw.'
-      requires :destination_id, type: Integer, desc: 'The withdraw destination ID.'
-      optional :state,          type: String, values: %w[created submitted], desc: 'The withdraw state to apply.'
+      requires :uid,      type: String, desc: 'The shared user ID.'
+      optional :tid,      type: String, desc: 'The shared transaction ID. Must not exceed 64 characters. Peatio will generate one automatically unless supplied.'
+      requires :currency, type: String, values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
+      requires :amount,   type: BigDecimal, desc: 'The amount to withdraw.'
+      requires :bid,      type: String, desc: 'The beneficiary ID or wallet address on the Blockchain.'
+      optional :state,    type: String, values: %w[created submitted], desc: 'The withdraw state to apply.'
     end
     post '/withdraws/new' do
       currency = Currency.find_by!(code: params[:currency])
+      member   = Authentication.find_by(provider: :barong, uid: params[:uid])&.member
       withdraw = "withdraws/#{currency.type}".camelize.constantize.new \
         destination_id: params[:destination_id],
         sum:            params[:amount],
-        member:         Authentication.find_by(provider: :barong, uid: params[:uid])&.member,
+        member:         member,
         currency:       currency,
-        tid:            params[:tid]
+        tid:            params[:tid],
+        bid:            params[:bid]
+
+      if withdraw.coin? && member
+        member.coin_withdraw_destinations
+              .build(currency: currency, address: params[:bid], label: params[:bid])
+      else
+        member.fiat_withdraw_destinations
+              .build(currency: currency)
+              .dummy
+      end
+        .tap(&:save)
+        .tap { |record| withdraw.destination = record }
+
       if withdraw.save
         withdraw.submit! if params[:state] == 'submitted'
         present withdraw, with: ManagementAPIv1::Entities::Withdraw

@@ -29,7 +29,7 @@ describe ManagementAPIv1::Entities::Deposit do
     it { expect(subject.state).to eq record.aasm_state }
     it { expect(subject.created_at).to eq record.created_at.iso8601 }
     it { expect(subject.completed_at).to eq record.done_at&.iso8601 }
-    it { expect(subject.txid).to eq record.txid }
+    it { expect(subject.blockchain_txid).to eq record.txid }
     it { expect(subject.confirmations).to eq record.confirmations }
   end
 end

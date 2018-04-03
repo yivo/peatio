@@ -34,7 +34,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
     it 'returns withdraws' do
       request
       expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq Withdraw.order(id: :desc).pluck(:id)
+      expect(JSON.parse(response.body).map { |x| x.fetch('tid') }).to eq Withdraw.order(id: :desc).pluck(:tid)
     end
 
     it 'filters by member' do
@@ -62,15 +62,15 @@ describe ManagementAPIv1::Withdraws, type: :request do
     end
 
     it 'paginates' do
-      ids = Withdraw.order(id: :desc).pluck(:id)
+      ids = Withdraw.order(id: :desc).pluck(:tid)
       data.merge!(page: 1, limit: 4)
       request
       expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq ids[0...4]
+      expect(JSON.parse(response.body).map { |x| x.fetch('tid') }).to eq ids[0...4]
       data.merge!(page: 3, limit: 4)
       request
       expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body).map { |x| x.fetch('id') }).to eq ids[8...12]
+      expect(JSON.parse(response.body).map { |x| x.fetch('tid') }).to eq ids[8...12]
     end
   end
 
@@ -81,14 +81,13 @@ describe ManagementAPIv1::Withdraws, type: :request do
 
     let(:member) { create(:member, :barong) }
     let(:currency) { Currency.find_by!(code: :btc) }
-    let(:destination) { create(:coin_withdraw_destination, currency: currency, member: member) }
     let(:amount) { 0.1575 }
     let(:signers) { %i[alex jeff] }
     let :data do
-      { uid:            member.authentications.first.uid,
-        currency:       currency.code,
-        amount:         amount,
-        destination_id: destination.id }
+      { uid:      member.authentications.first.uid,
+        currency: currency.code,
+        amount:   amount,
+        bid:      Faker::Bitcoin.address }
     end
     let(:account) { member.accounts.with_currency(currency).first }
 
@@ -97,10 +96,10 @@ describe ManagementAPIv1::Withdraws, type: :request do
     it 'creates new withdraw with state «created»' do
       request
       expect(response).to have_http_status(201)
-      record = Withdraw.find(JSON.parse(response.body).fetch('id'))
+      record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
       expect(record.sum).to eq 0.1575
       expect(record.aasm_state).to eq 'created'
-      expect(record.destination).to eq destination
+      expect(record.bid).to eq data[:bid]
       expect(record.account).to eq account
       expect(record.account.balance).to eq 1.2
       expect(record.account.locked).to eq 0
@@ -112,6 +111,27 @@ describe ManagementAPIv1::Withdraws, type: :request do
       expect(response).to have_http_status(201)
       expect(account.reload.balance).to eq(1.2 - amount)
       expect(account.reload.locked).to eq amount
+    end
+
+    context 'when creating coin withdraw' do
+      it 'creates destination' do
+        expect { request }.to change { WithdrawDestination::Coin.count }.by(1)
+        expect(response).to have_http_status(201)
+        record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+        expect(record.destination.address).to eq record.bid
+      end
+    end
+
+    context 'when creating fiat withdraw' do
+      let(:currency) { Currency.find_by!(code: :usd) }
+      let(:klass) { WithdrawDestination::Fiat }
+      it 'creates dummy destination' do
+        expect { request }.to change { klass.count }.by(1)
+        expect(response).to have_http_status(201)
+        record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
+        keys = klass.fields.keys.map(&:to_s) + ['label']
+        expect(record.destination.as_json.slice(*keys).values.uniq).to eq ['dummy']
+      end
     end
   end
 
@@ -153,7 +173,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
       data[:state] = :submitted
       request
       expect(response).to have_http_status(200)
-      record = Withdraw.find(JSON.parse(response.body).fetch('id'))
+      record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
       expect(record.aasm_state).to eq 'submitted'
       expect(record.account.balance).to eq(balance - amount)
       expect(record.account.locked).to eq(amount)
