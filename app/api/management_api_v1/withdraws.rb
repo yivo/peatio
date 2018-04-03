@@ -54,7 +54,7 @@ module ManagementAPIv1
       requires :rid,      type: String, desc: 'The beneficiary ID or wallet address on the Blockchain.'
       requires :currency, type: String, values: -> { Currency.codes(bothcase: true) }, desc: 'The currency code.'
       requires :amount,   type: BigDecimal, desc: 'The amount to withdraw.'
-      optional :state,    type: String, values: %w[created submitted], desc: 'The withdraw state to apply.'
+      optional :state,    type: String, values: %w[prepared submitted], desc: 'The withdraw state to apply.'
     end
     post '/withdraws/new' do
       currency = Currency.find_by!(code: params[:currency])

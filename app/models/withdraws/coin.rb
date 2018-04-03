@@ -37,7 +37,7 @@ module Withdraws
 end
 
 # == Schema Information
-# Schema version: 20180403145234
+# Schema version: 20180403231931
 #
 # Table name: withdraws
 #
@@ -53,7 +53,7 @@ end
 #  updated_at     :datetime
 #  done_at        :datetime
 #  txid           :string(255)
-#  aasm_state     :string(255)
+#  aasm_state     :string
 #  sum            :decimal(32, 16)  default(0.0), not null
 #  type           :string(255)
 #  tid            :string(64)       not null

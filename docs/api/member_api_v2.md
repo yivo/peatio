@@ -416,9 +416,9 @@ Member API is API which can be used by client application like SPA.
 | 200 | List your withdraws as paginated collection. |
 
 ##### ***POST***
-**Summary:** Create withdraw.
+**Summary:** [DEPRECATED] Create withdraw.
 
-**Description:** Create withdraw.
+**Description:** [DEPRECATED] Create withdraw.
 
 **Parameters**
 
@@ -432,7 +432,7 @@ Member API is API which can be used by client application like SPA.
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Create withdraw. |
+| 201 | [DEPRECATED] Create withdraw. |
 
 ### /v2/withdraws/destinations
 ---

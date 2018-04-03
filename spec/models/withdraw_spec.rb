@@ -163,8 +163,8 @@ describe Withdraw do
       subject.stubs(:send_withdraw_confirm_email)
     end
 
-    it 'initializes with state :created' do
-      expect(subject.created?).to be true
+    it 'initializes with state :prepared' do
+      expect(subject.prepared?).to be true
     end
 
     it 'transitions to :submitted after calling #submit!' do

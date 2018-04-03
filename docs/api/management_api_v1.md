@@ -202,7 +202,7 @@ Management API is server-to-server API with high privileges.
 | uid | string | The shared user ID. | No |
 | type | string | The deposit type (fiat or coin). | No |
 | amount | string | The deposit amount. | No |
-| state | string | The deposit state. | No |
+| state | string | The deposit state. «submitted» – initial state. «canceled» – deposit has been canceled by outer service. «rejected» – deposit has been rejected by outer service.. «accepted» – deposit has been accepted by outer service, money are loaded. | No |
 | created_at | string | The datetime when deposit was created. | No |
 | completed_at | string | The datetime when deposit was completed. | No |
 | blockchain_txid | string | The transaction ID on the Blockchain (coin only). | No |
@@ -218,6 +218,6 @@ Management API is server-to-server API with high privileges.
 | amount | string | The withdraw amount excluding fee. | No |
 | fee | string | The exchange fee. | No |
 | rid | string | The beneficiary ID or wallet address on the Blockchain. | No |
-| state | string | The withdraw state. | No |
+| state | string | The withdraw state. «prepared» – initial state, money are not locked. «submitted» – withdraw has been allowed by outer service for further validation, money are locked. «canceled» – withdraw has been canceled by outer service, money are unlocked. «accepted» – system has validated withdraw and queued it for processing by worker, money are locked. «rejected» – system has validated withdraw and found errors, money are unlocked. «suspected» – system detected suspicious activity, money are unlocked. «processing» – worker is processing withdraw as the current moment, money are locked. «succeed» – worker has successfully processed withdraw, money are subtracted from the account. «failed» – worker has encountered an unhandled error while processing withdraw, money are unlocked. | No |
 | created_at | string | The datetime when withdraw was created. | No |
 | blockchain_txid | string | The transaction ID on the Blockchain (coin only). | No |

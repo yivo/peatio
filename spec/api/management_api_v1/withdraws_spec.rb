@@ -93,12 +93,12 @@ describe ManagementAPIv1::Withdraws, type: :request do
 
     before { account.update!(balance: 1.2) }
 
-    it 'creates new withdraw with state «created»' do
+    it 'creates new withdraw with state «prepared»' do
       request
       expect(response).to have_http_status(201)
       record = Withdraw.find_by_tid!(JSON.parse(response.body).fetch('tid'))
       expect(record.sum).to eq 0.1575
-      expect(record.aasm_state).to eq 'created'
+      expect(record.aasm_state).to eq 'prepared'
       expect(record.rid).to eq data[:rid]
       expect(record.account).to eq account
       expect(record.account.balance).to eq 1.2
@@ -167,7 +167,7 @@ describe ManagementAPIv1::Withdraws, type: :request do
     let(:balance) { 800.77 }
     before { account.update!(balance: balance) }
 
-    it 'updates from «created» to «submitted»' do
+    it 'updates from «prepared» to «submitted»' do
       expect(account.balance).to eq balance
       expect(account.locked).to eq 0
       data[:state] = :submitted

@@ -1,6 +1,6 @@
 class Withdraw < ActiveRecord::Base
 
-  STATES           = %i[created submitted rejected accepted suspected processing succeed canceled failed].freeze
+  STATES           = %i[prepared submitted rejected accepted suspected processing succeed canceled failed].freeze
   COMPLETED_STATES = %i[succeed rejected canceled failed].freeze
 
   extend Enumerize
@@ -58,7 +58,7 @@ class Withdraw < ActiveRecord::Base
   end
 
   aasm whiny_transitions: false do
-    state :created, initial: true
+    state :prepared, initial: true
     state :submitted
     state :canceled
     state :accepted
@@ -69,14 +69,14 @@ class Withdraw < ActiveRecord::Base
     state :failed
 
     event :submit do
-      transitions from: :created, to: :submitted
+      transitions from: :prepared, to: :submitted
       after :lock_funds
       after_commit { WithdrawMailer.submitted(id).deliver }
     end
 
     event :cancel do
-      transitions from: %i[created submitted accepted], to: :canceled
-      after { unlock_funds unless aasm.from_state == :created }
+      transitions from: %i[prepared submitted accepted], to: :canceled
+      after { unlock_funds unless aasm.from_state == :prepared }
       after_commit { WithdrawMailer.withdraw_state(id).deliver }
     end
 
@@ -210,7 +210,7 @@ public
 end
 
 # == Schema Information
-# Schema version: 20180403145234
+# Schema version: 20180403231931
 #
 # Table name: withdraws
 #
@@ -226,7 +226,7 @@ end
 #  updated_at     :datetime
 #  done_at        :datetime
 #  txid           :string(255)
-#  aasm_state     :string(255)
+#  aasm_state     :string
 #  sum            :decimal(32, 16)  default(0.0), not null
 #  type           :string(255)
 #  tid            :string(64)       not null
