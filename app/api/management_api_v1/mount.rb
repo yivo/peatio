@@ -28,7 +28,7 @@ module ManagementAPIv1
     add_swagger_documentation base_path:   PREFIX,
                               mount_path:  '/swagger',
                               api_version: 'v1',
-                              doc_version: '0.0.1.alpha.4',
+                              doc_version: Peatio::VERSION,
                               info: {
                                 title:       'Management API v1',
                                 description: 'Management API is server-to-server API with high privileges.',
