@@ -203,10 +203,6 @@ public
   def coin?
     !fiat?
   end
-
-  def as_json(*)
-    super.merge(destination: destination.as_json)
-  end
 end
 
 # == Schema Information

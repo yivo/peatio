@@ -36,13 +36,12 @@ ActiveRecord::Schema.define(version: 20180406080444) do
   add_index "account_versions", ["modifiable_id", "modifiable_type"], name: "index_account_versions_on_modifiable_id_and_modifiable_type", using: :btree
 
   create_table "accounts", force: :cascade do |t|
-    t.integer  "member_id",                       limit: 4
-    t.integer  "currency_id",                     limit: 4
-    t.decimal  "balance",                                   precision: 32, scale: 16
-    t.decimal  "locked",                                    precision: 32, scale: 16
+    t.integer  "member_id",   limit: 4
+    t.integer  "currency_id", limit: 4
+    t.decimal  "balance",               precision: 32, scale: 16
+    t.decimal  "locked",                precision: 32, scale: 16
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "default_withdraw_destination_id", limit: 4
   end
 
   add_index "accounts", ["currency_id"], name: "index_accounts_on_currency_id", using: :btree

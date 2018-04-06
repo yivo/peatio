@@ -1,8 +1,8 @@
 module Withdraws
   class Coin < Withdraw
     def wallet_url
-      if destination.address? && currency.wallet_url_template?
-        currency.wallet_url_template.gsub('#{address}', destination.address)
+      if currency.wallet_url_template?
+        currency.wallet_url_template.gsub('#{address}', rid)
       end
     end
 
@@ -13,13 +13,13 @@ module Withdraws
     end
 
     def audit!
-      inspection = currency.api.inspect_address!(destination.address)
+      inspection = currency.api.inspect_address!(rid)
 
       if inspection[:is_valid] == false
-        Rails.logger.info "#{self.class.name}##{id} uses invalid address: #{destination.address.inspect}"
+        Rails.logger.info "#{self.class.name}##{id} uses invalid address: #{rid.inspect}"
         reject!
       elsif inspection[:is_mine] == true
-        Rails.logger.info "#{self.class.name}##{id} uses hot wallet address: #{destination.address.inspect}"
+        Rails.logger.info "#{self.class.name}##{id} uses hot wallet address: #{rid.inspect}"
         reject!
       else
         super

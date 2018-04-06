@@ -17,5 +17,6 @@ class DropWithdrawDestinations < ActiveRecord::Migration
     remove_column :withdraws, :destination_id
     drop_table :withdraw_destinations
     change_column :withdraws, :rid, :string, limit: 64, null: false
+    remove_column :accounts, :default_withdraw_destination_id
   end
 end
