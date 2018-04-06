@@ -1,10 +1,4 @@
-app.controller 'WithdrawsController', ['$scope', '$stateParams', '$http', '$gon', 'fundSourceService', 'ngDialog', ($scope, $stateParams, $http, $gon, fundSourceService, ngDialog) ->
-
-  _selectedFundSourceId = null
-  _selectedFundSourceIdInList = (list) ->
-    for fs in list
-      return true if fs.id is _selectedFundSourceId
-    return false
+app.controller 'WithdrawsController', ['$scope', '$stateParams', '$http', '$gon', ($scope, $stateParams, $http, $gon) ->
 
   $scope.currency = currency = $stateParams.currency
   $scope.currencyTranslationLocals = currency: currency.toUpperCase()
@@ -17,7 +11,12 @@ app.controller 'WithdrawsController', ['$scope', '$stateParams', '$http', '$gon'
 
   @withdraw = {}
   @createWithdraw = (currency) ->
-    data = { withdraw: { member_id: current_user.id, currency: currency, sum: @withdraw.sum } }
+    data =
+      withdraw:
+        member_id: current_user.id
+        currency:  currency
+        sum:       @withdraw.sum
+        rid:       @withdraw.rid
 
     $('.form-submit > input').attr('disabled', 'disabled')
 

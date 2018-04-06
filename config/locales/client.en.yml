@@ -52,7 +52,6 @@ en:
         withdraw_address: Withdraw Address
         balance: Balance
         withdraw_amount: Withdraw Amount
-        manage_withdraw: Manage Withdraw
         min: At least
         withdraw_all: Withdraw all
 
@@ -61,8 +60,6 @@ en:
         intro: Please fill in the address and amount, then submit the form. It will be confirmed in 10 minutes
         label: Label
         balance: Balance
-        amount: Amount
-        manage_withdraw: Manage Address
         min: At least
         withdraw_all: Withdraw all
 
