@@ -3,8 +3,8 @@ describe APIv2::Withdraws, type: :request do
   let(:token) { jwt_for(member) }
   let(:unverified_member) { create(:member, :unverified) }
   let(:unverified_member_token) { jwt_for(unverified_member) }
-  let(:btc_withdraws) { create(:btc_withdraw, 20, member: member) }
-  let(:usd_withdraws) { create(:usd_withdraw, 20, member: member) }
+  let(:btc_withdraws) { create_list(:btc_withdraw, 20, member: member) }
+  let(:usd_withdraws) { create_list(:usd_withdraw, 20, member: member) }
 
   before do
     # Force evaluate all.
