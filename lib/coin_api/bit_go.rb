@@ -62,7 +62,7 @@ module CoinAPI
       args = [@endpoint + path]
 
       if data
-        if verb.in?(%i[ post put patch  ])
+        if verb.in?(%i[ post put patch ])
           args << data.compact.to_json
           args << { 'Accept'       => 'application/json',
                     'Content-Type' => 'application/json' }
@@ -77,7 +77,9 @@ module CoinAPI
 
       args.last['Authorization'] = 'Bearer ' + @access_token
 
-      response = Faraday.send(verb, *args).assert_success!
+      response = Faraday.send(verb, *args)
+      Rails.logger.debug { response.describe }
+      response.assert_success!
       JSON.parse(response.body)
     end
 
