@@ -19,7 +19,7 @@ module Admin
       end
 
       def update
-        if @withdraw.may_accept?
+        @withdraw.transaction do
           @withdraw.accept!
           @withdraw.process!
           @withdraw.success!
