@@ -15,12 +15,12 @@ module CoinAPI
 
     def create_address!
       response = rest_api(:post, '/wallet/' + urlsafe_wallet_id + '/address')
+      address  = response['address']
+
       # Specific case for ETH.
-      if response.key?('id')
-        { address: rest_api(:get, '/wallet/' + urlsafe_wallet_id).fetch('coinSpecific').fetch('baseAddress') }
-      else
-        { address: response.fetch('address') }
-      end
+      # See https://www.bitgo.com/api/v2/#ethereum
+      raise CoinAPI::Error, 'BitGo hasn\'t returned an address.' if address.blank?
+      { address: address }
     end
 
     def each_deposit!
