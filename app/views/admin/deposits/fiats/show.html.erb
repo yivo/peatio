@@ -26,13 +26,8 @@
       <div class="panel-body">
         <%= form_for @deposit, url: admin_deposit_url(@deposit.currency.code, @deposit) do |f| %>
           <dl class="dl-horizontal dl-member">
-            <% if @deposit.may_submit? || @deposit.may_accept? %>
-              <dt>Transfer ID</dt>
-              <dd><%= f.text_field :txid, class: 'col-xs-24' %></dd>
-              <hr class="split">
+            <% if @deposit.may_accept? %>
               <%= f.submit 'Accept', class: 'btn btn-primary pull-right' %>
-            <% else %>
-              <dt>Transfer ID</dt><dd><%= @deposit.txid %></dd>
             <% end %>
           </dl>
         <% end %>
