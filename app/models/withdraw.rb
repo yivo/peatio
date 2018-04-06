@@ -31,7 +31,7 @@ class Withdraw < ActiveRecord::Base
   after_create :sync_create
   after_destroy :sync_destroy
 
-  validates :amount, :fee, :account, :currency, :member, presence: true
+  validates :amount, :fee, :account, :currency, :member, :rid, presence: true
 
   validates :fee, numericality: { greater_than_or_equal_to: 0 }
   validates :amount, numericality: { greater_than: 0 }
@@ -229,7 +229,7 @@ end
 #  sum         :decimal(32, 16)  default(0.0), not null
 #  type        :string(255)
 #  tid         :string(64)       not null
-#  rid         :string(64)
+#  rid         :string(64)       not null
 #
 # Indexes
 #

@@ -274,7 +274,7 @@ ActiveRecord::Schema.define(version: 20180406080444) do
     t.decimal  "sum",                     precision: 32, scale: 16, default: 0.0, null: false
     t.string   "type",        limit: 255
     t.string   "tid",         limit: 64,                                          null: false
-    t.string   "rid",         limit: 64
+    t.string   "rid",         limit: 64,                                          null: false
   end
 
   add_index "withdraws", ["currency_id"], name: "index_withdraws_on_currency_id", using: :btree

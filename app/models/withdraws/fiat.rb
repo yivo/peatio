@@ -24,7 +24,7 @@ end
 #  sum         :decimal(32, 16)  default(0.0), not null
 #  type        :string(255)
 #  tid         :string(64)       not null
-#  rid         :string(64)
+#  rid         :string(64)       not null
 #
 # Indexes
 #
