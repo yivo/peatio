@@ -16,7 +16,7 @@
         <% end %>
       </div>
       <% if @deposit.may_accept? %>
-        <div class="panel-footer">
+        <div class="panel-footer clearfix">
           <%= form_for @deposit, url: admin_deposit_url(@deposit.currency.code, @deposit) do |f| %>
             <%= f.submit 'Accept', class: 'btn btn-primary pull-right' %>
           <% end %>
