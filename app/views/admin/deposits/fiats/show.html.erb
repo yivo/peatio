@@ -15,23 +15,13 @@
           <dt>Bank account</dt><dd><%= @deposit.fund_uid %></dd>
         <% end %>
       </div>
-    </div>
-  </div>
-
-  <div class="col-xs-10">
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <span>Wire transfer</span>
-      </div>
-      <div class="panel-body">
-        <%= form_for @deposit, url: admin_deposit_url(@deposit.currency.code, @deposit) do |f| %>
-          <dl class="dl-horizontal dl-member">
-            <% if @deposit.may_accept? %>
-              <%= f.submit 'Accept', class: 'btn btn-primary pull-right' %>
-            <% end %>
-          </dl>
-        <% end %>
-      </div>
+      <% if @deposit.may_accept? %>
+        <div class="panel-footer">
+          <%= form_for @deposit, url: admin_deposit_url(@deposit.currency.code, @deposit) do |f| %>
+            <%= f.submit 'Accept', class: 'btn btn-primary pull-right' %>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
