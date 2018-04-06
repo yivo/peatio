@@ -1,7 +1,5 @@
 module Withdraws
   class Coin < Withdraw
-    belongs_to :destination, class_name: 'WithdrawDestination::Coin', required: true
-
     def wallet_url
       if destination.address? && currency.wallet_url_template?
         currency.wallet_url_template.gsub('#{address}', destination.address)

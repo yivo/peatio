@@ -1,6 +1,6 @@
 module Withdraws
   class Fiat < Withdraw
-    belongs_to :destination, class_name: 'WithdrawDestination::Fiat', required: true
+
   end
 end
 
