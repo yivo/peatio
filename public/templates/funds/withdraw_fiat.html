@@ -6,7 +6,7 @@
   </div>
 
   <div class="border p-3 my-3">
-  <form id="base_fiat_ccy_withdraws" name="withdraw_form" class="form form-horizontal" ng-controller="WithdrawsController as withdrawsCtrl" ng-submit="withdrawsCtrl.createWithdraw(currency)">
+  <form name="withdraw_form" class="form form-horizontal" ng-controller="WithdrawsController as withdrawsCtrl" ng-submit="withdrawsCtrl.createWithdraw(currency)">
     <div class="form-group row">
       <div class="col-sm-3">
         <label class="optional control-label">{{"funds.withdraw_fiat.balance" | t}}</label>
