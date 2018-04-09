@@ -6,7 +6,7 @@ FactoryBot.define do
     factory :deposit_btc, class: 'Deposits::Coin' do
       currency { Currency.find_by!(code: :btc) }
       address { Faker::Bitcoin.address }
-      txid { Faker::Lorem.characters(16) }
+      txid { Faker::Lorem.characters(64) }
       txout { 0 }
     end
 

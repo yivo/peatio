@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20180409115902) do
     t.decimal  "amount",                    precision: 32, scale: 16,             null: false
     t.decimal  "fee",                       precision: 32, scale: 16,             null: false
     t.string   "address",       limit: 64
-    t.string   "txid",          limit: 64,                                        null: false
+    t.string   "txid",          limit: 64
     t.integer  "txout",         limit: 4
     t.string   "aasm_state",    limit: 255,                                       null: false
     t.integer  "confirmations", limit: 4,                             default: 0, null: false

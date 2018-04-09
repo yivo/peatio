@@ -27,13 +27,13 @@ module Worker
       end
 
       deposit = "deposits/#{currency.type}".camelize.constantize.create! \
-        blockchain_txid:   tx[:id],
-        blockchain_txout:  index,
-        blockchain_issuer: entry[:address],
-        amount:            entry[:amount],
-        member:            PaymentAddress.where(currency: currency, address: entry[:address]).first.member,
-        currency:          currency,
-        confirmations:     tx[:confirmations]
+        txid:          tx[:id],
+        txout:         index,
+        address:       entry[:address],
+        amount:        entry[:amount],
+        member:        PaymentAddress.where(currency: currency, address: entry[:address]).first.member,
+        currency:      currency,
+        confirmations: tx[:confirmations]
 
       deposit.with_lock do
         deposit.accept! if deposit.confirmations >= deposit.channel.min_confirm

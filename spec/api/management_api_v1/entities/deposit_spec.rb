@@ -12,7 +12,7 @@ describe ManagementAPIv1::Entities::Deposit do
     it { expect(subject.state).to eq record.aasm_state }
     it { expect(subject.created_at).to eq record.created_at.iso8601 }
     it { expect(subject.completed_at).to eq record.completed_at&.iso8601 }
-    it { expect(subject.respond_to?(:txid)).to be_falsey }
+    it { expect(subject.respond_to?(:blockchain_txid)).to be_falsey }
     it { expect(subject.respond_to?(:confirmations)).to be_falsey }
   end
 
