@@ -86,6 +86,10 @@ RSpec.configure do |config|
     %i[ btcusd dashbtc ].each { |market| FactoryBot.create(:market, market) }
   end
 
+  config.after :each, type: :feature do
+    page.driver.quit
+  end
+
   config.append_after :each do
     DatabaseCleaner.clean
   end
