@@ -64,8 +64,7 @@ module CoinAPI
       if data
         if verb.in?(%i[ post put patch ])
           args << data.compact.to_json
-          args << { 'Accept'       => 'application/json',
-                    'Content-Type' => 'application/json' }
+          args << { 'Content-Type' => 'application/json' }
         else
           args << data.compact
           args << {}
@@ -75,6 +74,7 @@ module CoinAPI
         args << {}
       end
 
+      args.last['Accept']        = 'application/json'
       args.last['Authorization'] = 'Bearer ' + @access_token
 
       response = Faraday.send(verb, *args)
