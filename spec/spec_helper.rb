@@ -60,29 +60,42 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers
   config.include Capybara::DSL
 
+  # See https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example
   config.before :suite do
     FileUtils.rm_rf(File.join(__dir__, 'tmp', 'cache'))
-    DatabaseCleaner.strategy = :truncation, { pre_count: true, cache_tables: true }
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.around :each do |example|
-    DatabaseCleaner.cleaning do
-      AMQPQueue.stubs(:publish)
-      KlineDB.stubs(:kline).returns([])
-      I18n.locale = :en
-      %i[ usd btc dash eth xrp ].each { |ccy| FactoryBot.create(:currency, ccy) }
-      %i[ btcusd dashbtc ].each { |market| FactoryBot.create(:market, market) }
-      example.run
+  config.before :each do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before :each, type: :feature do
+    driver_shares_db_connection_with_specs = Capybara.current_driver == :rack_test
+    unless driver_shares_db_connection_with_specs
+      DatabaseCleaner.strategy = :truncation
     end
   end
 
+  config.before :each do
+    DatabaseCleaner.start
+    AMQPQueue.stubs(:publish)
+    KlineDB.stubs(:kline).returns([])
+    I18n.locale = :en
+    %i[ usd btc dash eth xrp ].each { |ccy| FactoryBot.create(:currency, ccy) }
+    %i[ btcusd dashbtc ].each { |market| FactoryBot.create(:market, market) }
+  end
+
+  config.append_after :each do
+    DatabaseCleaner.clean
+  end
+
   if Bullet.enable?
-    config.before(:each) do
+    config.before :each do
       Bullet.start_request
     end
 
-    config.after(:each) do
+    config.after :each do
       Bullet.perform_out_of_channel_notifications if Bullet.notification?
       Bullet.end_request
     end
