@@ -17,8 +17,10 @@ class Deposit < ActiveRecord::Base
 
   belongs_to :member, required: true
 
-  validates :amount, :tid, presence: true
+  validates :amount, :fee, :tid, :aasm_state, :type, presence: true
   validates :amount, numericality: { greater_than: 0.0 }
+  validates :fee, numericality: { greater_than_or_equal_to: 0.0 }
+  validates :completed_at, presence: { if: :completed? }
 
   scope :recent, -> { order(id: :desc) }
 
@@ -57,6 +59,10 @@ class Deposit < ActiveRecord::Base
 
 private
 
+  def completed?
+    !submitted?
+  end
+
   def set_fee
     amount, fee = calc_fee
     self.amount = amount
@@ -91,7 +97,7 @@ end
 #  amount        :decimal(32, 16)  not null
 #  fee           :decimal(32, 16)  not null
 #  address       :string(64)
-#  txid          :string(64)       not null
+#  txid          :string(64)
 #  txout         :integer
 #  aasm_state    :string           not null
 #  confirmations :integer          default(0), not null

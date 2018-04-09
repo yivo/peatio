@@ -19,7 +19,7 @@ end
 #  amount        :decimal(32, 16)  not null
 #  fee           :decimal(32, 16)  not null
 #  address       :string(64)
-#  txid          :string(64)       not null
+#  txid          :string(64)
 #  txout         :integer
 #  aasm_state    :string           not null
 #  confirmations :integer          default(0), not null

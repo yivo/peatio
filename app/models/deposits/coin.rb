@@ -3,6 +3,7 @@ module Deposits
     validate { errors.add(:currency, :invalid) if currency && !currency.coin? }
     validates :address, :txid, :txout, presence: true
     validates :txid, uniqueness: { scope: %i[currency_id txout] }
+    validates :confirmations, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
     def transaction_url
       if txid? && currency.transaction_url_template?
@@ -27,7 +28,7 @@ end
 #  amount        :decimal(32, 16)  not null
 #  fee           :decimal(32, 16)  not null
 #  address       :string(64)
-#  txid          :string(64)       not null
+#  txid          :string(64)
 #  txout         :integer
 #  aasm_state    :string           not null
 #  confirmations :integer          default(0), not null
