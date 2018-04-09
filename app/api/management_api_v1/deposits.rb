@@ -63,10 +63,7 @@ module ManagementAPIv1
       data     = { member: member, currency: currency, account: account }.merge!(params.slice(:amount, :tid))
       deposit  = ::Deposits::Fiat.new(data)
       if deposit.save
-        deposit.with_lock do
-          deposit.accept!
-          deposit.touch(:done_at)
-        end if params[:state] == 'accepted'
+        deposit.charge! if params[:state] == 'accepted'
         present deposit, with: ManagementAPIv1::Entities::Deposit
       else
         body errors: deposit.errors.full_messages
@@ -87,7 +84,6 @@ module ManagementAPIv1
       if deposit.submitted?
         deposit.with_lock do
           params[:state] == 'canceled' ? deposit.cancel! : deposit.accept!
-          deposit.touch(:done_at)
         end
         present deposit, with: ManagementAPIv1::Entities::Deposit
         status 200

@@ -1,4 +1,5 @@
-# TODO: Replace txout with composite TXID.
+# TODO: Replace TXOUT with composite TXID.
+
 module Worker
   class DepositCoin
 
@@ -14,35 +15,31 @@ module Worker
           tx.fetch(:entries).each_with_index { |entry, index| deposit!(ccy, tx, entry, index) }
         end
       else
-        Rails.logger.info "Could not load #{ccy.code.upcase} deposit #{payload.fetch(:txid)}."
+        Rails.logger.info "Could not load #{ccy.code.upcase} deposit: #{payload.fetch(:txid)}."
       end
     end
 
   private
 
     def deposit!(currency, tx, entry, index)
-      return Rails.logger.info "Skipped #{tx.fetch(:id)}:#{index}." unless deposit_entry_processable?(currency, tx, entry, index)
-
-      pt = PaymentTransaction::Normal.create! \
-        txid:          tx[:id],
-        txout:         index,
-        address:       entry[:address],
-        amount:        entry[:amount],
-        confirmations: tx[:confirmations],
-        receive_at:    tx[:received_at],
-        currency:      currency
+      unless deposit_entry_processable?(currency, tx, entry, index)
+        return Rails.logger.info { "Skipped #{tx.fetch(:id)}:#{index}." }
+      end
 
       deposit = "deposits/#{currency.type}".camelize.constantize.create! \
-        payment_transaction_id: pt.id,
-        txid:                   pt.txid,
-        txout:                  pt.txout,
-        amount:                 pt.amount,
-        member:                 pt.member,
-        account:                pt.account,
-        currency:               pt.currency,
-        confirmations:          pt.confirmations
+        blockchain_txid:   tx[:id],
+        blockchain_txout:  index,
+        blockchain_issuer: entry[:address],
+        amount:            entry[:amount],
+        member:            PaymentAddress.where(currency: currency, address: entry[:address]).first.member,
+        currency:          currency,
+        confirmations:     tx[:confirmations]
 
-      Rails.logger.info "Successfully processed #{tx.fetch(:id)}:#{index}."
+      deposit.with_lock do
+        deposit.accept! if deposit.confirmations >= deposit.channel.min_confirm
+      end
+
+      Rails.logger.info { "Successfully processed #{tx.fetch(:id)}:#{index}." }
     rescue => e
       Rails.logger.error { "Failed to process #{tx.fetch(:id)}:#{index}." }
       Rails.logger.debug { tx.inspect }
@@ -51,7 +48,7 @@ module Worker
 
     def deposit_entry_processable?(currency, tx, entry, index)
       PaymentAddress.where(currency: currency, address: entry[:address]).exists? &&
-        !PaymentTransaction::Normal.where(txid: tx[:id], txout: index).exists?
+        !Deposit.where(currency: currency, txid: tx[:id], txout: index).exists?
     end
   end
 end
