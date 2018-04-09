@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
+git_source(:github) { |repo_slug| "https://github.com/#{repo_slug}" }
 
 gem 'rails', '~> 4.2'
 gem 'rails-i18n'
