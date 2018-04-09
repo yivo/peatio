@@ -31,7 +31,7 @@ module Worker
         txout:         index,
         address:       entry[:address],
         amount:        entry[:amount],
-        member:        PaymentAddress.where(currency: currency, address: entry[:address]).first.member,
+        member:        PaymentAddress.where(currency: currency, address: entry[:address]).first.account.member,
         currency:      currency,
         confirmations: tx[:confirmations]
 

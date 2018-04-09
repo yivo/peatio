@@ -28,22 +28,17 @@ class Deposit < ActiveRecord::Base
   after_update :sync_update
   after_destroy :sync_destroy
 
+  before_validation { self.completed_at ||= Time.current if completed? }
+
   aasm whiny_transitions: false do
     state :submitted, initial: true, before_enter: :set_fee
     state :canceled
     state :rejected
     state :accepted
-    event :cancel do
-      transitions from: :submitted, to: :canceled
-      before { touch(:completed_at) }
-    end
-    event :reject do
-      transitions from: :submitted, to: :rejected
-      before { touch(:completed_at) }
-    end
-    event :accept  do
+    event(:cancel) { transitions from: :submitted, to: :canceled }
+    event(:reject) { transitions from: :submitted, to: :rejected }
+    event :accept do
       transitions from: :submitted, to: :accepted
-      before { touch(:completed_at) }
       after { account.lock!.plus_funds(amount, reason: Account::DEPOSIT, ref: self) }
       after { DepositMailer.accepted(id).deliver }
     end
