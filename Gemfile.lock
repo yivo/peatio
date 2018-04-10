@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/oauth-xx/oauth2.git
-  revision: 49ab9a3c0d021e8d954396f33d102079588279d6
+  remote: https://github.com/oauth-xx/oauth2
+  revision: 4f14fa731e2a26653fb5eaad6883f034cebe2f25
   specs:
     oauth2 (1.4.0)
       faraday (>= 0.8, < 0.15.0)
@@ -70,8 +70,6 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    binding_of_caller (0.7.3)
-      debug_inspector (>= 0.0.1)
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bourbon (4.3.4)
@@ -79,9 +77,12 @@ GEM
       thor (~> 0.19)
     browser (0.8.0)
     builder (3.2.3)
+    bullet (5.7.5)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11.0)
     bunny (2.9.0)
       amq-protocol (>= 2.2.0)
-    byebug (9.1.0)
+    byebug (10.0.2)
     cancancan (2.1.2)
     capybara (2.17.0)
       addressable
@@ -118,7 +119,6 @@ GEM
     database_cleaner (1.6.2)
     datagrid (1.5.7)
       rails (>= 4.0)
-    debug_inspector (0.0.3)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.3)
@@ -226,7 +226,7 @@ GEM
     mini_racer (0.1.15)
       libv8 (~> 6.3)
     minitest (5.11.3)
-    mocha (1.3.0)
+    mocha (1.5.0)
       metaclass (~> 0.0.1)
     momentjs-rails (2.17.1)
       railties (>= 3.1)
@@ -262,8 +262,8 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-    pry-byebug (3.5.1)
-      byebug (~> 9.1)
+    pry-byebug (3.6.0)
+      byebug (~> 10.0)
       pry (~> 0.10)
     public_suffix (3.0.1)
     puma (3.11.0)
@@ -406,6 +406,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.1.3)
       execjs (>= 0.3.0, < 3)
+    uniform_notifier (1.11.0)
     validate_url (1.0.2)
       activemodel (>= 3.0.0)
       addressable
@@ -432,10 +433,10 @@ DEPENDENCIES
   angularjs-rails (~> 1.3.15)
   annotate (~> 2.7)
   arel-is-blank (~> 1.0)
-  binding_of_caller
   bootstrap-sass (~> 3.2.0.2)
   bourbon
   browser (~> 0.8.0)
+  bullet (~> 5.7)
   bunny (~> 2.9.0)
   cancancan
   capybara (~> 2.17)
@@ -443,7 +444,7 @@ DEPENDENCIES
   clipboard-rails (~> 1.7)
   coffee-rails
   country_select (~> 2.1.0)
-  database_cleaner
+  database_cleaner (~> 1.6)
   datagrid
   easy_table
   ejs (~> 1.1)
@@ -451,7 +452,7 @@ DEPENDENCIES
   email_validator (~> 1.6)
   enumerize
   eventmachine (~> 1.0.4)
-  factory_bot_rails
+  factory_bot_rails (~> 4.8)
   faker (~> 1.8)
   faraday (~> 0.12)
   figaro
@@ -475,7 +476,7 @@ DEPENDENCIES
   memoist (~> 0.16)
   method-not-implemented (~> 1.0)
   mini_racer (~> 0.1)
-  mocha
+  mocha (~> 1.4)
   momentjs-rails
   mysql2 (~> 0.3.21)
   oauth2!
@@ -486,10 +487,10 @@ DEPENDENCIES
   paper_trail (~> 3.0.1)
   paranoid2
   passgen (~> 1.0)
-  pry-byebug
+  pry-byebug (~> 3.6)
   puma
   pusher
-  quiet_assets
+  quiet_assets (~> 1.1)
   rack-attack (~> 4.3.1)
   rack_session_access (~> 0.1)
   rails (~> 4.2)
@@ -505,7 +506,7 @@ DEPENDENCIES
   sentry-raven (~> 2.7)
   simple_form (~> 3.1.0)
   slim-rails
-  timecop
+  timecop (~> 0.9)
   uglifier (~> 4.1)
   validate_url (~> 1.0.2)
   validates_lengths_from_database (~> 0.7.0)
