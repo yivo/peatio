@@ -8,7 +8,10 @@ class RefactorDeposit < ActiveRecord::Migration
     change_column_null :deposits, :aasm_state, false
     change_column_null :deposits, :created_at, false
     change_column_null :deposits, :updated_at, false
-    change_column :deposits, :confirmations, :integer, null: false, default: 0
+    add_column :deposits, :new_confirmations, :integer, null: false, default: 0, after: :confirmations
+    execute "UPDATE deposits SET new_confirmations = confirmations"
+    remove_column :deposits, :confirmations
+    rename_column :deposits, :new_confirmations, :confirmations
     change_column :deposits, :type, :string, null: false, limit: 30
     add_index :deposits, :type
     change_column :deposits, :txid, :string, null: true, limit: 64
