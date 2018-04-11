@@ -14,7 +14,7 @@ class RefactorDeposit < ActiveRecord::Migration
     rename_column :deposits, :new_confirmations, :confirmations
     change_column :deposits, :type, :string, null: false, limit: 30
     add_index :deposits, :type
-    change_column :deposits, :txid, :string, null: true, limit: 64
+    change_column :deposits, :txid, :string, null: true, limit: 128
     change_column :deposits, :created_at, :datetime, null: false, after: :tid
     change_column :deposits, :updated_at, :datetime, null: false, after: :created_at
     change_column :deposits, :done_at, :datetime, after: :updated_at
