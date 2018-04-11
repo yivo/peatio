@@ -52,6 +52,14 @@ class Deposit < ActiveRecord::Base
     member&.ac(currency)
   end
 
+  def sn
+    member&.sn
+  end
+
+  def sn=(sn)
+    self.member = Member.find_by_sn(sn)
+  end
+
 private
 
   def completed?

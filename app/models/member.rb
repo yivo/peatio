@@ -5,7 +5,7 @@ class Member < ActiveRecord::Base
   has_many :accounts
   has_many :payment_addresses, through: :accounts
   has_many :withdraws, -> { order(id: :desc) }
-  has_many :deposits
+  has_many :deposits, -> { order(id: :desc) }
 
   has_many :authentications, dependent: :destroy
 
