@@ -7,7 +7,7 @@ while running do
   Deposits::Coin.recent.where(aasm_state: :submitted).limit(100).each do |deposit|
     break unless running
     begin
-      confirmations = deposit.currency.api.load_deposit!(deposit.txid)
+      confirmations = deposit.currency.api.load_deposit!(deposit.txid).fetch(:confirmations)
       deposit.with_lock do
         deposit.update!(confirmations: confirmations)
         deposit.accept! if confirmations >= deposit.channel.min_confirm
