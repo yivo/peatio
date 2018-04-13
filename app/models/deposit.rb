@@ -77,11 +77,11 @@ private
   end
 
   def sync_update
-    Pusher["private-#{member.sn}"].trigger_async('deposits', type: 'update', id: id, attributes: as_json)
+    Pusher["private-#{member.sn}"].trigger_async('deposits', type: 'update', id: id, attributes: as_json.merge(currency: as_json.code))
   end
 
   def sync_create
-    Pusher["private-#{member.sn}"].trigger_async('deposits', type: 'create', attributes: as_json)
+    Pusher["private-#{member.sn}"].trigger_async('deposits', type: 'create', attributes: as_json.merge(currency: as_json.code))
   end
 
   def sync_destroy
