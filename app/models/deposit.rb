@@ -77,7 +77,7 @@ private
   end
 
   def sync_update
-    Pusher["private-#{member.sn}"].trigger_async('deposits', type: 'update', id: id, attributes: changed_attributes)
+    Pusher["private-#{member.sn}"].trigger_async('deposits', type: 'update', id: id, attributes: as_json)
   end
 
   def sync_create
