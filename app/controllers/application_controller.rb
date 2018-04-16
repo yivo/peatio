@@ -140,6 +140,7 @@ class ApplicationController < ActionController::Base
       }
       memo
     end
+    gon.base_currency = ENV.fetch('BASE_CURRENCY')
     gon.fiat_currencies = Currency.fiats.pluck(:code)
 
     gon.tickers = {}
