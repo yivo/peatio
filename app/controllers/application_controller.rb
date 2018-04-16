@@ -140,7 +140,7 @@ class ApplicationController < ActionController::Base
       }
       memo
     end
-    gon.fiat_currency = Peatio.base_fiat_ccy
+    gon.fiat_currencies = Currency.fiats.pluck(:code)
 
     gon.tickers = {}
     Market.all.each do |market|

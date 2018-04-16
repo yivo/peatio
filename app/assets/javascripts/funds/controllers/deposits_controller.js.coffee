@@ -7,7 +7,7 @@ app.controller 'DepositsController', ['$scope', '$stateParams', '$http', '$filte
   $scope.bank_details_html = $gon.bank_details_html
   $scope.account = Account.findBy('currency', $scope.currency)
   $scope.deposit_channel = DepositChannel.findBy('currency', $scope.currency)
-  $scope.fiatCurrency = gon.fiat_currency
+  $scope.fiatCurrencies = gon.fiat_currencies
 
   $scope.$watch (-> $scope.account.deposit_address), ->
     setTimeout(->
