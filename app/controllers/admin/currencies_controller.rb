@@ -42,7 +42,7 @@ module Admin
                     :symbol,
                     :type,
                     :quick_withdraw_limit,
-                    :deposit_confirmations_required,
+                    :deposit_confirmations,
                     :visible,
                     :base_factor,
                     :precision,

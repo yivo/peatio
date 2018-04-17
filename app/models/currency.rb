@@ -14,7 +14,7 @@ class Currency < ActiveRecord::Base
   validates :wallet_url_template, :transaction_url_template, length: { maximum: 200 }, url: { allow_blank: true }
   validates :quick_withdraw_limit, numericality: { greater_than_or_equal_to: 0 }
   validates :base_factor, numericality: { greater_than_or_equal_to: 1, only_integer: true }
-  validates :deposit_confirmations_required, numericality: { greater_than_or_equal_to: 0, only_integer: true }, if: :coin?
+  validates :deposit_confirmations, numericality: { greater_than_or_equal_to: 0, only_integer: true }, if: :coin?
   validate { errors.add(:options, :invalid) unless Hash === options }
 
   scope :visible, -> { where(visible: true) }
@@ -123,7 +123,7 @@ class Currency < ActiveRecord::Base
     :api_client,
     :json_rpc_endpoint,
     :rest_api_endpoint,
-    :deposit_confirmations_required,
+    :deposit_confirmations,
     :bitgo_test_net,
     :bitgo_wallet_id,
     :bitgo_wallet_address,
