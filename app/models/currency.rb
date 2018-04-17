@@ -132,6 +132,14 @@ class Currency < ActiveRecord::Base
     :bitgo_rest_api_access_token,
     :wallet_url_template,
     :transaction_url_template
+
+  def deposit_confirmations
+    options['deposit_confirmations'].to_i
+  end
+
+  def deposit_confirmations=(n)
+    options['deposit_confirmations'] = n.to_i
+  end
 end
 
 # == Schema Information
