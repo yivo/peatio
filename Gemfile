@@ -90,7 +90,7 @@ end
 group :test do
   gem 'database_cleaner'
   gem 'mocha', require: false
-
+  gem 'rspec-retry',         '~> 0.5'
   gem 'capybara',            '~> 2.17'
   gem 'selenium-webdriver',  '~> 3.8'
   gem 'chromedriver-helper', '~> 1.1'
