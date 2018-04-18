@@ -89,7 +89,7 @@ class Order < ActiveRecord::Base
   end
 
   def kind
-    self.class.underscore[-3, 3]
+    self.class.name.underscore[-3, 3]
   end
 
   def self.head(currency)
