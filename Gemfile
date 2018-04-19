@@ -80,7 +80,6 @@ group :development, :test do
   gem 'faker',        '~> 1.8'
   gem 'pry-byebug',   '~> 3.6'
   gem 'quiet_assets', '~> 1.1'
-  gem 'bullet',       '~> 5.7'
 end
 
 group :development do
