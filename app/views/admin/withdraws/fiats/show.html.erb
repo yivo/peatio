@@ -37,7 +37,7 @@
           <% end %>
           <hr class="split">
           <ul class="list-inline pull-right">
-            <% if @withdraw.may_accept? || @withdraw.may_process? %>
+            <% if @withdraw.may_accept? || @withdraw.may_process? || @withdraw.may_success? %>
               <li>
                 <%= link_to 'Process', admin_withdraw_path(@withdraw.currency.code, @withdraw), class: 'btn btn-primary', method: 'PATCH' %>
               </li>
