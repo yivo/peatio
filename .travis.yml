@@ -64,7 +64,7 @@ script:
 after_success: (docker push peatioexchange/peatio:latest || true) && ruby ci/bump.rb
 
 # Execute all of the commands which need to be executed after the build failed.
-after_failure: cat log/test.log && docker logs peatio-trading-ui
+after_failure:
 
 notifications:
   slack:

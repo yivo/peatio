@@ -100,5 +100,5 @@ RSpec.configure do |config|
   config.verbose_retry = true
   config.default_retry_count = 2
   config.display_try_failure_messages = true
-  config.exceptions_to_retry = [Net::ReadTimeout, Capybara::CapybaraError]
+  config.exceptions_to_retry = [Net::ReadTimeout]
 end
