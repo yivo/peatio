@@ -25,7 +25,7 @@ class Market < ActiveRecord::Base
   validate { errors.add(:ask_unit, :invalid) if ask_unit == bid_unit }
   validates :id, uniqueness: { case_sensitive: false }, presence: true
   validates :ask_unit, :bid_unit, presence: true
-  validates :ask_fee, :bid_fee, presence: true, numericality: { greater_than_or_equal_to: 0, maximum: 0.5 }
+  validates :ask_fee, :bid_fee, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 0.5 }
   validates :ask_precision, :bid_precision, :position, numericality: { greater_than_or_equal_to: 0, only_integer: true }
   validates :ask_unit, :bid_unit, inclusion: { in: -> (_) { Currency.codes } }
 
