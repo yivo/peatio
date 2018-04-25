@@ -133,6 +133,18 @@ describe ManagementAPIv1::Withdraws, type: :request do
         expect(record.destination.as_json.slice(*keys).values.uniq).to eq ['dummy']
       end
     end
+
+    context 'extremely precise values' do
+      before { WithdrawChannel.any_instance.stubs(:fee).returns(BigDecimal(0)) }
+      before { Currency.any_instance.stubs(:precision).returns(16) }
+      it 'keeps precision for amount' do
+        currency.update!(precision: 16)
+        data.merge!(amount: '0.0000000123456789')
+        request
+        expect(response).to have_http_status(201)
+        expect(Withdraw.last.sum.to_s).to eq data[:amount]
+      end
+    end
   end
 
   describe 'get withdraw' do
