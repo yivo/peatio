@@ -93,6 +93,7 @@ en:
         cancel: Cancel
         no_data: There is no history data
         created: Created
+        prepared: Prepared
         submitted: Submitted
         rejected: Rejected
         accepted: Accepted
