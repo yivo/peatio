@@ -22,6 +22,8 @@ class Market < ActiveRecord::Base
 
   after_commit { AMQPQueue.enqueue(:matching, action: 'new', market: id) }
 
+  validates :ask_fee, :bid_fee, presence: true, numericality: { greater_than_or_equal_to: 0, maximum: 0.5 }
+
   # @deprecated
   def base_unit
     ask_unit
@@ -88,15 +90,16 @@ class Market < ActiveRecord::Base
   end
 end
 
-# Schema version: 20180417175453
+# == Schema Information
+# Schema version: 20180425094920
 #
 # Table name: markets
 #
 #  id            :string(10)       not null, primary key
 #  ask_unit      :string(5)        not null
 #  bid_unit      :string(5)        not null
-#  ask_fee       :decimal(32, 16)  default(0.0), not null
-#  bid_fee       :decimal(32, 16)  default(0.0), not null
+#  ask_fee       :decimal(17, 16)  default(0.0), not null
+#  bid_fee       :decimal(17, 16)  default(0.0), not null
 #  ask_precision :integer          default(4), not null
 #  bid_precision :integer          default(4), not null
 #  position      :integer          default(0), not null
