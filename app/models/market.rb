@@ -22,7 +22,7 @@ class Market < ActiveRecord::Base
 
   after_commit { AMQPQueue.enqueue(:matching, action: 'new', market: id) }
 
-  validates :ask_fee, :bid_fee, presence: true, numericality: { greater_than_or_equal_to: 0, maximum: 0.5 }
+  validates :ask_fee, :bid_fee, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 0.5 }
 
   # @deprecated
   def base_unit
