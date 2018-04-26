@@ -16,11 +16,12 @@ module APIv2
 
     desc 'Create new user session.'
     post '/sessions' do
-      session.destroy # This is used to initialize SID.
+      session.destroy # This is used here to initialize SID.
       destroy_member_sessions(current_user.id)
 
       # We assume everything is OK with authentication.
-      session_lifetime = JSON.parse(JWT::Decode.base64url_decode(headers['Authorization'].split('.')[1]))['exp'].to_i - Time.now.to_i
+      jwt = JSON.parse(JWT::Decode.base64url_decode(headers['Authorization'].split('.')[1]))
+      session_lifetime = jwt['exp'].to_i - Time.now.to_i
 
       if session_lifetime > 0
         env['api_v2.session_lifetime'] = session_lifetime
@@ -34,6 +35,7 @@ module APIv2
 
     desc 'Delete all user sessions.'
     delete '/sessions' do
+      session.destroy
       destroy_member_sessions(current_user.id)
       status 200
     end

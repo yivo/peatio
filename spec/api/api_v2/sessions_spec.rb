@@ -2,6 +2,7 @@ describe APIv2::Sessions, type: :request do
   let(:member) { create(:member, :verified_identity) }
   let(:token) { jwt_for(member) }
   let(:session_utils) { Class.new { include SessionUtils }.new }
+  after { session_utils.destroy_member_sessions(member.id) }
 
   describe 'POST /sessions' do
     context 'when no token provided' do
