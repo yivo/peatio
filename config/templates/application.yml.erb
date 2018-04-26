@@ -13,8 +13,8 @@ defaults: &defaults
   URL_SCHEME: http
   FORCE_SECURE_CONNECTION: 'false' # Set to "true" to disable access via unsecured HTTP, send HSTS headers and use secure cookies.
 
-  # session expire time (seconds)
-  SESSION_EXPIRE: '60'
+  # Session lifetime in seconds.
+  SESSION_LIFETIME: '3600'
 
   # WebSocket Streaming API settings
   WEBSOCKET_HOST: 0.0.0.0

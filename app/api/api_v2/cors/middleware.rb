@@ -7,12 +7,13 @@ module APIv2
           [200, cors, []]
         else
           response = @app.call(env)
-          response.headers.reverse_merge!(cors)
+          headers  = Array === response ? response[1] : response.headers
+          headers.reverse_merge!(cors)
 
           # Response may differ if server specifies "*" as allowed origins.
           # See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-          if response.headers['Access-Control-Allow-Origin'] != '*'
-            response.headers['Vary'] = [response.headers['Vary'], 'Origin'].compact.join(', ')
+          if headers['Access-Control-Allow-Origin'] != '*'
+            headers['Vary'] = [headers['Vary'], 'Origin'].compact.join(', ')
           end
           response
         end
