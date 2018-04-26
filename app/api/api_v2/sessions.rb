@@ -27,7 +27,7 @@ module APIv2
         env['api_v2.session_lifetime'] = session_lifetime
         session[:member_id] = current_user.id
         memoize_member_session_id(current_user.id, session.id, expire_after: session_lifetime)
-        status 204
+        status 201
       else
         status 422
       end

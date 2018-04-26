@@ -23,23 +23,23 @@ describe APIv2::Sessions, type: :request do
 
     it 'saves session in Redis' do
       api_post '/api/v2/sessions', token: token
-      expect(response.code).to eq '204'
+      expect(response.code).to eq '201'
       expect(session_utils.fetch_member_session_ids(member.id).count).to be 1
     end
 
     it 'resets any previous sessions' do
       api_post '/api/v2/sessions', token: token
-      expect(response.code).to eq '204'
+      expect(response.code).to eq '201'
       expect(session_utils.fetch_member_session_ids(member.id).count).to be 1
 
       api_post '/api/v2/sessions', token: token
-      expect(response.code).to eq '204'
+      expect(response.code).to eq '201'
       expect(session_utils.fetch_member_session_ids(member.id).count).to be 1
     end
 
     it 'created session which is usable with Rails controllers' do
       api_post '/api/v2/sessions', token: token
-      expect(response.code).to eq '204'
+      expect(response.code).to eq '201'
       expect(session_utils.fetch_member_session_ids(member.id).count).to be 1
       get '/markets/' + Market.visible.first.id + '.json', nil, 'Cookie' => response.headers['Set-Cookie']
       expect(response.code).to eq '200'
@@ -57,7 +57,7 @@ describe APIv2::Sessions, type: :request do
 
       it 'saves session in Redis with TTL of 60 seconds' do
         api_post '/api/v2/sessions', token: token
-        expect(response.code).to eq '204'
+        expect(response.code).to eq '201'
       end
     end
   end
@@ -119,7 +119,7 @@ describe APIv2::Sessions, type: :request do
 
   it 'allows to create and destroy session' do
     api_post '/api/v2/sessions', token: token
-    expect(response.code).to eq '204'
+    expect(response.code).to eq '201'
     expect(session_utils.fetch_member_session_ids(member.id).count).to be 1
     api_delete '/api/v2/sessions', token: token
     expect(response.code).to eq '200'
