@@ -26,9 +26,10 @@ module APIv2
       end
 
       def cors
-        { 'Access-Control-Allow-Origin'  => cors_origins,
-          'Access-Control-Allow-Methods' => 'GET, POST, PUT, PATCH, DELETE',
-          'Access-Control-Allow-Headers' => 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+        { 'Access-Control-Allow-Origin'      => cors_origins,
+          'Access-Control-Allow-Methods'     => 'GET, POST, PUT, PATCH, DELETE',
+          'Access-Control-Allow-Headers'     => 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+          'Access-Control-Allow-Credentials' => ENV['API_CORS_ALLOW_CREDENTIALS'].present?.to_s
         }
       end
 
