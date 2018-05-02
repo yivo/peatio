@@ -20,14 +20,20 @@ rescue => e
 end
 
 while running
-  Currency.coins.each do |currency|
+  Currency.coins.order(id: :asc).each do |currency|
     break unless running
+    Rails.logger.info { "Processing #{currency.code.upcase} deposits." }
     processed = 0
     currency.api.each_deposit do |deposit|
       break unless running
+      received_at = deposit[:received_at]
+      Rails.logger.debug { "Processing deposit received at #{received_at.to_s('%Y-%m-%d %H:%M %Z')}." } if received_at
       process_deposits(currency, deposit)
-      break if (processed += 1) >= 100
+      processed += 1
+      Rails.logger.info { "Processed #{processed} #{currency.code.upcase} #{'deposit'.pluralize(processed)}." }
+      break if processed >= 100 || (received_at && received_at <= 1.hour.ago)
     end
+    Rails.logger.info { "Finished processing #{currency.code.upcase} deposits." }
   rescue => e
     report_exception(e)
   end
