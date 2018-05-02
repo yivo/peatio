@@ -21,14 +21,14 @@ end
 
 while running
   Currency.coins.each do |currency|
-    # TODO: Find a better way for limiting amount of transactions to process (Yaroslav Konoplov).
+    break unless running
     processed = 0
     currency.api.each_deposit do |deposit|
       break unless running
       process_deposits(currency, deposit)
-      break if (processed += 1) >= 1000
+      break if (processed += 1) >= 100
     end
+  rescue => e
+    report_exception(e)
   end
-
-  Kernel.sleep 5
 end
