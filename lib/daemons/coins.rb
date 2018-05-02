@@ -39,4 +39,5 @@ while running
   rescue => e
     report_exception(e)
   end
+  Kernel.sleep 5
 end
