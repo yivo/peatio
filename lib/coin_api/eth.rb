@@ -147,7 +147,7 @@ module CoinAPI
     end
 
     def latest_block_number
-      Rails.cache.fetch :latest_ethereum_block_number, expires_in: 15.seconds do
+      Rails.cache.fetch :latest_ethereum_block_number, expires_in: 5.seconds do
         json_rpc(:eth_blockNumber).fetch('result').hex
       end
     end
