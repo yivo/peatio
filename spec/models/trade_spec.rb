@@ -129,6 +129,8 @@ describe Trade, 'Event API' do
   before { Trade.any_instance.expects(:created_at).returns(completed_at).at_least_once }
 
   before do
+    EventAPI.expects(:notify).with('market.btcusd.order_created', anything).twice
+    EventAPI.expects(:notify).with('market.btcusd.order_completed', anything).once
     EventAPI.expects(:notify).with('market.btcusd.trade_completed', {
       market:                'btcusd',
       price:                 '0.03',
@@ -150,5 +152,9 @@ describe Trade, 'Event API' do
     }).once
   end
 
-  it('publishes event') { subject }
+  it 'publishes event' do 
+    subject
+    expect(order_bid.reload.state).to eq 'done'
+    expect(order_ask.reload.state).to eq 'wait'
+  end
 end
