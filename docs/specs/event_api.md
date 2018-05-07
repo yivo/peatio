@@ -218,6 +218,31 @@ event: {
 | -------- | ----------------------- |
 | `market` | The market pair ID.     |
 
+## Format of `market.btcusd.trade` event
+
+```ruby
+event: {
+  name:                  "market.btcusd.trade",
+  market:                "btcusd",
+  price:                 "0.03",
+  buyer_uid:             "ID022H2NF6E87",
+  buyer_income_unit:     "btc",
+  buyer_income_amount:   "13.979",
+  buyer_income_fee:      "0.021",
+  buyer_outcome_unit:    "usd",
+  buyer_outcome_amount:  "0.42",
+  buyer_outcome_fee:     "0.0",
+  seller_uid:            "ID092B2AF8E87",
+  seller_income_unit:    "usd",
+  seller_income_amount:  "0.41937",
+  seller_income_fee:     "0.00063",
+  seller_outcome_unit:   "btc",
+  seller_outcome_amount: "14.0",
+  seller_outcome_fee:    "0.0",
+  completed_at:          "2018-05-07T17:32:09Z"
+}
+```
+
 ## Producing events using Ruby
 
 ```ruby
