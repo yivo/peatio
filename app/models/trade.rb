@@ -21,6 +21,27 @@ class Trade < ActiveRecord::Base
 
   scope :with_market, -> (market) { where(market: Market === market ? market : Market.find(market)) }
 
+  after_commit on: :create do
+    { market:                market.id,
+      price:                 price.to_s('F'),
+      buyer_uid:             bid_member.uid,
+      buyer_income_unit:     market.ask_unit,
+      buyer_income_amount:   (volume - volume * bid.fee).to_s('F'),
+      buyer_income_fee:      (volume * bid.fee).to_s('F'),
+      buyer_outcome_unit:    market.bid_unit,
+      buyer_outcome_amount:  funds.to_s('F'),
+      buyer_outcome_fee:     '0.0',
+      seller_uid:            ask_member.uid,
+      seller_income_unit:    market.bid_unit,
+      seller_income_amount:  (funds - funds * ask.fee).to_s('F'),
+      seller_income_fee:     (funds * ask.fee).to_s('F'),
+      seller_outcome_unit:   market.ask_unit,
+      seller_outcome_amount: volume.to_s('F'),
+      seller_outcome_fee:    '0.0',
+      completed_at:          created_at.iso8601
+    }.tap { |payload| EventAPI.notify ['market', market_id, 'trade'].join('.'), payload }
+  end
+
   class << self
     def latest_price(market)
       with_market(market).order(:id).reverse_order
