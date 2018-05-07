@@ -5,8 +5,8 @@ describe Ordering do
   describe 'ordering service can submit order' do
     before do
       order.stubs(:hold_account).returns(account)
-      AMQPQueue.expects(:enqueue).with(:matching, anything)
-      AMQPQueue.expects(:enqueue).with(:pusher_member, anything)
+      AMQPQueue.expects(:enqueue).with(:matching, anything).once
+      AMQPQueue.expects(:enqueue).with(:pusher_member, anything).at_least_once
     end
 
     it 'should return true on success' do

@@ -1,5 +1,5 @@
 describe APIv2::Entities::Account do
-  let(:account) { create_account(:btc) }
+  let(:account) { create_account(:btc, balance: 100) }
 
   subject { OpenStruct.new APIv2::Entities::Account.represent(account).serializable_hash }
 
