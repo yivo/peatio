@@ -87,7 +87,7 @@ describe Account do
   end
 
   describe '#versions' do
-    let(:account) { create(:member).ac(:usd) }
+    let(:account) { create_account(:usd, balance: 100) }
 
     context 'when account add funds' do
       subject { account.plus_funds('10'.to_d, reason: Account::WITHDRAW).last_version }
@@ -140,7 +140,7 @@ describe Account do
     end
 
     context 'when account unlock funds' do
-      let(:account) { create_account(locked: '10'.to_d) }
+      let(:account) { create_account(balance: '100'.to_d, locked: '10'.to_d) }
       subject { account.unlock_funds('10'.to_d, reason: Account::WITHDRAW).last_version }
       it { expect(subject.reason.withdraw?).to be true }
       it { expect(subject.locked).to be_d '-10' }
@@ -288,15 +288,17 @@ describe Account do
   end
 
   describe '.enabled' do
-    let!(:account1) { create_account(:usd) }
-    let!(:account2) { create_account(:btc) }
-    let!(:account3) { create_account(:dash) }
+    before do
+      create_account(:usd)
+      create_account(:btc)
+      create_account(:dash)
+    end
 
-    it 'should only return the accoutns with currency enabled' do
+    it 'returns the accounts with currency enabled' do
       currency = Currency.find_by_code!(:dash)
       currency.transaction do
         currency.update_columns(visible: false)
-        expect(Account.enabled.to_a).to eq [account1, account2]
+        expect(Account.enabled.count).to eq 15
         currency.update_columns(visible: true)
       end
     end
