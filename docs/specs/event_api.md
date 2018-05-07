@@ -218,11 +218,11 @@ event: {
 | -------- | ----------------------- |
 | `market` | The market pair ID.     |
 
-## Format of `market.btcusd.trade` event
+## Format of `market.btcusd.trade_completed` event
 
 ```ruby
 event: {
-  name:                  "market.btcusd.trade",
+  name:                  "market.btcusd.trade_completed",
   market:                "btcusd",
   price:                 "0.03",
   buyer_uid:             "ID022H2NF6E87",
@@ -240,6 +240,30 @@ event: {
   seller_outcome_amount: "14.0",
   seller_outcome_fee:    "0.0",
   completed_at:          "2018-05-07T17:32:09Z"
+}
+```
+
+## Format of `market.btcusd.order_created` event
+
+```ruby
+event: {
+  name: "market.btcusd.order_created"
+}
+```
+
+## Format of `market.btcusd.order_canceled` event
+
+```ruby
+event: {
+  name: "market.btcusd.order_canceled"
+}
+```
+
+## Format of `market.btcusd.order_completed` event
+
+```ruby
+event: {
+  name: "market.btcusd.order_completed"
 }
 ```
 

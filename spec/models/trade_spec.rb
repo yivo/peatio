@@ -129,7 +129,7 @@ describe Trade, 'Event API' do
   before { Trade.any_instance.expects(:created_at).returns(completed_at).at_least_once }
 
   before do
-    EventAPI.expects(:notify).with('market.btcusd.trade', {
+    EventAPI.expects(:notify).with('market.btcusd.trade_completed', {
       market:                'btcusd',
       price:                 '0.03',
       buyer_uid:             buyer.uid,

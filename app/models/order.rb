@@ -37,6 +37,23 @@ class Order < ActiveRecord::Base
 
   before_validation(on: :create) { self.fee = config.public_send("#{kind}_fee") }
 
+  after_commit on: :create do
+    EventAPI.notify ['market', market_id, 'order_created'].join('.'), \
+      Serializers::EventAPI::OrderCreated.call(self)
+  end
+
+  after_commit on: :update do
+    event = case previous_changes.dig('state', 1)
+      when 'cancel' then 'order_canceled'
+      when 'done'   then 'order_completed'
+    end
+
+    next if event.blank?
+
+    EventAPI.notify ['market', market_id, event].join('.'), \
+      Serializers::EventAPI.const_get(event.camelize).call(self)
+  end
+
   def funds_used
     origin_locked - locked
   end
