@@ -198,26 +198,6 @@ event: {
 | `currency` | The currency code.      |
 | `balance`  | The up-to-date balance. |
 
-## Format of `market.btcusd.new_order` event
-
-IMPORTANT: This payload is far far from final state since order model in Peatio is pretty complicated.
-
-```ruby
-event: {
-  name:      "market.btcusd.new_order",
-  market_id: "btcusd",
-  amount:    "0.5",
-  price:     "8000",
-  type:      "bid",
-  bid_unit:  "btc",
-  ask_unit:  "usd"
-}
-```
-
-| Field    | Description             |
-| -------- | ----------------------- |
-| `market` | The market pair ID.     |
-
 ## Format of `market.btcusd.trade_completed` event
 
 ```ruby
@@ -248,6 +228,14 @@ event: {
 ```ruby
 event: {
   name: "market.btcusd.order_created"
+}
+```
+
+## Format of `market.btcusd.order_updated` event
+
+```ruby
+event: {
+  name: "market.btcusd.order_updated"
 }
 ```
 
