@@ -72,7 +72,7 @@ describe Serializers::EventAPI::TradeCompleted, 'Event API' do
       price:                 '0.03',
       buyer_uid:             buyer.uid,
       buyer_income_unit:     'btc',
-      buyer_income_amount:   '14',
+      buyer_income_amount:   '14.0',
       buyer_income_fee:      '0.021',
       buyer_outcome_unit:    'usd',
       buyer_outcome_amount:  '0.42',

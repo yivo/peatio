@@ -33,9 +33,27 @@ describe Serializers::EventAPI::OrderCompleted do
   before do
     EventAPI.expects(:notify).with('market.btcusd.order_created', anything).once
     EventAPI.expects(:notify).with('market.btcusd.order_completed', {
-      market:       'btcusd',
-      created_at:   created_at.iso8601,
-      completed_at: completed_at.iso8601
+      market:                  'btcusd',
+      type:                    'sell',
+      trader_uid:              seller.uid,
+      income_unit:             'usd',
+      income_fee_type:         'relative',
+      income_fee_value:        '0.0015',
+      outcome_unit:            'btc',
+      outcome_fee_type:        'relative',
+      outcome_fee_value:       '0.0',
+      initial_income_amount:   '100.0',
+      current_income_amount:   '0.0',
+      previous_income_amount:  '100.0',
+      initial_outcome_amount:  '3.0',
+      current_outcome_amount:  '0.0',
+      previous_outcome_amount: '3.0',
+      strategy:                'limit',
+      price:                   '0.03',
+      state:                   'completed',
+      trades_count:            1,
+      created_at:              created_at.iso8601,
+      completed_at:            completed_at.iso8601
     }).once
   end
 
