@@ -46,9 +46,8 @@ class Order < ActiveRecord::Base
     event = case previous_changes.dig('state', 1)
       when 'cancel' then 'order_canceled'
       when 'done'   then 'order_completed'
+      else 'order_updated'
     end
-
-    next if event.blank?
 
     EventAPI.notify ['market', market_id, event].join('.'), \
       Serializers::EventAPI.const_get(event.camelize).call(self)

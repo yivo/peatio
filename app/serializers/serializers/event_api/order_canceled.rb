@@ -2,7 +2,8 @@ module Serializers
   module EventAPI
     class OrderCanceled
       def call(order)
-        { created_at:  order.created_at.iso8601,
+        { market:      order.market.id,
+          created_at:  order.created_at.iso8601,
           canceled_at: order.updated_at.iso8601 }
       end
 
