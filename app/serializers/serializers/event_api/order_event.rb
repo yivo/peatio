@@ -48,6 +48,22 @@ module Serializers
       def sell?(order)
         !buy?(order)
       end
+
+      def previous_income_amount(order)
+        if order.previous_changes.key?('volume')
+          order.previous_changes['volume'][0]
+        else
+          order.volume.to_s('F')
+        end.to_s('F')
+      end
+
+      def previous_outcome_amount(order)
+        if order.previous_changes.key?('locked')
+          order.previous_changes['locked'][0]
+        else
+          order.volume * order.price
+        end.to_s('F')
+      end
     end
   end
 end
