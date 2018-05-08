@@ -38,11 +38,13 @@ class Order < ActiveRecord::Base
   before_validation(on: :create) { self.fee = config.public_send("#{kind}_fee") }
 
   after_commit on: :create do
+    next unless ord_type == 'limit'
     EventAPI.notify ['market', market_id, 'order_created'].join('.'), \
       Serializers::EventAPI::OrderCreated.call(self)
   end
 
   after_commit on: :update do
+    next unless ord_type == 'limit'
     event = case previous_changes.dig('state', 1)
       when 'cancel' then 'order_canceled'
       when 'done'   then 'order_completed'

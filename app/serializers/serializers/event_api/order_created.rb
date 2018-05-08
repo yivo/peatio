@@ -1,16 +1,7 @@
 module Serializers
   module EventAPI
-    class OrderCreated
-      def call(order)
-        { market:     order.market.id,
-          created_at: order.created_at.iso8601 }
-      end
+    class OrderCreated < OrderEvent
 
-      class << self
-        def call(order)
-          new.call(order)
-        end
-      end
     end
   end
 end
