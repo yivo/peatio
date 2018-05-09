@@ -18,6 +18,8 @@ class Currency < ActiveRecord::Base
   validates :withdraw_fee, numericality: { greater_than_or_equal_to: 0 }
   validate { errors.add(:options, :invalid) unless Hash === options }
 
+  after_create { Member.find_each(&:touch_accounts) }
+
   scope :visible, -> { where(visible: true) }
   scope :all_with_invisible, -> { all }
 
