@@ -2,6 +2,7 @@ describe Serializers::EventAPI::OrderCreated do
   let(:buyer) { create(:member, :verified_identity, :barong) }
 
   let :order_bid do
+    # Buy 14 BTC for 0.42 USD (0.03 USD per BTC).
     create :order_bid, \
       bid:           Currency.find_by!(code: :usd).id,
       ask:           Currency.find_by!(code: :btc).id,
@@ -26,7 +27,7 @@ describe Serializers::EventAPI::OrderCreated do
     buyer.ac(:btc).lock_funds('100.0'.to_d)
   end
 
-  before { Order.any_instance.expects(:created_at).returns(created_at).at_least_once }
+  before { OrderBid.any_instance.expects(:created_at).returns(created_at).at_least_once }
 
   before do
     EventAPI.expects(:notify).with('market.btcusd.order_created', {

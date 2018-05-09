@@ -27,8 +27,8 @@ describe Serializers::EventAPI::OrderCanceled do
     seller.ac(:btc).lock_funds('100.0'.to_d)
   end
 
-  before { Order.any_instance.expects(:created_at).returns(created_at).at_least_once }
-  before { Order.any_instance.expects(:updated_at).returns(canceled_at).at_least_once }
+  before { OrderAsk.any_instance.expects(:created_at).returns(created_at).at_least_once }
+  before { OrderAsk.any_instance.expects(:updated_at).returns(canceled_at).at_least_once }
 
   before do
     EventAPI.expects(:notify).with('market.btcusd.order_created', anything).once
@@ -42,10 +42,10 @@ describe Serializers::EventAPI::OrderCanceled do
       outcome_unit:            'btc',
       outcome_fee_type:        'relative',
       outcome_fee_value:       '0.0',
-      initial_income_amount:   '100.0',
-      current_income_amount:   '100.0',
-      initial_outcome_amount:  '3.0',
-      current_outcome_amount:  '3.0',
+      initial_income_amount:   '3.0',
+      current_income_amount:   '3.0',
+      initial_outcome_amount:  '100.0',
+      current_outcome_amount:  '100.0',
       strategy:                'limit',
       price:                   '0.03',
       state:                   'canceled',

@@ -11,10 +11,10 @@ module Serializers
           outcome_unit:           Currency.find(buy?(order) ? order.bid : order.ask).code,
           outcome_fee_type:       'relative',
           outcome_fee_value:      '0.0',
-          initial_income_amount:  order.origin_volume.to_s('F'),
-          current_income_amount:  order.volume.to_s('F'),
-          initial_outcome_amount: (order.origin_volume * order.price).to_s('F'),
-          current_outcome_amount: (order.volume * order.price).to_s('F'),
+          initial_income_amount:  initial_income_amount(order),
+          current_income_amount:  current_income_amount(order),
+          initial_outcome_amount: initial_outcome_amount(order),
+          current_outcome_amount: current_outcome_amount(order),
           strategy:               order.ord_type,
           price:                  order.price.to_s('F'),
           state:                  state(order),
@@ -49,20 +49,39 @@ module Serializers
         !buy?(order)
       end
 
+      def initial_income_amount(order)
+        multiplier = buy?(order) ? 1.0 : order.price
+        amount     = order.origin_volume
+        (amount * multiplier).to_s('F')
+      end
+
+      def current_income_amount(order)
+        multiplier = buy?(order) ? 1.0 : order.price
+        amount     = order.volume
+        (amount * multiplier).to_s('F')
+      end
+
       def previous_income_amount(order)
-        if order.previous_changes.key?('volume')
-          order.previous_changes['volume'][0]
-        else
-          order.volume.to_s('F')
-        end.to_s('F')
+        changes    = order.previous_changes
+        multiplier = buy?(order) ? 1.0 : order.price
+        amount     = changes.key?('volume') ? changes['volume'][0] : order.volume
+        (amount * multiplier).to_s('F')
+      end
+
+      def initial_outcome_amount(order)
+        attribute = buy?(order) ? 'origin_locked' : 'origin_volume'
+        order.send(attribute).to_s('F')
+      end
+
+      def current_outcome_amount(order)
+        attribute = buy?(order) ? 'locked' : 'volume'
+        order.send(attribute).to_s('F')
       end
 
       def previous_outcome_amount(order)
-        if order.previous_changes.key?('locked')
-          order.previous_changes['locked'][0]
-        else
-          order.volume * order.price
-        end.to_s('F')
+        changes   = order.previous_changes
+        attribute = buy?(order) ? 'locked' : 'volume'
+        (changes.key?(attribute) ? changes[attribute][0] : order.send(attribute)).to_s('F')
       end
     end
   end
