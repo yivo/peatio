@@ -200,6 +200,8 @@ event: {
 
 ## Format of `market.btcusd.order_created` event
 
+Buy 14 BTC for 0.42 USD (0.03 USD per BTC).
+
 ```ruby
 event: {
   name:                   "market.btcusd.order_created",
@@ -226,6 +228,8 @@ event: {
 
 ## Format of `market.btcusd.order_updated` event
 
+Sell 100 BTC for 3 USD (0.03 USD per BTC).
+
 ```ruby
 event: {
   name:                    "market.btcusd.order_updated",
@@ -238,12 +242,12 @@ event: {
   outcome_unit:            "btc",
   outcome_fee_type:        "relative",
   outcome_fee_value:       "0.0",
-  initial_income_amount:   "100.0",
-  current_income_amount:   "80.0",
-  previous_income_amount:  "100.0",
-  initial_outcome_amount:  "3.0",
-  current_outcome_amount:  "2.4",
-  previous_outcome_amount: "3.0",
+  initial_income_amount:   "3.0",
+  current_income_amount:   "2.4",
+  previous_income_amount:  "3.0",
+  initial_outcome_amount:  "100.0",
+  current_outcome_amount:  "80.0",
+  previous_outcome_amount: "100.0",
   strategy:                "limit",
   price:                   "0.03",
   state:                   "open",
@@ -254,6 +258,8 @@ event: {
 ```
 
 ## Format of `market.btcusd.order_canceled` event
+
+Sell 100 BTC for 3 USD (0.03 USD per BTC).
 
 ```ruby
 event: {
@@ -267,10 +273,10 @@ event: {
   outcome_unit:            "btc",
   outcome_fee_type:        "relative",
   outcome_fee_value:       "0.0",
-  initial_income_amount:   "100.0",
-  current_income_amount:   "100.0",
-  initial_outcome_amount:  "3.0",
-  current_outcome_amount:  "3.0",
+  initial_income_amount:   "3.0",
+  current_income_amount:   "3.0",
+  initial_outcome_amount:  "100.0",
+  current_outcome_amount:  "100.0",
   strategy:                "limit",
   price:                   "0.03",
   state:                   "canceled",
@@ -281,6 +287,8 @@ event: {
 ```
 
 ## Format of `market.btcusd.order_completed` event
+
+Sell 100 BTC for 3 USD (0.03 USD per BTC).
 
 ```ruby
 event: {
@@ -294,12 +302,12 @@ event: {
   outcome_unit:            "btc",
   outcome_fee_type:        "relative",
   outcome_fee_value:       "0.0",
-  initial_income_amount:   "100.0",
+  initial_income_amount:   "3.0",
   current_income_amount:   "0.0",
-  previous_income_amount:  "100.0",
-  initial_outcome_amount:  "3.0",
+  previous_income_amount:  "3.0",
+  initial_outcome_amount:  "100.0",
   current_outcome_amount:  "0.0",
-  previous_outcome_amount: "3.0",
+  previous_outcome_amount: "100.0",
   strategy:                "limit",
   price:                   "0.03",
   state:                   "completed",
