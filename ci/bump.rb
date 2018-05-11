@@ -62,7 +62,7 @@ def bump_from_master_branch
 
   # Increment patch version number, tag, and push.
   candidate_version = Gem::Version.new(latest_version.segments.dup.tap { |s| s[2] += 1 }.join("."))
-  tag_n_push(candidate_version.to_s, name: 'master') unless versions.include?(candidate_version)
+  tag_n_push(candidate_version.to_s, name: "master") unless versions.include?(candidate_version)
 end
 
 #
@@ -96,20 +96,12 @@ end
 #
 # @param tag [String]
 def tag_n_push(tag, branch)
-  File.open "lib/peatio/version.rb", "w" do |f|
-    f.write <<-RUBY
-module Peatio
-  VERSION = '#{tag}'
-end
-    RUBY
-  end
-
-  [
+  [ %( V="#{tag}" bin/bump ),
     %( git config --global user.email "#{bot_email}" ),
     %( git config --global user.name "#{bot_name}" ),
     %( git remote add authenticated-origin https://#{bot_username}:#{ENV.fetch("GITHUB_API_KEY")}@github.com/#{repository_slug} ),
     %( git checkout -b release ),
-    %( git add lib/peatio/version.rb ),
+    %( git add -A ),
     %( git commit -m "[ci skip] Bump #{tag}." ),
     %( git push authenticated-origin release:#{branch.fetch(:name)} ),
     %( git tag #{tag} -a -m "Automatically generated tag from TravisCI build #{ENV.fetch("TRAVIS_BUILD_NUMBER")}." ),
@@ -184,23 +176,36 @@ def generic_semver?(version)
   version.segments.count == 3 && version.segments.all? { |segment| segment.match?(/\A[0-9]+\z/) }
 end
 
-# Build must not run on a fork.
-bump   = ENV["TRAVIS_REPO_SLUG"] == repository_slug
-# Skip PRs.
-bump &&= ENV["TRAVIS_PULL_REQUEST"] == "false"
-# Build must run on branch.
-bump &&= !ENV["TRAVIS_BRANCH"].to_s.empty?
-# GitHub API key must be available.
-bump &&= !ENV["GITHUB_API_KEY"].to_s.empty?
-# Build must not run on tag.
-bump &&= ENV["TRAVIS_TAG"].to_s.empty?
-# Ensure this commit is not tagged.
-bump &&= !tagged_commits_mapping.key?(ENV["TRAVIS_COMMIT"])
+unless ENV["TRAVIS_REPO_SLUG"] == repository_slug
+  Kernel.abort "Bumping version aborted: invalid repository (expected #{repository_slug}, got #{ENV["TRAVIS_REPO_SLUG"]})."
+end
 
-if bump
-  if ENV["TRAVIS_BRANCH"] == "master"
+unless ENV["TRAVIS_PULL_REQUEST"] == "false"
+  Kernel.abort "Bumping version aborted: GitHub pull request detected."
+end
+
+if ENV["TRAVIS_BRANCH"].to_s.empty?
+  Kernel.abort "Bumping version aborted: could not detect Git branch."
+end
+
+if ENV["GITHUB_API_KEY"].to_s.empty?
+  Kernel.abort "Bumping version aborted: GitHub API key is missing."
+end
+
+unless ENV["TRAVIS_TAG"].to_s.empty?
+  Kernel.abort "Bumping version aborted: the build has been triggered by Git tag."
+end
+
+if tagged_commits_mapping.key?(ENV["TRAVIS_COMMIT"])
+  Kernel.abort "Bumping version aborted: commit #{ENV["TRAVIS_COMMIT"]} is already tagged."
+end
+
+if ENV["TRAVIS_BRANCH"] == "master"
+  if ENV["INCREMENT_PATCH_LEVEL_ON_MASTER"]
     bump_from_master_branch
   else
-    bump_from_version_specific_branch(ENV["TRAVIS_BRANCH"])
+    Kernel.abort "Bumping version aborted: bumping disabled for master branch."
   end
+else
+  bump_from_version_specific_branch(ENV["TRAVIS_BRANCH"])
 end

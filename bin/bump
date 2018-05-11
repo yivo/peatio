@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ -n "${V}" ]; then
+cat > lib/peatio/version.rb << EOF
+module Peatio
+  VERSION = '${V}'
+end
+EOF
+fi
