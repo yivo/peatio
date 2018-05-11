@@ -47,7 +47,7 @@ ARGV.each do |id|
 
   # Enable manual acknowledge mode by setting manual_ack: true.
   queue.subscribe manual_ack: true do |delivery_info, metadata, payload|
-    logger.info "Received: #{payload}"
+    logger.info { "Received: #{payload}" }
     begin
 
       # Invoke Worker#process with floating number of arguments.

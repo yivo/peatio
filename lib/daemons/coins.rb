@@ -11,7 +11,7 @@ def process_deposits(currency, deposit)
   recipients = deposit[:entries].map { |entry| entry[:address] }
   return unless recipients.all? { |address| PaymentAddress.where(currency: currency, address: address).exists? }
 
-  Rails.logger.info "Missed #{currency.code.upcase} transaction: #{deposit[:id]}."
+  Rails.logger.info { "Missed #{currency.code.upcase} transaction: #{deposit[:id]}." }
 
   # Immediately enqueue job.
   AMQPQueue.enqueue :deposit_coin, { txid: deposit[:id], currency: currency.code }
