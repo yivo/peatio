@@ -9,19 +9,22 @@ module Worker
       tx  = ccy.api.load_deposit(payload.fetch(:txid))
 
       if tx
-        Rails.logger.info "Processing #{ccy.code.upcase} deposit: #{payload.fetch(:txid)}."
+        Rails.logger.info { "Processing #{ccy.code.upcase} deposit: #{payload.fetch(:txid)}." }
         ActiveRecord::Base.transaction do
           tx.fetch(:entries).each_with_index { |entry, index| deposit!(ccy, tx, entry, index) }
         end
       else
-        Rails.logger.info "Could not load #{ccy.code.upcase} deposit #{payload.fetch(:txid)}."
+        Rails.logger.info { "Could not load #{ccy.code.upcase} deposit #{payload.fetch(:txid)}." }
       end
     end
 
   private
 
     def deposit!(currency, tx, entry, index)
-      return Rails.logger.info "Skipped #{tx.fetch(:id)}:#{index}." unless deposit_entry_processable?(currency, tx, entry, index)
+      unless deposit_entry_processable?(currency, tx, entry, index)
+        Rails.logger.info { "Skipped #{tx.fetch(:id)}:#{index}." }
+        return
+      end
 
       pt = PaymentTransaction::Normal.create! \
         txid:          tx[:id],
@@ -44,7 +47,7 @@ module Worker
 
       deposit.submit!
 
-      Rails.logger.info "Successfully processed #{tx.fetch(:id)}:#{index}."
+      Rails.logger.info { "Successfully processed #{tx.fetch(:id)}:#{index}." }
     rescue => e
       Rails.logger.error { "Failed to process #{tx.fetch(:id)}:#{index}." }
       Rails.logger.debug { tx.inspect }

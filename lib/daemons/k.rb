@@ -72,7 +72,7 @@ def append_point(market, period, ts)
   k = key(market, period)
   point = get_point(market, period, ts)
 
-  @logger.info "append #{k}: #{point.to_json}"
+  @logger.info { "append #{k}: #{point.to_json}" }
   @r.rpush k, point.to_json
 
   if period == 1
@@ -87,7 +87,7 @@ def update_point(market, period, ts)
   k = key(market, period)
   point = get_point(market, period, ts)
 
-  @logger.info "update #{k}: #{point.to_json}"
+  @logger.info { "update #{k}: #{point.to_json}" }
   @r.rpop k
   @r.rpush k, point.to_json
 end
