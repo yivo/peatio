@@ -23,8 +23,8 @@ while($running) do
     begin
       worker.run
     rescue
-      Rails.logger.error "#{worker.class.name} failed to run: #{$!}"
-      Rails.logger.error $!.backtrace[0,20].join("\n")
+      Rails.logger.error { "#{worker.class.name} failed to run: #{$!}" }
+      Rails.logger.error { $!.backtrace[0,20].join("\n") }
     end
   end
 
