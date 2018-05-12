@@ -1,6 +1,6 @@
 require File.join(ENV.fetch('RAILS_ROOT'), "config", "environment")
 
-Rails.logger = @logger = Logger.new STDOUT
+@logger = Rails.logger
 
 @r ||= KlineDB.redis
 
