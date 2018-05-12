@@ -3,7 +3,7 @@
 require File.expand_path('../../config/environment', __dir__)
 require_dependency 'api_v2/websocket_protocol'
 
-Rails.logger = logger = Logger.new STDOUT
+logger = Rails.logger
 
 EM.error_handler do |e|
   logger.error { "Error: #{e}" }
