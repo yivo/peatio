@@ -232,8 +232,6 @@ GEM
     minitest (5.11.3)
     mocha (1.4.0)
       metaclass (~> 0.0.1)
-    momentjs-rails (2.17.1)
-      railties (>= 3.1)
     multi_json (1.13.0)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -471,7 +469,6 @@ DEPENDENCIES
   method-not-implemented (~> 1.0)
   mini_racer (~> 0.1)
   mocha (~> 1.4)
-  momentjs-rails
   mysql2 (~> 0.3.21)
   oauth2!
   omniauth (~> 1.8.1)

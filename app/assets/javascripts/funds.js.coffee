@@ -23,7 +23,6 @@
 #= require bootstrap
 #
 #= require bignumber
-#= require moment
 #= require underscore
 #= require flight.min
 #= require list

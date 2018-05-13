@@ -8,7 +8,6 @@
 #= require jquery-timing.min
 #= require bootstrap
 #= require scrollIt
-#= require moment
 #= require bignumber
 #= require underscore
 #= require clipboard
