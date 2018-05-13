@@ -109,14 +109,9 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
-    countries (0.9.3)
-      currencies (~> 0.4.2)
-    country_select (2.1.1)
-      countries (>= 0.9.3, < 0.10.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.3)
-    currencies (0.4.2)
     database_cleaner (1.6.2)
     datagrid (1.5.7)
       rails (>= 4.0)
@@ -431,7 +426,6 @@ DEPENDENCIES
   chromedriver-helper (~> 1.1)
   clipboard-rails (~> 1.7)
   coffee-rails
-  country_select (~> 2.1.0)
   database_cleaner (~> 1.6)
   datagrid
   digest-sha3 (~> 1.1)
