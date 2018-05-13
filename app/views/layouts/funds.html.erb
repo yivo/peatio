@@ -11,7 +11,6 @@
     <%= custom_stylesheet_link_tag_for :main %>
 
     <%= include_gon %>
-    <%= render 'shared/html5' %>
     <%= javascript_include_tag "locales/#{I18n.locale}" %>
     <%= javascript_include_tag 'funds' %>
     <%= yield(:scripts) if content_for?(:scripts) %>
