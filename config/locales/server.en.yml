@@ -741,7 +741,6 @@ en:
   admin_header:
     deposits: Deposits
     withdraws: Withdraws
-    statistics: Data Statistics
   footer:
     about: About
     privacy: Privacy
