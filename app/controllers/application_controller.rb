@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :current_user, :is_admin?, :current_market, :gon
-  before_action :set_timezone, :set_gon
+  before_action :set_language, :set_timezone, :set_gon
   after_action :allow_iframe
   rescue_from CoinAPI::ConnectionRefusedError, with: :coin_rpc_connection_refused
 
@@ -169,5 +169,19 @@ class ApplicationController < ActionController::Base
 
   def allow_iframe
     response.headers.except! 'X-Frame-Options' if Rails.env.development?
+  end
+
+  def set_language
+    cookies[:lang] = params[:lang] unless params[:lang].blank?
+    cookies[:lang].tap do |locale|
+      I18n.locale = locale if locale.present? && I18n.available_locales.include?(locale.to_sym)
+    end
+  end
+
+  def set_redirect_to
+    if request.get?
+      uri = URI(request.url)
+      cookies[:redirect_to] = "#{uri.path}?#{uri.query}"
+    end
   end
 end

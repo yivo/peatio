@@ -25,7 +25,6 @@ gem 'cancancan'
 gem 'enumerize'
 gem 'datagrid'
 gem 'kaminari'
-gem 'http_accept_language'
 gem 'paper_trail', '~> 3.0.1'
 gem 'rails-observers'
 
