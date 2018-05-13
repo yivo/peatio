@@ -75,9 +75,6 @@ GEM
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
-    bourbon (4.3.4)
-      sass (~> 3.4)
-      thor (~> 0.19)
     builder (3.2.3)
     bullet (5.7.5)
       activesupport (>= 3.0.0)
@@ -433,7 +430,6 @@ DEPENDENCIES
   annotate (~> 2.7)
   arel-is-blank (~> 1.0)
   bootstrap (~> 4.0.0)
-  bourbon
   bullet (~> 5.7)
   bunny (~> 2.9.0)
   cancancan
