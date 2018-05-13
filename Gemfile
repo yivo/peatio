@@ -8,7 +8,6 @@ gem 'puma'
 gem 'mysql2', '~> 0.3.21'
 gem 'redis-rails'
 
-gem 'json'
 gem 'jbuilder'
 
 gem 'oauth2', github: 'oauth-xx/oauth2'
