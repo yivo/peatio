@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :is_admin?, :current_market, :gon
   before_action :set_language, :set_timezone, :set_gon
   after_action :allow_iframe
-  rescue_from CoinAPI::ConnectionRefusedError, with: :coin_rpc_connection_refused
 
   private
 
@@ -161,10 +160,6 @@ class ApplicationController < ActionController::Base
     end
 
     gon.bank_details_html = ENV['BANK_DETAILS_HTML']
-  end
-
-  def coin_rpc_connection_refused
-    render 'errors/connection'
   end
 
   def allow_iframe
