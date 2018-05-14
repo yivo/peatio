@@ -31,8 +31,8 @@ module Worker
         raise ArgumentError, "Unknown action: #{@payload.action}"
       end
     rescue
-      Rails.logger.error "Failed to process payload: #{$!}"
-      Rails.logger.error $!.backtrace.join("\n")
+      Rails.logger.error { "Failed to process payload: #{$!}" }
+      Rails.logger.error { $!.backtrace.join("\n") }
     end
 
     def cache_book
@@ -40,11 +40,11 @@ module Worker
         market = Market.find id
         Rails.cache.write "peatio:#{market}:depth:asks", get_depth(market, :ask)
         Rails.cache.write "peatio:#{market}:depth:bids", get_depth(market, :bid)
-        Rails.logger.debug "SlaveBook (#{market}) updated"
+        Rails.logger.debug { "SlaveBook (#{market}) updated" }
       end
     rescue
-      Rails.logger.error "Failed to cache book: #{$!}"
-      Rails.logger.error $!.backtrace.join("\n")
+      Rails.logger.error { "Failed to cache book: #{$!}" }
+      Rails.logger.error { $!.backtrace.join("\n") }
     end
 
     def order

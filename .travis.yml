@@ -38,7 +38,7 @@ before_script:
 
 # Execute all of the commands which should make the build pass or fail.
 script:
-  xvfb-run --auto-servernum --server-args="-screen 0 1280x800x16" bundle exec rspec &&
+  LOG_LEVEL=warn xvfb-run --auto-servernum --server-args="-screen 0 1280x800x16" bundle exec rspec &&
   docker build --tag peatio .
 
 # Execute all of the commands which need to be executed after the build passed.
