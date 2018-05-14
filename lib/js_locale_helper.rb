@@ -12,11 +12,9 @@ module JsLocaleHelper
     {locale_str => {}}
   end
 
-  def self.output_locale(locale=:en)
-    result = ""
-    result << "I18n.translations = #{load_yaml(locale).to_json};\n"
-    result << "I18n.locale = '#{locale}';\n"
-    result
+  def self.output_locale(locale = :en)
+    "I18n.translations = #{load_yaml(locale).to_json};
+     I18n.locale = '#{locale}';"
   end
 
 end
