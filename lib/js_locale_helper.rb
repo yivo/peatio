@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module JsLocaleHelper
 
   def self.load_yaml(locale)
