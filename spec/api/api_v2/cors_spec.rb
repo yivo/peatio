@@ -1,5 +1,5 @@
 describe APIv2::Members, type: :request do
-  let(:member) { create :member, :verified_identity }
+  let(:member) { create(:member, :verified_identity) }
   let(:token) { jwt_for(member) }
 
   def check_cors(response)
@@ -20,6 +20,18 @@ describe APIv2::Members, type: :request do
   it 'sends CORS headers when requesting using GET' do
     api_get '/api/v2/members/me', token: token
     expect(response).to be_success
+    check_cors(response)
+  end
+
+  it 'sends CORS headers ever when user is not authenticated' do
+    api_get '/api/v2/members/me'
+    expect(response).to have_http_status 401
+    check_cors(response)
+  end
+
+  it 'sends CORS headers when invalid parameter supplied' do
+    api_get '/api/v2/orders', token: token, params: { market: 'usdusd' }
+    expect(response).to have_http_status 422
     check_cors(response)
   end
 end
