@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 module ManagementAPIv1
   class Mount < Grape::API
     PREFIX = '/management_api'
@@ -14,9 +17,21 @@ module ManagementAPIv1
 
     helpers ManagementAPIv1::Helpers
 
-    rescue_from(ManagementAPIv1::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
-    rescue_from(Grape::Exceptions::ValidationErrors) { |e| error!(e.message, 422) }
-    rescue_from(ActiveRecord::RecordNotFound) { |e| error!('Couldn\'t find record.', 404) }
+    rescue_from ManagementAPIv1::Exceptions::Base do |e|
+      Rails.logger.error { e.inspect }
+      error!(e.message, e.status, e.headers)
+    end
+
+    rescue_from Grape::Exceptions::ValidationErrors do |e|
+      Rails.logger.error { e.inspect }
+      Rails.logger.debug { e.full_messages }
+      error!(e.message, 422)
+    end
+
+    rescue_from ActiveRecord::RecordNotFound do |e|
+      Rails.logger.error { e.inspect }
+      error!('Couldn\'t find record.', 404)
+    end
 
     use ManagementAPIv1::JWTAuthenticationMiddleware
 
