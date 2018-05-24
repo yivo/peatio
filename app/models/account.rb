@@ -19,7 +19,7 @@ class Account < ActiveRecord::Base
 
   scope :enabled, -> { joins(:currency).merge(Currency.where(enabled: true)) }
 
-  after_commit :trigger, :sync_update
+  after_commit :trigger_pusher_events
 
   def payment_address
     return unless currency.coin?
@@ -70,31 +70,20 @@ class Account < ActiveRecord::Base
     balance + locked
   end
 
-  def trigger
-    AMQPQueue.enqueue(:pusher_member, member_id: member.id, event: 'account', data: {
-      balance:  balance.to_s('F'),
-      locked:   locked.to_s('F'),
-      currency: currency
-    })
-  end
-
   def as_json(*)
     super.merge! \
       deposit_address: payment_address&.address,
       currency:        currency.code
   end
 
-  private
+private
 
-  def sync_update
-    return unless member
-    Pusher["private-#{member.sn}"].trigger_async 'accounts', {
+  def trigger_pusher_events
+    member.trigger_pusher_event :accounts, \
       id:         id,
-      type:       'update',
-      attributes: { balance: balance, locked: locked }
-    }
+      type:       :update,
+      attributes: { balance: balance.to_s('F'), locked: locked.to_s('F') }
   end
-
 end
 
 # == Schema Information

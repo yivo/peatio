@@ -67,15 +67,13 @@ module Matching
     end
 
     def publish_trade
-      @ask.hold_account.reload.trigger
-      @bid.hold_account.reload.trigger
       AMQPQueue.publish :trade, @trade.as_json, {
         headers: {
-            market:       @market.id,
-            ask_member_id: @ask.member_id,
-            bid_member_id: @bid.member_id
-          }
+          market:        @market.id,
+          ask_member_id: @ask.member_id,
+          bid_member_id: @bid.member_id
         }
+      }
     end
   end
 end

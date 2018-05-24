@@ -11,7 +11,7 @@ class Order < ActiveRecord::Base
   TYPES = %w[ market limit ]
   enumerize :ord_type, in: TYPES, scope: true
 
-  after_commit :trigger
+  after_commit :trigger_pusher_event
   before_validation :fix_number_precision, on: :create
 
   validates :ord_type, :volume, :origin_volume, :locked, :origin_locked, presence: true
@@ -54,8 +54,8 @@ class Order < ActiveRecord::Base
     @config ||= Market.find(market_id)
   end
 
-  def trigger
-    AMQPQueue.enqueue(:pusher_member, member_id: member.id, event: 'order', data: {
+  def trigger_pusher_event
+    AMQPQueue.enqueue(:pusher_member, member_id: member.id, event: :order, data: {
       id:            id,
       at:            at,
       market:        market.as_json,
