@@ -30,6 +30,7 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot add funds (amount: #{amount})." if amount <= ZERO
       update_columns(balance: balance + amount)
+      add_to_transaction
     end
     self
   end
@@ -38,6 +39,7 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot subtract funds (amount: #{amount})." if amount <= ZERO || amount > balance
       update_columns(balance: balance - amount)
+      add_to_transaction
     end
     self
   end
@@ -46,6 +48,7 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot lock funds (amount: #{amount})." if amount <= ZERO || amount > balance
       update_columns(balance: balance - amount, locked: locked + amount)
+      add_to_transaction
     end
     self
   end
@@ -54,6 +57,7 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
       update_columns(balance: balance + amount, locked: locked - amount)
+      add_to_transaction
     end
     self
   end
@@ -62,6 +66,7 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
       update_columns(locked: locked - amount)
+      add_to_transaction
     end
     self
   end
@@ -79,7 +84,7 @@ class Account < ActiveRecord::Base
 private
 
   def trigger_pusher_events
-    member.trigger_pusher_event :accounts, \
+    Member.trigger_pusher_event member_id, :accounts, \
       id:         id,
       type:       :update,
       attributes: { balance: balance.to_s('F'), locked: locked.to_s('F') }

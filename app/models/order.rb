@@ -55,7 +55,7 @@ class Order < ActiveRecord::Base
   end
 
   def trigger_pusher_event
-    AMQPQueue.enqueue(:pusher_member, member_id: member.id, event: :order, data: {
+    AMQPQueue.enqueue(:pusher_member, member_id: member_id, event: :order, data: {
       id:            id,
       at:            at,
       market:        market.as_json,
@@ -108,13 +108,13 @@ class Order < ActiveRecord::Base
   end
 
   def to_matching_attributes
-    { id: id,
-      market: market.id,
-      type: type[-3, 3].downcase.to_sym,
-      ord_type: ord_type,
-      volume: volume,
-      price: price,
-      locked: locked,
+    { id:        id,
+      market:    market_id,
+      type:      type[-3, 3].downcase.to_sym,
+      ord_type:  ord_type,
+      volume:    volume,
+      price:     price,
+      locked:    locked,
       timestamp: created_at.to_i }
   end
 

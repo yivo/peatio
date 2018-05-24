@@ -38,10 +38,10 @@ module Worker
   private
 
     def trigger_pusher_event(acc, pa)
-      acc.member.trigger_pusher_event(:deposit_address, type: :create, attributes: {
+      Member.trigger_pusher_event acc.member_id, :deposit_address, type: :create, attributes: {
         currency: pa.currency.code,
         address:  pa.address
-      })
+      }
     end
   end
 end

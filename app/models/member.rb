@@ -116,7 +116,7 @@ class Member < ActiveRecord::Base
   end
 
   def trigger_pusher_event(event, data)
-    AMQPQueue.enqueue(:pusher_member, member_id: id, event: event, data: data)
+    self.class.trigger_pusher_event(self, event, data)
   end
 
 private
@@ -134,6 +134,15 @@ private
   
   def random_sn
     "SN#{SecureRandom.hex(5).upcase}"
+  end
+
+  class << self
+    def trigger_pusher_event(member_or_id, event, data)
+      AMQPQueue.enqueue :pusher_member, \
+        member_id: self === member_or_id ? member_or_id.id : member_or_id,
+        event:     event,
+        data:      data
+    end
   end
 end
 

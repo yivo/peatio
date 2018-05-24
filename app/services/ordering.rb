@@ -37,8 +37,7 @@ class Ordering
     order.fix_number_precision # number must be fixed before computing locked
     order.locked = order.origin_locked = order.compute_locked
     order.save!
-    account = order.hold_account
-    account.lock_funds(order.locked)
+    order.hold_account.lock_funds(order.locked)
   end
 
   def do_cancel(order)
