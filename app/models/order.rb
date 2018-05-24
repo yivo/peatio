@@ -11,7 +11,7 @@ class Order < ActiveRecord::Base
   TYPES = %w[ market limit ]
   enumerize :ord_type, in: TYPES, scope: true
 
-  after_commit :trigger_pusher_event
+  # after_commit :trigger_pusher_event
   before_validation :fix_number_precision, on: :create
 
   validates :ord_type, :volume, :origin_volume, :locked, :origin_locked, presence: true
@@ -54,18 +54,18 @@ class Order < ActiveRecord::Base
     @config ||= Market.find(market_id)
   end
 
-  def trigger_pusher_event
-    AMQPQueue.enqueue(:pusher_member, member_id: member.id, event: :order, data: {
-      id:            id,
-      at:            at,
-      market:        market.as_json,
-      kind:          kind,
-      price:         price&.to_s('F'),
-      state:         state,
-      volume:        volume.to_s('F'),
-      origin_volume: origin_volume.to_s('F')
-    })
-  end
+  # def trigger_pusher_event
+  #   AMQPQueue.enqueue(:pusher_member, member_id: member.id, event: :order, data: {
+  #     id:            id,
+  #     at:            at,
+  #     market:        market.as_json,
+  #     kind:          kind,
+  #     price:         price&.to_s('F'),
+  #     state:         state,
+  #     volume:        volume.to_s('F'),
+  #     origin_volume: origin_volume.to_s('F')
+  #   })
+  # end
 
   def strike(trade)
     raise "Cannot strike on canceled or done order. id: #{id}, state: #{state}" unless state == Order::WAIT
