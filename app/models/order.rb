@@ -55,16 +55,15 @@ class Order < ActiveRecord::Base
   end
 
   def trigger_pusher_event
-    AMQPQueue.enqueue(:pusher_member, member_id: member_id, event: :order, data: {
+    Member.trigger_pusher_event member_id, :order, \
       id:            id,
       at:            at,
-      market:        market.as_json,
+      market:        market_id,
       kind:          kind,
       price:         price&.to_s('F'),
       state:         state,
       volume:        volume.to_s('F'),
       origin_volume: origin_volume.to_s('F')
-    })
   end
 
   def strike(trade)

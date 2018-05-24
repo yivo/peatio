@@ -19,8 +19,6 @@ class Account < ActiveRecord::Base
 
   scope :enabled, -> { joins(:currency).merge(Currency.where(enabled: true)) }
 
-  after_commit :trigger_pusher_events
-
   def payment_address
     return unless currency.coin?
     payment_addresses.last&.enqueue_address_generation || payment_addresses.create!(currency: currency)
@@ -30,7 +28,6 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot add funds (amount: #{amount})." if amount <= ZERO
       update_columns(balance: balance + amount)
-      add_to_transaction
     end
     self
   end
@@ -39,7 +36,6 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot subtract funds (amount: #{amount})." if amount <= ZERO || amount > balance
       update_columns(balance: balance - amount)
-      add_to_transaction
     end
     self
   end
@@ -48,7 +44,6 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot lock funds (amount: #{amount})." if amount <= ZERO || amount > balance
       update_columns(balance: balance - amount, locked: locked + amount)
-      add_to_transaction
     end
     self
   end
@@ -57,7 +52,6 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
       update_columns(balance: balance + amount, locked: locked - amount)
-      add_to_transaction
     end
     self
   end
@@ -66,7 +60,6 @@ class Account < ActiveRecord::Base
     with_lock do
       raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
       update_columns(locked: locked - amount)
-      add_to_transaction
     end
     self
   end
@@ -79,15 +72,6 @@ class Account < ActiveRecord::Base
     super.merge! \
       deposit_address: payment_address&.address,
       currency:        currency.code
-  end
-
-private
-
-  def trigger_pusher_events
-    Member.trigger_pusher_event member_id, :accounts, \
-      id:         id,
-      type:       :update,
-      attributes: { balance: balance.to_s('F'), locked: locked.to_s('F') }
   end
 end
 
