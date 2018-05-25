@@ -24,43 +24,53 @@ class Account < ActiveRecord::Base
     payment_addresses.last&.enqueue_address_generation || payment_addresses.create!(currency: currency)
   end
 
+  def plus_funds!(amount)
+    raise AccountError, "Cannot add funds (amount: #{amount})." if amount <= ZERO
+    update_columns(balance: balance + amount)
+  end
+
   def plus_funds(amount)
-    with_lock do
-      raise AccountError, "Cannot add funds (amount: #{amount})." if amount <= ZERO
-      update_columns(balance: balance + amount)
-    end
+    with_lock { plus_funds!(amount) }
     self
+  end
+
+  def sub_funds!(amount)
+    raise AccountError, "Cannot subtract funds (amount: #{amount})." if amount <= ZERO || amount > balance
+    update_columns(balance: balance - amount)
   end
 
   def sub_funds(amount)
-    with_lock do
-      raise AccountError, "Cannot subtract funds (amount: #{amount})." if amount <= ZERO || amount > balance
-      update_columns(balance: balance - amount)
-    end
+    with_lock { amount }
     self
+  end
+
+  def lock_funds!(amount)
+    raise AccountError, "Cannot lock funds (amount: #{amount})." if amount <= ZERO || amount > balance
+    update_columns(balance: balance - amount, locked: locked + amount)
   end
 
   def lock_funds(amount)
-    with_lock do
-      raise AccountError, "Cannot lock funds (amount: #{amount})." if amount <= ZERO || amount > balance
-      update_columns(balance: balance - amount, locked: locked + amount)
-    end
+    with_lock { lock_funds!(amount) }
     self
+  end
+
+  def unlock_funds!(amount)
+    raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
+    update_columns(balance: balance + amount, locked: locked - amount)
   end
 
   def unlock_funds(amount)
-    with_lock do
-      raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
-      update_columns(balance: balance + amount, locked: locked - amount)
-    end
+    with_lock { unlock_funds!(amount) }
     self
   end
 
+  def unlock_and_sub_funds!(amount)
+    raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
+    update_columns(locked: locked - amount)
+  end
+
   def unlock_and_sub_funds(amount)
-    with_lock do
-      raise AccountError, "Cannot unlock funds (amount: #{amount})." if amount <= ZERO || amount > locked
-      update_columns(locked: locked - amount)
-    end
+    with_lock { unlock_and_sub_funds!(amount) }
     self
   end
 
