@@ -41,9 +41,10 @@ private
   end
 
   def do_cancel!(order)
-    order = Order.lock.find_by_id(order.id)
-    return unless order && order.state == Order::WAIT
-    order.hold_account!.unlock_funds!(order.locked)
-    order.update!(state: Order::CANCEL)
+    order.with_lock do
+      return unless order.state == Order::WAIT
+      order.hold_account!.unlock_funds!(order.locked)
+      order.update!(state: Order::CANCEL)
+    end
   end
 end

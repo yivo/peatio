@@ -30,7 +30,6 @@ describe Ordering do
 
   describe 'ordering service can cancel order' do
     before do
-      order.stubs(:hold_account).returns(account)
       order.stubs(:hold_account!).returns(account.lock!)
     end
 
