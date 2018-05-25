@@ -40,7 +40,7 @@ class Account < ActiveRecord::Base
   end
 
   def sub_funds(amount)
-    with_lock { amount }
+    with_lock { sub_funds!(amount) }
     self
   end
 
