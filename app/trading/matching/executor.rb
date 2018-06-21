@@ -17,7 +17,7 @@ module Matching
     def execute
       execute!
     rescue TradeExecutionError => e
-      AMQPQueue.enqueue(:trade_error, JSON.parse(e.options)) #send to failure queue
+      AMQPQueue.enqueue(:trade_error, e.options)
       [@ask, @bid].each do |order|
         order.with_lock do
           next unless order.state == Order::WAIT
@@ -36,12 +36,14 @@ module Matching
 
   private
 
-    def validate
-      raise_error(3001,"Ask price exceeds strike price") if @ask.ord_type == 'limit' && @ask.price > @price
-      raise_error(3002, "Bid price less than strike price") if @bid.ord_type == 'limit' && @bid.price < @price
-      raise_error(3003, "Ask state is not wait") unless @ask.state == Order::WAIT
-      raise_error(3004,"Bid state is not wait") unless @bid.state == Order::WAIT
-      @funds > ZERO && [@ask.volume, @bid.volume].min >= @volume ? true : raise_error(3005,"Funds not enough")
+    def validate!
+      raise_error(3001, 'Ask price exceeds strike price.') if @ask.ord_type == 'limit' && @ask.price > @price
+      raise_error(3002, 'Bid price is less than strike price.') if @bid.ord_type == 'limit' && @bid.price < @price
+      raise_error(3003, 'Ask state isn\'t equal to «wait».') unless @ask.state == Order::WAIT
+      raise_error(3004, 'Bid state isn\'t equal to «wait».') unless @bid.state == Order::WAIT
+      unless @funds > ZERO && [@ask.volume, @bid.volume].min >= @volume
+        raise_error(3005, 'Not enough funds.')
+      end
     end
 
     def trend
@@ -49,26 +51,26 @@ module Matching
     end
 
     def create_trade_and_strike_orders
+      @trade = Trade.new \
+        ask:           @ask,
+        ask_member_id: @ask.member_id,
+        bid:           @bid,
+        bid_member_id: @bid.member_id,
+        price:         @price,
+        volume:        @volume,
+        funds:         @funds,
+        market:        @market,
+        trend:         trend
+
       ActiveRecord::Base.transaction do
         @ask = OrderAsk.lock.find(@payload[:ask_id])
         @bid = OrderBid.lock.find(@payload[:bid_id])
-
-        validate
-
-        @trade = Trade.create! \
-          ask:        @ask,
-          ask_member: @ask.member,
-          bid:        @bid,
-          bid_member: @bid.member,
-          price:      @price,
-          volume:     @volume,
-          funds:      @funds,
-          market:     @market,
-          trend:      trend
-
+        validate!
         @bid.strike @trade
         @ask.strike @trade
       end
+
+      @trade.save(validate: false)
     end
 
     def publish_trade
@@ -81,9 +83,15 @@ module Matching
       }
     end
 
-    def raise_error code, msg
+    def raise_error(code, message)
       raise TradeExecutionError.new \
-        ask: @ask.attributes, bid: @bid.attributes, price: @price, volume: @volume, funds: @funds, error: {code: code , message: msg}
+        ask:     @ask.attributes,
+        bid:     @bid.attributes,
+        price:   @price,
+        volume:  @volume,
+        funds:   @funds,
+        code:    code,
+        message: message
     end
   end
 end

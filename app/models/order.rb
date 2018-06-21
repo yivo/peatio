@@ -72,11 +72,11 @@ class Order < ActiveRecord::Base
     real_sub, add  = get_account_changes(trade)
     real_fee       = add * fee
     real_add       = add - real_fee
-    hold_account   = hold_account!
     expect_account = expect_account!
+    hold_account   = hold_account!
 
-    hold_account.unlock_and_sub_funds!(real_sub)
-    expect_account.plus_funds!(real_add)
+    hold_account.assign_attributes hold_account.attributes_after_unlock_and_sub_funds!(real_sub)
+    expect_account.assign_attributes expect_account.attributes_after_plus_funds!(real_add)
 
     self.volume         -= trade.volume
     self.locked         -= real_sub
@@ -86,14 +86,18 @@ class Order < ActiveRecord::Base
     if volume.zero?
       self.state = Order::DONE
 
-      # unlock not used funds
-      hold_account.unlock_funds!(locked) unless locked.zero?
+      # Unlock not used funds.
+      unless locked.zero?
+        hold_account.assign_attributes hold_account.attributes_after_unlock_funds!(locked)
+      end
     elsif ord_type == 'market' && locked.zero?
-      # partially filled market order has run out its locked fund
+      # Partially filled market order has run out it's locked funds.
       self.state = Order::CANCEL
     end
 
-    save!
+    hold_account.save(validate: false)
+    expect_account.save(validate: false)
+    save(validate: false)
   end
 
   def kind
