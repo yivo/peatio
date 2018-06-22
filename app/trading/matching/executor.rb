@@ -51,6 +51,8 @@ module Matching
     end
 
     def create_trade_and_strike_orders
+      trend = self.trend
+
       ActiveRecord::Base.transaction do
         Order.lock.where(id: [@payload[:ask_id], @payload[:bid_id]]).to_a.tap do |orders|
           @ask = orders.find { |order| order.id == @payload[:ask_id] }
@@ -118,9 +120,7 @@ module Matching
       fee                         = income_value * order.fee
       real_income_value           = income_value - fee
 
-      # Hold
       outcome_account.assign_attributes outcome_account.attributes_after_unlock_and_sub_funds!(outcome_value)
-      # Expect
       income_account.assign_attributes income_account.attributes_after_plus_funds!(real_income_value)
 
       order.volume         -= trade.volume
