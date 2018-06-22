@@ -51,26 +51,24 @@ module Matching
     end
 
     def create_trade_and_strike_orders
-      @trade = Trade.new \
-        ask:           @ask,
-        ask_member_id: @ask.member_id,
-        bid:           @bid,
-        bid_member_id: @bid.member_id,
-        price:         @price,
-        volume:        @volume,
-        funds:         @funds,
-        market:        @market,
-        trend:         trend
-
       ActiveRecord::Base.transaction do
         @ask = OrderAsk.lock.find(@payload[:ask_id])
         @bid = OrderBid.lock.find(@payload[:bid_id])
         validate!
         @bid.strike @trade
         @ask.strike @trade
+        @trade = Trade.new \
+          ask:           @ask,
+          ask_member_id: @ask.member_id,
+          bid:           @bid,
+          bid_member_id: @bid.member_id,
+          price:         @price,
+          volume:        @volume,
+          funds:         @funds,
+          market:        @market,
+          trend:         trend
+        @trade.save(validate: false)
       end
-
-      @trade.save(validate: false)
     end
 
     def publish_trade
