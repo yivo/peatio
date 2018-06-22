@@ -51,7 +51,7 @@ module Matching
     end
 
     def create_trade_and_strike_orders
-      trend = self.trend
+      _trend = trend
 
       ActiveRecord::Base.transaction do
         Order.lock.where(id: [@payload[:ask_id], @payload[:bid_id]]).to_a.tap do |orders|
@@ -76,7 +76,7 @@ module Matching
           volume:        @volume,
           funds:         @funds,
           market:        @market,
-          trend:         trend
+          trend:         _trend
 
         strike(@trade, @ask, accounts_table["#{@ask.ask}:#{@ask.member_id}"], accounts_table["#{@ask.bid}:#{@ask.member_id}"])
         strike(@trade, @bid, accounts_table["#{@bid.bid}:#{@bid.member_id}"], accounts_table["#{@bid.ask}:#{@bid.member_id}"])
