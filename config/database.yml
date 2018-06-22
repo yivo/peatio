@@ -6,8 +6,6 @@ default: &default
   host: <%= ENV['DATABASE_HOST'] %>
   username: <%= ENV['DATABASE_USER'] %>
   password: <%= ENV['DATABASE_PASS'] %>
-  flags:
-    - MULTI_STATEMENTS
 
 development:
   <<: *default
