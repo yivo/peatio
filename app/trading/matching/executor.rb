@@ -86,9 +86,14 @@ module Matching
           statement = Arel::UpdateManager.new(table.engine)
           statement.table(table)
           statement.where(table[:id].eq(record.id))
-          statement.set record.changed_attributes.map { |(attribute, value)| [table[attribute], value] }
+          statement.set record.changed_attributes.map { |(attribute, previous_value)| [table[attribute], record.public_send(attribute)] }
           statement.to_sql
-        end.join('; ').tap { |sql| ActiveRecord::Base.connection.raw_connection.query(sql) }
+        end.concat(['']).join(";\n").tap do |sql|
+          client = ActiveRecord::Base.connection.raw_connection
+          client.query(sql)
+          while client.next_result
+          end
+        end
 
         @trade.save(validate: false)
       end
@@ -133,7 +138,7 @@ module Matching
 
         # Unlock not used funds.
         unless order.locked.zero?
-          outcome_account.assign_attributes outcome_account.attributes_after_unlock_funds!(locked)
+          outcome_account.assign_attributes outcome_account.attributes_after_unlock_funds!(order.locked)
         end
       elsif order.ord_type == 'market' && order.locked.zero?
         # Partially filled market order has run out it's locked funds.
