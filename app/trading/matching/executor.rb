@@ -88,7 +88,7 @@ module Matching
           statement.where(table[:id].eq(record.id))
           statement.set record.changed_attributes.map { |(attribute, value)| [table[attribute], value] }
           statement.to_sql
-        end.join('; ').tap { |sql| ActiveRecord::Base.connection.execute(sql) }
+        end.join('; ').tap { |sql| ActiveRecord::Base.connection.raw_connection.query(sql) }
 
         @trade.save(validate: false)
       end
