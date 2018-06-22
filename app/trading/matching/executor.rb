@@ -55,8 +55,6 @@ module Matching
         @ask = OrderAsk.lock.find(@payload[:ask_id])
         @bid = OrderBid.lock.find(@payload[:bid_id])
         validate!
-        @bid.strike @trade
-        @ask.strike @trade
         @trade = Trade.new \
           ask:           @ask,
           ask_member_id: @ask.member_id,
@@ -67,6 +65,8 @@ module Matching
           funds:         @funds,
           market:        @market,
           trend:         trend
+        @bid.strike @trade
+        @ask.strike @trade
         @trade.save(validate: false)
       end
     end
