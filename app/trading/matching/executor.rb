@@ -65,8 +65,20 @@ module Matching
           funds:         @funds,
           market:        @market,
           trend:         trend
-        @bid.strike @trade
-        @ask.strike @trade
+
+        orders   = [@bid, @ask]
+        accounts = []
+        [@bid, @ask].each { |order| accounts.concat(order.strike(@trade).last(2)) }
+
+        (orders + accounts).map do |record|
+          table     = record.class.arel_table
+          statement = Arel::UpdateManager.new(table.engine)
+          statement.table(table)
+          statement.where(table[:id].eq(record.id))
+          statement.set record.changed_attributes.map { |attribute| [table[attribute], record.public_send(attribute)] }
+          statement.to_sql
+        end.join('; ')
+
         @trade.save(validate: false)
       end
     end

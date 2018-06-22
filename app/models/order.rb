@@ -95,9 +95,11 @@ class Order < ActiveRecord::Base
       self.state = Order::CANCEL
     end
 
-    hold_account.save(validate: false)
-    expect_account.save(validate: false)
-    save(validate: false)
+    [self, expect_account, hold_account]
+
+    # hold_account.save(validate: false)
+    # expect_account.save(validate: false)
+    # save(validate: false)
   end
 
   def kind
