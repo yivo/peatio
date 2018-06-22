@@ -52,9 +52,19 @@ module Matching
 
     def create_trade_and_strike_orders
       ActiveRecord::Base.transaction do
-        @ask = OrderAsk.lock.find(@payload[:ask_id])
-        @bid = OrderBid.lock.find(@payload[:bid_id])
+        Order.lock.where(id: [@payload[:ask_id], @payload[:bid_id]]).to_a.tap do |orders|
+          @ask = orders.find { |order| order.id == @payload[:ask_id] }
+          @bid = orders.find { |order| order.id == @payload[:bid_id] }
+        end
+
         validate!
+
+        accounts_table = Account
+          .lock
+          .select(:id, :member_id, :currency_id, :balance, :locked)
+          .where(member_id: [@ask.member_id, @bid.member_id].uniq, currency_id: [@market.ask_unit, @market.bid_unit])
+          .each_with_object({}) { |record, memo| memo["#{record.currency_id}:#{record.member_id}"] = record }
+
         @trade = Trade.new \
           ask:           @ask,
           ask_member_id: @ask.member_id,
@@ -65,6 +75,9 @@ module Matching
           funds:         @funds,
           market:        @market,
           trend:         trend
+
+        strike(@ask, @trade, accounts_table["#{@ask.ask}:#{@ask.member_id}"], accounts_table["#{@ask.bid}:#{@ask.member_id}"])
+        strike(@bid, @trade, accounts_table["#{@bid.bid}:#{@bid.member_id}"], accounts_table["#{@bid.ask}:#{@bid.member_id}"])
 
         orders   = [@bid, @ask]
         accounts = []
@@ -77,7 +90,7 @@ module Matching
           statement.where(table[:id].eq(record.id))
           statement.set record.changed_attributes.map { |(attribute, value)| [table[attribute], value] }
           statement.to_sql
-        end.join('; ')
+        end.join('; ').tap { |sql| ActiveRecord::Base.connection.execute(sql) }
 
         @trade.save(validate: false)
       end
@@ -102,6 +115,34 @@ module Matching
         funds:   @funds,
         code:    code,
         message: message
+    end
+
+    def strike(trade, order, outcome_account, income_account)
+      outcome_value, income_value = OrderAsk === order ? [trade.volume, trade.funds] : [trade.funds, trade.volume]
+      fee                         = income_value * order.fee
+      real_income_value           = income_value - fee
+
+      # Hold
+      outcome_account.assign_attributes outcome_account.attributes_after_unlock_and_sub_funds!(outcome_value)
+      # Expect
+      income_account.assign_attributes income_account.attributes_after_plus_funds!(real_income_value)
+
+      order.volume         -= trade.volume
+      order.locked         -= outcome_value
+      order.funds_received += income_value
+      order.trades_count   += 1
+
+      if order.volume.zero?
+        order.state = Order::DONE
+
+        # Unlock not used funds.
+        unless order.locked.zero?
+          outcome_account.assign_attributes outcome_account.attributes_after_unlock_funds!(locked)
+        end
+      elsif order.ord_type == 'market' && order.locked.zero?
+        # Partially filled market order has run out it's locked funds.
+        order.state = Order::CANCEL
+      end
     end
   end
 end
