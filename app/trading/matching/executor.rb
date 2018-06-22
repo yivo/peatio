@@ -88,7 +88,8 @@ module Matching
           statement.where(table[:id].eq(record.id))
           statement.set record.changed_attributes.map { |(attribute, previous_value)| [table[attribute], record.public_send(attribute)] }
           statement.to_sql
-        end.concat(['']).join(";\n").tap do |sql|
+        end.join('; ').tap do |sql|
+          Rails.logger.debug { sql }
           client = ActiveRecord::Base.connection.raw_connection
           client.query(sql)
           while client.next_result
