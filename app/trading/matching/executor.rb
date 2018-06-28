@@ -86,7 +86,15 @@ module Matching
           statement = Arel::UpdateManager.new(table.engine)
           statement.table(table)
           statement.where(table[:id].eq(record.id))
-          statement.set record.changed_attributes.map { |(attribute, previous_value)| [table[attribute], record.public_send(attribute)] }
+          updates = record.changed_attributes.map do |(attribute, previous_value)|
+            if Order === record
+              value = record.public_send(attribute)
+              [table[attribute], { wait: 100, done: 200, cancel: 0 }.with_indifferent_access.fetch(value, value)]
+            else
+              [table[attribute], record.public_send(attribute)]
+            end
+          end
+          statement.set updates
           statement.to_sql
         end.join('; ').tap do |sql|
           Rails.logger.debug { sql }
@@ -97,6 +105,8 @@ module Matching
         end
 
         @trade.save(validate: false)
+        @ask.add_to_transaction
+        @bid.add_to_transaction
       end
     end
 
