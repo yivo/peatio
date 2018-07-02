@@ -105,8 +105,6 @@ module Matching
         end
 
         @trade.save(validate: false)
-        @ask.add_to_transaction
-        @bid.add_to_transaction
       end
     end
 
@@ -118,6 +116,17 @@ module Matching
           bid_member_id: @bid.member_id
         }
       }
+
+      [@ask, @bid].each do |order|
+        next unless order.ord_type == 'limit'
+        event = case order.state
+          when 'cancel' then 'order_canceled'
+          when 'done'   then 'order_completed'
+          else 'order_updated'
+        end
+        EventAPI.notify ['market', order.market_id, event].join('.'), \
+          Serializers::EventAPI.const_get(event.camelize).call(order)
+      end
     end
 
     def raise_error(code, message)
