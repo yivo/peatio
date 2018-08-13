@@ -49,35 +49,37 @@ module Admin
     end
 
     def permitted_currency_attributes
-      attributes = [
-        :symbol,
-        :quick_withdraw_limit,
-        :withdraw_fee,
-        :deposit_fee,
-        :deposit_confirmations,
-        :enabled,
-        :wallet_url_template,
-        :transaction_url_template
+      attributes = %i[
+        symbol
+        icon_url
+        quick_withdraw_limit
+        withdraw_fee
+        deposit_fee
+        min_confirmations
+        enabled
+        allow_multiple_deposit_addresses
+        blockchain_key
       ]
 
       if @currency.new_record?
-        attributes +=[
-          :code,
-          :type,
-          :base_factor,
-          :precision,
-          :api_client,
-          :json_rpc_endpoint,
-          :rest_api_endpoint,
-          :bitgo_test_net,
-          :bitgo_wallet_id,
-          :bitgo_wallet_address,
-          :bitgo_wallet_passphrase,
-          :bitgo_rest_api_root,
-          :bitgo_rest_api_access_token,
-          :case_sensitive,
-          :erc20_contract_address,
-          :supports_cash_addr_format ]
+        attributes += %i[
+          code
+          type
+          base_factor
+          precision
+          api_client
+          json_rpc_endpoint
+          rest_api_endpoint
+          bitgo_test_net
+          bitgo_wallet_id
+          bitgo_wallet_address
+          bitgo_wallet_passphrase
+          bitgo_rest_api_root
+          bitgo_rest_api_access_token
+          case_sensitive
+          erc20_contract_address
+          supports_cash_addr_format
+          supports_hd_protocol ]
       end
 
       attributes
@@ -87,7 +89,9 @@ module Admin
       %i[ enabled
           case_sensitive
           supports_cash_addr_format
-          bitgo_test_net ]
+          bitgo_test_net
+          supports_hd_protocol
+          allow_multiple_deposit_addresses ]
     end
   end
 end

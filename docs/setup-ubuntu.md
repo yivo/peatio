@@ -246,17 +246,6 @@ Run `$ god -c lib/daemons/daemons.god` to start the deamon
 
 More info about Peatio daemons at [Peatio daemons](https://github.com/rubykube/peatio/blob/master/docs/peatio/daemons.md).
 
-
-#### Generate liability proof
-
-To generate liability proof run:
-
-```shell
-bundle exec rake solvency:liability_proof
-```
-Otherwise you will get an exception at the "Solvency" page.
-
-
 #### Setup the Google Authentication
 
 - By default, it ask for Google Authentication. This parameter can be changed in `/config/application.yml` -> `OAUTH2_SIGN_IN_PROVIDER:    google`
@@ -353,13 +342,13 @@ Replace the content of the file by the following
 #
 # Make sure to add the next line to /etc/hosts.
 #
-#   127.0.0.1 peatio.io
+#   127.0.0.1 peatio.tech
 #
 
 server {
-  server_name      peatio.io;
+  server_name      peatio.tech;
   listen           80;
-  proxy_set_header Host peatio.io;
+  proxy_set_header Host peatio.tech;
 
   location ~ ^/(?:trading|trading-ui-assets)\/ {
     proxy_pass http://127.0.0.1:4000;
@@ -371,7 +360,7 @@ server {
 }
 ```
 
-Make sure to replace `http://peatio.io` with your actual server DNS
+Make sure to replace `http://peatio.tech` with your actual server DNS
 
 Verify that the syntax of the config file is valid : `$ sudo nginx -t`
 

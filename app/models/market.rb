@@ -1,7 +1,6 @@
 # encoding: UTF-8
 # frozen_string_literal: true
 
-
 # People exchange commodities in markets. Each market focuses on certain
 # commodity pair `{A, B}`. By convention, we call people exchange A for B
 # *sellers* who submit *ask* orders, and people exchange B for A *buyers*
@@ -23,6 +22,7 @@ class Market < ActiveRecord::Base
 
   scope :ordered, -> { order(position: :asc) }
   scope :enabled, -> { where(enabled: true) }
+  scope :with_base_unit, -> (base_unit){ where(ask_unit: base_unit) }
 
   validate { errors.add(:ask_unit, :invalid) if ask_unit == bid_unit }
   validates :id, uniqueness: { case_sensitive: false }, presence: true
@@ -32,6 +32,9 @@ class Market < ActiveRecord::Base
   validates :ask_unit, :bid_unit, inclusion: { in: -> (_) { Currency.codes } }
   validate  :precisions_must_be_same
   validate  :units_must_be_enabled, if: :enabled?
+
+  validates :min_ask, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :max_bid, numericality: { allow_blank: true, greater_than_or_equal_to: ->(market){ market.min_ask }}
 
   before_validation(on: :create) { self.id = "#{ask_unit}#{bid_unit}" }
 
@@ -90,6 +93,17 @@ class Market < ActiveRecord::Base
     Global[id]
   end
 
+  def change_ratio
+    open = ticker[:open].to_f
+    last = ticker[:last].to_f
+    percent = if open
+                (100*(last-open)/open).nan? ? 0.0 : (100*(last-open)/open).round(2)
+              else
+                '0.00'
+              end
+    "#{open > last ? '' : '+'}#{percent}%"
+  end
+
 private
 
   def precisions_must_be_same
@@ -107,7 +121,7 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180529125011
+# Schema version: 20180719172203
 #
 # Table name: markets
 #
@@ -116,6 +130,8 @@ end
 #  bid_unit      :string(5)        not null
 #  ask_fee       :decimal(17, 16)  default(0.0), not null
 #  bid_fee       :decimal(17, 16)  default(0.0), not null
+#  max_bid       :decimal(17, 16)
+#  min_ask       :decimal(17, 16)  default(0.0), not null
 #  ask_precision :integer          default(8), not null
 #  bid_precision :integer          default(8), not null
 #  position      :integer          default(0), not null

@@ -6,10 +6,17 @@ module CurrencyHelper
   # since Gon::Jbuilder attaches ActionView::Helpers which behave differently
   # compared to what ActionController does.
   def currency_icon_url(currency)
-    if currency.coin?
-      ActionController::Base.helpers.image_url "yarn_components/cryptocurrency-icons/svg/color/#{currency.code}.svg"
+      ActionController::Base.helpers.image_url currency_icon_url(currency)
+  end
+
+  private
+
+  def currency_icon_url(currency)
+    if currency.icon_url.blank?
+      "assets/#{currency.code}.svg"
     else
-      ActionController::Base.helpers.image_url "yarn_components/currency-flags/src/flags/#{currency.code}.png"
+      currency.icon_url
     end
   end
+
 end

@@ -55,6 +55,8 @@ module Admin
         :ask_unit,
         :ask_fee,
         :enabled,
+        :max_bid,
+        :min_ask,
         :position
       ]
 
@@ -69,7 +71,7 @@ module Admin
     end
 
     def boolean_market_attributes
-      %i[ enabled ]
+      %i[enabled]
     end
   end
 end

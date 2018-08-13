@@ -17,29 +17,25 @@ gem 'omniauth-google-oauth2', '~> 0.5.3', require: false
 gem 'omniauth-barong', '~> 0.1.4', require: false
 gem 'figaro', '~> 1.1.1'
 gem 'hashie', '~> 3.5.7'
-gem 'aasm', '~> 4.12.3'
-gem 'bunny', '~> 2.9.2'
+gem 'aasm', '~> 5.0.0'
+gem 'bunny', '~> 2.11.0'
 gem 'cancancan', '~> 2.2.0'
 gem 'enumerize', '~> 2.2.2'
-gem 'datagrid', '~> 1.5.8'
 gem 'kaminari', '~> 1.1.1'
-gem 'paper_trail', '~> 3.0.9'
-gem 'rails-observers', '~> 0.1.5'
 gem 'gon', '~> 5.2.3'
-gem 'eventmachine', '~> 1.0.9', require: false
+gem 'eventmachine', '~> 1.2.7', require: false
 gem 'em-websocket', '~> 0.5.1', require: false
-gem 'sass-rails', '~> 5.0.7'
+gem 'sassc-rails', '~> 1.3.0'
 gem 'coffee-rails', '~> 4.2.2'
-gem 'uglifier', '~> 4.1.10'
+gem 'uglifier', '~> 4.1.17'
 gem 'jquery-rails', '~> 4.3.3'
 gem 'angularjs-rails', '~> 1.3.15'
-gem 'bootstrap', '~> 4.1.1'
-gem 'font-awesome-sass', '~> 4.7.0'
+gem 'bootstrap', '~> 4.1.3'
+gem 'font-awesome-sass', '~> 5.2.0'
 gem 'rbtree', '~> 0.4.2'
-gem 'liability-proof', '0.0.9', require: false
-gem 'grape', '~> 1.0.3'
+gem 'grape', '~> 1.1.0'
 gem 'grape-entity', '~> 0.7.1'
-gem 'grape-swagger', '~> 0.28.0'
+gem 'grape-swagger', '~> 0.30.1'
 gem 'grape-swagger-ui', '~> 2.2.8'
 gem 'grape-swagger-entity', '~> 0.2.5'
 gem 'grape_logging', '~> 1.8.0'
@@ -51,7 +47,7 @@ gem 'email_validator', '~> 1.6.0'
 gem 'validate_url', '~> 1.0.2'
 gem 'clipboard-rails', '~> 1.7.1'
 gem 'god', '~> 0.13.7', require: false
-gem 'mini_racer', '~> 0.1.15', require: false
+gem 'mini_racer', '~> 0.2.0', require: false
 gem 'arel-is-blank', '~> 1.0.0'
 gem 'sentry-raven', '~> 2.7.3', require: false
 gem 'memoist', '~> 0.16.0'
@@ -62,6 +58,7 @@ gem 'jwt-multisig', '~> 1.0.0'
 gem 'cash-addr', '~> 0.1.1', require: 'cash_addr'
 gem 'digest-sha3', '~> 1.1.0'
 gem 'scout_apm', '~> 2.4', require: false
+gem 'peatio', '~> 0.2'
 
 group :development, :test do
   gem 'faker',        '~> 1.8'

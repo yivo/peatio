@@ -12,16 +12,32 @@ class Account < ActiveRecord::Base
   ZERO = 0.to_d
 
   has_many :payment_addresses, -> { order(id: :asc) }
-  has_many :partial_trees, -> { order(id: :desc) }
 
   validates :member_id, uniqueness: { scope: :currency_id }
   validates :balance, :locked, numericality: { greater_than_or_equal_to: 0.to_d }
 
   scope :enabled, -> { joins(:currency).merge(Currency.where(enabled: true)) }
 
+  # Returns active deposit address for account or creates new if any exists.
   def payment_address
     return unless currency.coin?
     payment_addresses.last&.enqueue_address_generation || payment_addresses.create!(currency: currency)
+  end
+
+  # Attempts to create additional deposit address for account.
+  def payment_address!
+    return unless currency.coin?
+    record = payment_address
+
+    # The address generation process is in progress.
+    if record.address.blank?
+      record
+    # Currency supports HD protocol and administrator allows user to have multiple addresses.
+    elsif currency.supports_hd_protocol? && currency.allow_multiple_deposit_addresses?
+      payment_addresses.create!(currency: currency)
+    else
+      record
+    end
   end
 
   def plus_funds!(amount)

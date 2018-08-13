@@ -94,8 +94,39 @@ describe Account do
       currency = Currency.find(:dash)
       currency.transaction do
         currency.update_columns(enabled: false)
-        expect(Account.enabled.count).to eq 18
+        expect(Account.enabled.count).to eq 21
         currency.update_columns(enabled: true)
+      end
+    end
+  end
+
+  describe '#payment_address!' do
+    it 'returns the same payment address is address generation process is in progress' do
+      expect(subject.payment_address!).to eq subject.payment_address
+    end
+
+    it 'return new payment address if previous has address generated' do
+      subject.payment_address.tap do |previous|
+        previous.update!(address: '1JSmYcCjBGm7RbjPppjZ1gGTDpBEmTGgGA')
+        expect(subject.payment_address!).not_to eq previous
+      end
+    end
+
+    context 'HD protocol unsupported' do
+      before { subject.currency.update!(supports_hd_protocol: false) }
+      it 'always returns the same payment address' do
+        expect(subject.payment_address!).to eq subject.payment_address
+        subject.payment_address.update!(address: '1JSmYcCjBGm7RbjPppjZ1gGTDpBEmTGgGA')
+        expect(subject.payment_address!).to eq subject.payment_address
+      end
+    end
+
+    context 'multiple deposit address generation is not allowed' do
+      before { subject.currency.update!(allow_multiple_deposit_addresses: false) }
+      it 'always returns the same payment address' do
+        expect(subject.payment_address!).to eq subject.payment_address
+        subject.payment_address.update!(address: '1JSmYcCjBGm7RbjPppjZ1gGTDpBEmTGgGA')
+        expect(subject.payment_address!).to eq subject.payment_address
       end
     end
   end

@@ -23,6 +23,7 @@ FactoryBot.define do
     end
 
     trait :btc do
+      blockchain_key       'btc-testnet'
       code                 'btc'
       symbol               '฿'
       type                 'coin'
@@ -30,15 +31,16 @@ FactoryBot.define do
       quick_withdraw_limit 0.1
       withdraw_fee         0.01
       options \
-        api_client:               'BTC',
-        json_rpc_endpoint:        'http://127.0.0.1:18332',
-        wallet_url_template:      'https://testnet.blockchain.info/address/#{address}',
-        transaction_url_template: 'https://testnet.blockchain.info/tx/#{txid}',
-        deposit_confirmations:    1,
-        case_sensitive:           true
+        api_client:                       'BTC',
+        json_rpc_endpoint:                'http://127.0.0.1:18332',
+        min_confirmations:                2,
+        case_sensitive:                   true,
+        supports_hd_protocol:             true,
+        allow_multiple_deposit_addresses: true
     end
 
     trait :dash do
+      blockchain_key       'dash-testnet'
       code                 'dash'
       symbol               'Đ'
       type                 'coin'
@@ -46,13 +48,16 @@ FactoryBot.define do
       quick_withdraw_limit 1000
       withdraw_fee         0.02
       options \
-        api_client:            'DASH',
-        json_rpc_endpoint:     'http://127.0.0.1:19999',
-        deposit_confirmations: 1,
-        case_sensitive:        true
+        api_client:                       'DASH',
+        json_rpc_endpoint:                'http://127.0.0.1:19999',
+        min_confirmations:                1,
+        case_sensitive:                   true,
+        supports_hd_protocol:             true,
+        allow_multiple_deposit_addresses: true
     end
 
     trait :eth do
+      blockchain_key       'eth-rinkeby'
       code                 'eth'
       symbol               'Ξ'
       type                 'coin'
@@ -60,12 +65,12 @@ FactoryBot.define do
       quick_withdraw_limit 1
       withdraw_fee         0.025
       options \
-        api_client:               'ETH',
-        json_rpc_endpoint:        'http://127.0.0.1:8545',
-        wallet_url_template:      'https://rinkeby.etherscan.io/address/#{address}',
-        transaction_url_template: 'https://rinkeby.etherscan.io/tx/#{txid}',
-        deposit_confirmations:    1,
-        case_sensitive:           false
+        api_client:                       'ETH',
+        json_rpc_endpoint:                'http://127.0.0.1:8545',
+        min_confirmations:                1,
+        case_sensitive:                   false,
+        supports_hd_protocol:             false,
+        allow_multiple_deposit_addresses: false
     end
 
     trait :xrp do
@@ -76,15 +81,16 @@ FactoryBot.define do
       quick_withdraw_limit 1000
       withdraw_fee         0.015
       options \
-        api_client:               'XRP',
-        json_rpc_endpoint:        'http://127.0.0.1:5005',
-        wallet_url_template:      'https://bithomp.com/explorer/#{txid}',
-        transaction_url_template: 'https://bithomp.com/explorer/#{address}',
-        deposit_confirmations:    1,
-        case_sensitive:           true
+        api_client:                       'XRP',
+        json_rpc_endpoint:                'http://127.0.0.1:5005',
+        min_confirmations:                1,
+        case_sensitive:                   true,
+        supports_hd_protocol:             false,
+        allow_multiple_deposit_addresses: false
     end
 
     trait :trst do
+      blockchain_key       'eth-rinkeby'
       code                 'trst'
       symbol               'Ξ'
       type                 'coin'
@@ -92,16 +98,17 @@ FactoryBot.define do
       quick_withdraw_limit 1000
       withdraw_fee         0.025
       options \
-        api_client:               'ERC20',
-        json_rpc_endpoint:        'http://127.0.0.1:8545',
-        wallet_url_template:      'https://etherscan.io/address/#{address}',
-        transaction_url_template: 'https://etherscan.io/tx/#{txid}',
-        erc20_contract_address:   '0x87099adD3bCC0821B5b151307c147215F839a110',
-        deposit_confirmations:    1,
-        case_sensitive:           false
+        api_client:                       'ERC20',
+        json_rpc_endpoint:                'http://127.0.0.1:8545',
+        erc20_contract_address:           '0x87099adD3bCC0821B5b151307c147215F839a110',
+        min_confirmations:                1,
+        case_sensitive:                   false,
+        supports_hd_protocol:             false,
+        allow_multiple_deposit_addresses: false
     end
 
     trait :bch do
+      blockchain_key       'bch-testnet'
       code                 'bch'
       symbol               '฿'
       type                 'coin'
@@ -109,13 +116,30 @@ FactoryBot.define do
       quick_withdraw_limit 1
       withdraw_fee         0
       options \
-        api_client:                'BCH',
-        json_rpc_endpoint:         'http://127.0.0.1:48977',
-        wallet_url_template:       'https://www.blocktrail.com/tBCC/address/#{address}',
-        transaction_url_template:  'https://www.blocktrail.com/tBCC/tx/#{txid}',
-        deposit_confirmations:     1,
-        case_sensitive:            true,
-        supports_cash_addr_format: true
+        api_client:                       'BCH',
+        json_rpc_endpoint:                'http://127.0.0.1:48977',
+        min_confirmations:                1,
+        case_sensitive:                   true,
+        supports_cash_addr_format:        true,
+        supports_hd_protocol:             true,
+        allow_multiple_deposit_addresses: true
+    end
+
+    trait :ltc do
+      blockchain_key       'ltc-testnet'
+      code                 'ltc'
+      symbol               'Ł'
+      type                 'coin'
+      base_factor          100_000_000
+      quick_withdraw_limit 1000
+      withdraw_fee         0.02
+      options \
+        api_client:                       'LTC',
+        json_rpc_endpoint:                'http://127.0.0.1:17732',
+        min_confirmations:                1,
+        case_sensitive:                   true,
+        supports_hd_protocol:             true,
+        allow_multiple_deposit_addresses: true
     end
   end
 end

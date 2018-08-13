@@ -10,8 +10,6 @@ module Admin
 
       can :read, Order
       can :read, Trade
-      can :read, Proof
-      can :update, Proof
       can :manage, Member
 
       can :menu, Deposit
@@ -22,6 +20,8 @@ module Admin
 
       can :manage, Market
       can :manage, Currency
+      can :manage, Blockchain
+      can :manage, Wallet
     end
   end
 end
